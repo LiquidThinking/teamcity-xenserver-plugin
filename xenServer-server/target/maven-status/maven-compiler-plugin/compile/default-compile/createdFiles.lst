@@ -1,0 +1,6 @@
+com\spawtz\teamcity\xenServer\XenServerCloudParameters.class
+com\spawtz\teamcity\xenServer\XenServerCloudInstance$1.class
+com\spawtz\teamcity\xenServer\XenServerCloudClientFactory.class
+com\spawtz\teamcity\xenServer\XenServerCloudInstance.class
+com\spawtz\teamcity\xenServer\XenServerCloudClientEx.class
+com\spawtz\teamcity\xenServer\XenServerCloudClientFactory$1.class
