@@ -6,8 +6,9 @@ public interface XenServerCloudParameters {
     String PLUGIN_SHORT_NAME = "xenserver";
 
     String SERVER = "clouds.xenserver.server";
-    String USER_NAME = "clouds.openstack.userName";
-    String PASSWORD = "clouds.openstack.password";
+    String USER_NAME = "clouds.xenserver.userName";
+    String PASSWORD = "clouds.xenserver.password";
+    String TEMPLATE = "clouds.xenserver.template";
 
     String AGENT_CLOUD_TYPE = "agent.cloud.type";
 }

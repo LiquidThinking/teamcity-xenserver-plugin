@@ -6,6 +6,7 @@
 <tr>
     <th><label for="${paramUrl}">Server IP: <l:star/></label></th>
     <td><props:textProperty name="${paramUrl}" className="longField"/>
+        <span id="error_clouds.xenserver.server" class="error"></span>
     </td>
 </tr>
 
@@ -13,30 +14,23 @@
 <tr>
     <th><label for="${paramIdentity}">User name: <l:star/></label></th>
     <td><props:textProperty name="${paramIdentity}" className="longField"/>
+        <span id="error_clouds.xenserver.userName" class="error"></span>
     </td>
 </tr>
 
 <c:set var="paramPassword" value="<%=XenServerCloudParameters.PASSWORD%>"/>
 <tr>
     <th><label for="${paramPassword}">Password: <l:star/></label></th>
-    <td><props:passwordProperty name="${paramPassword}" className="longField"/>
+    <td>
+        <props:passwordProperty name="${paramPassword}" className="longField"/>
+        <span id="error_clouds.xenserver.password" class="error"></span>
     </td>
 </tr>
 
+<c:set var="paramTemplate" value="<%=XenServerCloudParameters.TEMPLATE%>"/>
 <tr>
-<div>
-    <button class="btn" id="xenServerCheckCredentialsButton" type="button" onclick="return checkCredentialsFetchOptions();">Check Credentials / Fetch options</button>
-</div>
+    <th><label for="${paramTemplate}">Template Id: <l:star/></label></th>
+    <td><props:textProperty name="${paramTemplate}" className="longField"/>
+        <span id="error_clouds.xenserver.template" class="error"></span>
+    </td>
 </tr>
-
-<script type="text/javascript">
-    function checkCredentialsFetchOptions(){
-        var button = document.querySelector("#xenServerCheckCredentialsButton");
-        button.disabled = true;
-        button.value = "Checking..."
-        alert("Clicked");
-        button.disabled = false;
-        button.value = "Check Credentials / Fetch options"
-        return false;
-    }
-</script>

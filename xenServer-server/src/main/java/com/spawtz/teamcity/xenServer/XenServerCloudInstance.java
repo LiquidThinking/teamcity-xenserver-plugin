@@ -1,10 +1,15 @@
 package com.spawtz.teamcity.xenServer;
 
+import com.xensource.xenapi.Connection;
+import com.xensource.xenapi.Network;
+import com.xensource.xenapi.Types;
+import com.xensource.xenapi.VM;
 import jetbrains.buildServer.clouds.CloudErrorInfo;
 import jetbrains.buildServer.clouds.CloudImage;
 import jetbrains.buildServer.clouds.CloudInstance;
 import jetbrains.buildServer.clouds.InstanceStatus;
 import jetbrains.buildServer.serverSide.AgentDescription;
+import org.apache.xmlrpc.XmlRpcException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,22 +18,64 @@ import java.util.Date;
 import java.util.LinkedList;
 
 public class XenServerCloudInstance implements CloudInstance {
+    private Connection _connection;
+    private VM _vm;
+
+
+    XenServerCloudInstance(Connection connection, VM vm){
+        _connection = connection;
+        _vm = vm;
+    }
+
+    void restart(){
+        try {
+            _vm.hardReboot(_connection);
+        } catch (Types.XenAPIException e) {
+            e.printStackTrace();
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void stop(){
+        try {
+            _vm.hardShutdown(_connection);
+            _vm.destroy(_connection);
+        } catch (Types.XenAPIException e) {
+            e.printStackTrace();
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+    }
+
     @NotNull
     @Override
     public String getInstanceId() {
-        return "1";
+        try {
+            return _vm.getUuid(_connection);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     @NotNull
     @Override
     public String getName() {
-        return "one";
+        try {
+            return _vm.getNameLabel(_connection);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     @NotNull
     @Override
     public String getImageId() {
-        return "";
+        try {
+            return (String)_vm.getTags(_connection).toArray()[0];
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     @NotNull
@@ -82,13 +129,23 @@ public class XenServerCloudInstance implements CloudInstance {
     @Nullable
     @Override
     public String getNetworkIdentity() {
-        return null;
+        return "";
     }
 
     @NotNull
     @Override
     public InstanceStatus getStatus() {
-        return InstanceStatus.RUNNING;
+        try {
+            Types.VmPowerState powerState = _vm.getPowerState(_connection);
+            if(powerState == Types.VmPowerState.RUNNING)
+                return InstanceStatus.RUNNING;
+            return InstanceStatus.STOPPED;
+        } catch (Types.XenAPIException e) {
+            e.printStackTrace();
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+        return InstanceStatus.STOPPED;
     }
 
     @Nullable
@@ -99,6 +156,6 @@ public class XenServerCloudInstance implements CloudInstance {
 
     @Override
     public boolean containsAgent(@NotNull AgentDescription agentDescription) {
-        return false;
+        return true;
     }
 }
