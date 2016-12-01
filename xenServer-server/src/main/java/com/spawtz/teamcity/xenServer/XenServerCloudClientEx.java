@@ -1,32 +1,44 @@
 package com.spawtz.teamcity.xenServer;
 
-import com.xensource.xenapi.APIVersion;
-import com.xensource.xenapi.Connection;
-import com.xensource.xenapi.Session;
-import com.xensource.xenapi.VM;
+import com.xensource.xenapi.*;
+import jetbrains.buildServer.agentServer.Agent;
 import jetbrains.buildServer.clouds.*;
 import jetbrains.buildServer.serverSide.AgentDescription;
+import jetbrains.buildServer.serverSide.BuildAgentEx;
+import jetbrains.buildServer.serverSide.BuildAgentManager;
+import jetbrains.buildServer.serverSide.SBuildAgent;
+import jetbrains.buildServer.serverSide.agentPools.AgentPool;
+import jetbrains.buildServer.serverSide.agentPools.AgentPoolAdapter;
+import jetbrains.buildServer.serverSide.agentPools.AgentPoolManager;
+import jetbrains.buildServer.serverSide.impl.agent.RegisteredAgent;
+import jetbrains.buildServer.serverSide.impl.audit.finders.AgentFinder;
+import jetbrains.buildServer.serverSide.impl.auth.SecuredBuildAgent;
+import jetbrains.buildServer.serverSide.impl.beans.AgentContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.net.ssl.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 public class XenServerCloudClientEx implements CloudClientEx {
     private CloudClientParameters _parameters;
+    private BuildAgentManager _agentFinder;
 
-    XenServerCloudClientEx(CloudClientParameters parameters) {
+    XenServerCloudClientEx(CloudClientParameters parameters, BuildAgentManager agentFinder) {
         _parameters = parameters;
+        _agentFinder = agentFinder;
     }
 
     @NotNull
     @Override
     public CloudInstance startNewInstance(@NotNull CloudImage cloudImage, @NotNull CloudInstanceUserData cloudInstanceUserData) throws QuotaException {
+        cloudInstanceUserData.addAgentConfigurationParameter("jetbrains.buildServer.clouds.CloudConstants#AGENT_TERMINATE_AFTER_BUILD", "true");
         try {
             HostnameVerifier hv = new HostnameVerifier()
             {
@@ -54,8 +66,9 @@ public class XenServerCloudClientEx implements CloudClientEx {
             }
             Connection connection = new Connection(new URL("https://" + _parameters.getParameter("clouds.xenserver.server")));
             Session.loginWithPassword(connection, _parameters.getParameter("clouds.xenserver.userName"), _parameters.getParameter("clouds.xenserver.password"), APIVersion.latest().toString());
+
             VM template = VM.getByUuid(connection, cloudImage.getId());
-            VM clone = template.createClone(connection, "test");
+            VM clone = template.createClone(connection, "buildagent-" + UUID.randomUUID().toString());
             clone.setIsATemplate(connection, false);
             HashSet<String> tags = new HashSet<String>();
             tags.add(cloudImage.getId());
@@ -75,9 +88,21 @@ public class XenServerCloudClientEx implements CloudClientEx {
 
     @Override
     public void terminateInstance(@NotNull CloudInstance cloudInstance) {
+        try {
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("D:\\agent.txt", true)));
+            out.println("stopping instance "+ cloudInstance.getImageId());
+            out.close();
+        } catch (Exception e) {
+            //exception handling left as an exercise for the reader
+        }
         XenServerCloudInstance instance = (XenServerCloudInstance)cloudInstance;
-        instance.stop();
+        String agentName = "buildagent_" + instance.getNetworkIdentity();
+        BuildAgentEx agent = _agentFinder.findAgentByName(agentName, false);
+        agent.setAuthorized(false, null, "");
 
+        instance.stop();
+        //noinspection ConstantConditions
+        //_agentFinder.
     }
 
     @Override
@@ -129,6 +154,11 @@ public class XenServerCloudClientEx implements CloudClientEx {
     @Nullable
     @Override
     public CloudInstance findInstanceByAgent(@NotNull AgentDescription agentDescription) {
+        CloudImage cloudImage = (CloudImage) getImages().toArray()[0];
+        for (CloudInstance cloudInstance : cloudImage.getInstances()) {
+            if(cloudInstance.containsAgent(agentDescription))
+                return cloudInstance;
+        }
         return null;
     }
 

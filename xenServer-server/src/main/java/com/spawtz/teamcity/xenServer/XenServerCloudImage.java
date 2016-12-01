@@ -81,7 +81,7 @@ public class XenServerCloudImage implements CloudImage {
     @Nullable
     @Override
     public Integer getAgentPoolId() {
-        return null;
+        return 0;
     }
 
     @Nullable

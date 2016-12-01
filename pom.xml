@@ -44,6 +44,7 @@
   </build>
   <modules>
     <module>xenServer-server</module>
+    <module>xenServer-agent</module>
     <module>build</module>
   </modules>
 </project>

@@ -1,34 +1,27 @@
 <?xml version="1.0"?>
 <assembly>
-  <id>plugin-assembly</id>
+  <id>plugin-agent-assembly</id>
   <includeBaseDirectory>false</includeBaseDirectory>
   <formats>
     <format>zip</format>
   </formats>
   <files>
      <file>
-         <source>target/teamcity-plugin.xml</source>
+         <source>../xenServer-agent/teamcity-plugin.xml</source>
          <outputDirectory>/</outputDirectory>
-     </file>
-      <file>
-          <source>target/xenServer-agent.zip</source>
-          <outputDirectory>agent</outputDirectory>
-      </file>
+     </file> 
   </files>
   <moduleSets>
     <moduleSet>
        <useAllReactorProjects>true</useAllReactorProjects>
        <includes>
-           <include>com.spawtz.teamcity.xenServer:xenServer-server</include>
+           <include>com.spawtz.teamcity.xenServer:xenServer-agent</include>
        </includes> 
        <binaries>
-           <outputDirectory>server</outputDirectory>
+           <outputDirectory>lib</outputDirectory>
            <unpack>false</unpack>
            <dependencySets>
                <dependencySet>
-                   <excludes>
-                       <exclude>xml-apis*</exclude>
-                   </excludes>
                     <includes>
                          <include>*</include>
                     </includes>

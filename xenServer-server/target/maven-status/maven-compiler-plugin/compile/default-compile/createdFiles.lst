@@ -79,7 +79,6 @@ com\xensource\xenapi\Types$OnCrashBehaviour.class
 com\xensource\xenapi\Types$VmppArchiveMoreFrequentThanBackup.class
 com\xensource\xenapi\Types$DeviceNotAttached.class
 com\xensource\xenapi\Types$XenAPIException.class
-com\spawtz\teamcity\xenServer\XenServerCloudInstance$1.class
 com\xensource\xenapi\Types$TaskStatusType.class
 com\xensource\xenapi\Types.class
 com\xensource\xenapi\Types$PifCannotBondCrossHost.class

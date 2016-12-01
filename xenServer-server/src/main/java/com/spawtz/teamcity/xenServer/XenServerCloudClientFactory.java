@@ -6,6 +6,7 @@ import com.xensource.xenapi.Session;
 import com.xensource.xenapi.VM;
 import jetbrains.buildServer.clouds.*;
 import jetbrains.buildServer.serverSide.AgentDescription;
+import jetbrains.buildServer.serverSide.BuildAgentManager;
 import jetbrains.buildServer.serverSide.InvalidProperty;
 import jetbrains.buildServer.serverSide.PropertiesProcessor;
 import jetbrains.buildServer.web.openapi.PluginDescriptor;
@@ -25,10 +26,12 @@ import java.util.*;
 public class XenServerCloudClientFactory implements CloudClientFactory {
     @NotNull
     private final String cloudProfileSettings;
+    private BuildAgentManager _buildAgentManager;
 
-    XenServerCloudClientFactory(@NotNull final CloudRegistrar cloudRegistrar, @NotNull final PluginDescriptor pluginDescriptor) {
+    XenServerCloudClientFactory(@NotNull final CloudRegistrar cloudRegistrar, @NotNull final PluginDescriptor pluginDescriptor, @NotNull final BuildAgentManager buildAgentManager) {
         cloudProfileSettings = pluginDescriptor.getPluginResourcesPath("profile-settings.jsp");
         cloudRegistrar.registerCloudFactory(this);
+        _buildAgentManager = buildAgentManager;
     }
 
     @NotNull
@@ -106,14 +109,14 @@ public class XenServerCloudClientFactory implements CloudClientFactory {
 
     @Override
     public boolean canBeAgentOfType(@NotNull AgentDescription agentDescription) {
-        return false;
+        return true;
     }
 
     @NotNull
     @Override
     public CloudClientEx createNewClient(@NotNull CloudState cloudState, @NotNull CloudClientParameters cloudClientParameters) {
         try {
-            return new XenServerCloudClientEx(cloudClientParameters);
+            return new XenServerCloudClientEx(cloudClientParameters, _buildAgentManager);
         }
         catch(Exception ex){
             throw new RuntimeException(ex);

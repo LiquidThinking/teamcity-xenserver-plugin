@@ -6,25 +6,15 @@
     <groupId>com.spawtz.teamcity.xenServer</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>xenServer-server</artifactId>
+  <artifactId>xenServer-agent</artifactId>
   <packaging>jar</packaging>
   <dependencies>
-
     <dependency>
       <groupId>org.jetbrains.teamcity</groupId>
-      <artifactId>server-api</artifactId>
+      <artifactId>agent-api</artifactId>
       <version>${teamcity-version}</version>
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.jetbrains.teamcity</groupId>
-      <artifactId>server-web-api</artifactId>
-      <version>${teamcity-version}</version>
-      <type>war</type>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.jetbrains.teamcity</groupId>
       <artifactId>tests-support</artifactId>
@@ -32,21 +22,21 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>jetbrains.buildServer.clouds</groupId>
+      <groupId>org.jetbrains.teamcity</groupId>
       <artifactId>cloud-shared</artifactId>
       <version>${teamcity-version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>jetbrains.buildServer.clouds</groupId>
-      <artifactId>cloud-interface</artifactId>
+      <groupId>org.jetbrains.teamcity.internal</groupId>
+      <artifactId>agent</artifactId>
       <version>${teamcity-version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlrpc</groupId>
-      <artifactId>xmlrpc-client</artifactId>
-      <version>3.1.3</version>
+      <groupId>jetbrains.buildServer.clouds</groupId>
+      <artifactId>cloud-shared</artifactId>
+      <version>RELEASE</version>
     </dependency>
   </dependencies>
 </project>
