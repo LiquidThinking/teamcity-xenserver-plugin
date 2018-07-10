@@ -4,16 +4,8 @@ import com.xensource.xenapi.*;
 import jetbrains.buildServer.agentServer.Agent;
 import jetbrains.buildServer.clouds.*;
 import jetbrains.buildServer.serverSide.AgentDescription;
-import jetbrains.buildServer.serverSide.BuildAgentEx;
 import jetbrains.buildServer.serverSide.BuildAgentManager;
 import jetbrains.buildServer.serverSide.SBuildAgent;
-import jetbrains.buildServer.serverSide.agentPools.AgentPool;
-import jetbrains.buildServer.serverSide.agentPools.AgentPoolAdapter;
-import jetbrains.buildServer.serverSide.agentPools.AgentPoolManager;
-import jetbrains.buildServer.serverSide.impl.agent.RegisteredAgent;
-import jetbrains.buildServer.serverSide.impl.audit.finders.AgentFinder;
-import jetbrains.buildServer.serverSide.impl.auth.SecuredBuildAgent;
-import jetbrains.buildServer.serverSide.impl.beans.AgentContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,7 +89,8 @@ public class XenServerCloudClientEx implements CloudClientEx {
         }
         XenServerCloudInstance instance = (XenServerCloudInstance)cloudInstance;
         String agentName = "buildagent_" + instance.getNetworkIdentity();
-        BuildAgentEx agent = _agentFinder.findAgentByName(agentName, false);
+        SBuildAgent agent = _agentFinder.findAgentByName(agentName, false);
+        assert agent != null;
         agent.setAuthorized(false, null, "");
 
         instance.stop();
@@ -165,6 +158,7 @@ public class XenServerCloudClientEx implements CloudClientEx {
     @NotNull
     @Override
     public Collection<? extends CloudImage> getImages() throws CloudException {
+        LinkedList<CloudImage> result = new LinkedList<CloudImage>();
         try {
             HostnameVerifier hv = new HostnameVerifier()
             {
@@ -192,12 +186,10 @@ public class XenServerCloudClientEx implements CloudClientEx {
             }
             Connection connection = new Connection(new URL("https://" + _parameters.getParameter("clouds.xenserver.server")));
             Session.loginWithPassword(connection, _parameters.getParameter("clouds.xenserver.userName"), _parameters.getParameter("clouds.xenserver.password"), APIVersion.latest().toString());
-            LinkedList<CloudImage> result = new LinkedList<CloudImage>();
+
             result.add(new XenServerCloudImage(connection, VM.getByUuid(connection, _parameters.getParameter("clouds.xenserver.template"))));
-            return result;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        } catch (Exception ignored) {}
+        return result;
     }
 
     @Nullable
