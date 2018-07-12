@@ -84,8 +84,9 @@ public class XenServerCloudClientEx implements CloudClientEx {
             PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("D:\\agent.txt", true)));
             out.println("stopping instance "+ cloudInstance.getImageId());
             out.close();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             //exception handling left as an exercise for the reader
+            //thank you for the opportunity, but i'm afraid I must kindly decline
         }
         XenServerCloudInstance instance = (XenServerCloudInstance)cloudInstance;
         String agentName = "buildagent_" + instance.getNetworkIdentity();
