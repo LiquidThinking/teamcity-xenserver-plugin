@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -256,32 +256,32 @@ public class VIF extends XenAPIObject {
         public Set<String> ipv6Allowed;
         /**
          * Determines whether IPv4 addresses are configured on the VIF
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Types.VifIpv4ConfigurationMode ipv4ConfigurationMode;
         /**
          * IPv4 addresses in CIDR format
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Set<String> ipv4Addresses;
         /**
          * IPv4 gateway (the empty string means that no gateway is set)
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public String ipv4Gateway;
         /**
          * Determines whether IPv6 addresses are configured on the VIF
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Types.VifIpv6ConfigurationMode ipv6ConfigurationMode;
         /**
          * IPv6 addresses in CIDR format
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Set<String> ipv6Addresses;
         /**
          * IPv6 gateway (the empty string means that no gateway is set)
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public String ipv6Gateway;
     }
@@ -777,7 +777,7 @@ public class VIF extends XenAPIObject {
 
     /**
      * Get the ipv4_configuration_mode field of the given VIF.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -795,7 +795,7 @@ public class VIF extends XenAPIObject {
 
     /**
      * Get the ipv4_addresses field of the given VIF.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -813,7 +813,7 @@ public class VIF extends XenAPIObject {
 
     /**
      * Get the ipv4_gateway field of the given VIF.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -831,7 +831,7 @@ public class VIF extends XenAPIObject {
 
     /**
      * Get the ipv6_configuration_mode field of the given VIF.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -849,7 +849,7 @@ public class VIF extends XenAPIObject {
 
     /**
      * Get the ipv6_addresses field of the given VIF.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -867,7 +867,7 @@ public class VIF extends XenAPIObject {
 
     /**
      * Get the ipv6_gateway field of the given VIF.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -1102,6 +1102,42 @@ public class VIF extends XenAPIObject {
         String method_call = "VIF.unplug_force";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Move the specified VIF to the specified network, even while the VM is running
+     * First published in XenServer 7.1.
+     *
+     * @param network The network to move it to
+     * @return Task
+     */
+    public Task moveAsync(Connection c, Network network) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.VIF.move";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(network)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Move the specified VIF to the specified network, even while the VM is running
+     * First published in XenServer 7.1.
+     *
+     * @param network The network to move it to
+     */
+    public void move(Connection c, Network network) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VIF.move";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(network)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }
@@ -1360,7 +1396,7 @@ public class VIF extends XenAPIObject {
 
     /**
      * Configure IPv4 settings for this virtual interface
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param mode Whether to use static or no IPv4 assignment
      * @param address The IPv4 address in <addr>/<prefix length> format (for static mode only)
@@ -1381,7 +1417,7 @@ public class VIF extends XenAPIObject {
 
     /**
      * Configure IPv4 settings for this virtual interface
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param mode Whether to use static or no IPv4 assignment
      * @param address The IPv4 address in <addr>/<prefix length> format (for static mode only)
@@ -1400,7 +1436,7 @@ public class VIF extends XenAPIObject {
 
     /**
      * Configure IPv6 settings for this virtual interface
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param mode Whether to use static or no IPv6 assignment
      * @param address The IPv6 address in <addr>/<prefix length> format (for static mode only)
@@ -1421,7 +1457,7 @@ public class VIF extends XenAPIObject {
 
     /**
      * Configure IPv6 settings for this virtual interface
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param mode Whether to use static or no IPv6 assignment
      * @param address The IPv6 address in <addr>/<prefix length> format (for static mode only)

@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -237,12 +237,12 @@ public class SR extends XenAPIObject {
         public DRTask introducedBy;
         /**
          * True if the SR is using aggregated local storage
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Boolean clustered;
         /**
          * True if this is the SR that contains the Tools ISO VDIs
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Boolean isToolsSr;
     }
@@ -647,7 +647,7 @@ public class SR extends XenAPIObject {
 
     /**
      * Get the clustered field of the given SR.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -665,7 +665,7 @@ public class SR extends XenAPIObject {
 
     /**
      * Get the is_tools_sr field of the given SR.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -1353,6 +1353,50 @@ public class SR extends XenAPIObject {
     }
 
     /**
+     * Perform a backend-specific scan, using the given device_config.  If the device_config is complete, then this will return a list of the SRs present of this type on the device, if any.  If the device_config is partial, then a backend-specific scan will be performed, returning results that will guide the user in improving the device_config.
+     * Experimental. First published in Unreleased.
+     *
+     * @param host The host to create/make the SR on
+     * @param deviceConfig The device config string that will be passed to backend SR driver
+     * @param type The type of the SR; used to specify the SR backend driver to use
+     * @param smConfig Storage backend specific configuration options
+     * @return Task
+     */
+    public static Task probeExtAsync(Connection c, Host host, Map<String, String> deviceConfig, String type, Map<String, String> smConfig) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.SR.probe_ext";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(host), Marshalling.toXMLRPC(deviceConfig), Marshalling.toXMLRPC(type), Marshalling.toXMLRPC(smConfig)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Perform a backend-specific scan, using the given device_config.  If the device_config is complete, then this will return a list of the SRs present of this type on the device, if any.  If the device_config is partial, then a backend-specific scan will be performed, returning results that will guide the user in improving the device_config.
+     * Experimental. First published in Unreleased.
+     *
+     * @param host The host to create/make the SR on
+     * @param deviceConfig The device config string that will be passed to backend SR driver
+     * @param type The type of the SR; used to specify the SR backend driver to use
+     * @param smConfig Storage backend specific configuration options
+     * @return A set of records containing the scan results.
+     */
+    public static Set<ProbeResult.Record> probeExt(Connection c, Host host, Map<String, String> deviceConfig, String type, Map<String, String> smConfig) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "SR.probe_ext";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(host), Marshalling.toXMLRPC(deviceConfig), Marshalling.toXMLRPC(type), Marshalling.toXMLRPC(smConfig)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfProbeResultRecord(result);
+    }
+
+    /**
      * Sets the shared flag on the SR
      * First published in XenServer 4.0.
      *
@@ -1731,7 +1775,7 @@ public class SR extends XenAPIObject {
 
     /**
      * 
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return A set of data sources
      */
@@ -1749,7 +1793,7 @@ public class SR extends XenAPIObject {
 
     /**
      * Start recording the specified data source
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param dataSource The data source to record
      */
@@ -1766,7 +1810,7 @@ public class SR extends XenAPIObject {
 
     /**
      * Query the latest value of the specified data source
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param dataSource The data source to query
      * @return The latest value, averaged over the last 5 seconds
@@ -1785,7 +1829,7 @@ public class SR extends XenAPIObject {
 
     /**
      * Forget the recorded statistics related to the specified data source
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param dataSource The data source whose archives are to be forgotten
      */

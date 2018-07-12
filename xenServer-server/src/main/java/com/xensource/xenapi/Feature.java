@@ -46,12 +46,12 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * A placeholder for a binary blob
- * First published in XenServer 5.0.
+ * A new piece of functionality
+ * First published in XenServer 7.2.
  *
  * @author Citrix Systems, Inc.
  */
-public class Blob extends XenAPIObject {
+public class Feature extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +61,7 @@ public class Blob extends XenAPIObject {
     /**
      * For internal use only.
      */
-    Blob(String ref) {
+    Feature(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +73,14 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * If obj is a Blob, compares XenAPI references for equality.
+     * If obj is a Feature, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof Blob)
+        if (obj != null && obj instanceof Feature)
         {
-            Blob other = (Blob) obj;
+            Feature other = (Feature) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,7 +95,7 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a Blob
+     * Represents all the fields in a Feature
      */
     public static class Record implements Types.Record {
         public String toString() {
@@ -104,25 +104,25 @@ public class Blob extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "uuid", this.uuid);
             print.printf("%1$20s: %2$s\n", "nameLabel", this.nameLabel);
             print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
-            print.printf("%1$20s: %2$s\n", "size", this.size);
-            print.printf("%1$20s: %2$s\n", "_public", this._public);
-            print.printf("%1$20s: %2$s\n", "lastUpdated", this.lastUpdated);
-            print.printf("%1$20s: %2$s\n", "mimeType", this.mimeType);
+            print.printf("%1$20s: %2$s\n", "enabled", this.enabled);
+            print.printf("%1$20s: %2$s\n", "experimental", this.experimental);
+            print.printf("%1$20s: %2$s\n", "version", this.version);
+            print.printf("%1$20s: %2$s\n", "host", this.host);
             return writer.toString();
         }
 
         /**
-         * Convert a blob.Record to a Map
+         * Convert a Feature.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("uuid", this.uuid == null ? "" : this.uuid);
             map.put("name_label", this.nameLabel == null ? "" : this.nameLabel);
             map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
-            map.put("size", this.size == null ? 0 : this.size);
-            map.put("public", this._public == null ? false : this._public);
-            map.put("last_updated", this.lastUpdated == null ? new Date(0) : this.lastUpdated);
-            map.put("mime_type", this.mimeType == null ? "" : this.mimeType);
+            map.put("enabled", this.enabled == null ? false : this.enabled);
+            map.put("experimental", this.experimental == null ? false : this.experimental);
+            map.put("version", this.version == null ? "" : this.version);
+            map.put("host", this.host == null ? new Host("OpaqueRef:NULL") : this.host);
             return map;
         }
 
@@ -139,83 +139,82 @@ public class Blob extends XenAPIObject {
          */
         public String nameDescription;
         /**
-         * Size of the binary data, in bytes
+         * Indicates whether the feature is enabled
          */
-        public Long size;
+        public Boolean enabled;
         /**
-         * True if the blob is publicly accessible
-         * First published in XenServer 6.1.
+         * Indicates whether the feature is experimental (as opposed to stable and fully supported)
          */
-        public Boolean _public;
+        public Boolean experimental;
         /**
-         * Time at which the data in the blob was last updated
+         * The version of this feature
          */
-        public Date lastUpdated;
+        public String version;
         /**
-         * The mime type associated with this object. Defaults to 'application/octet-stream' if the empty string is supplied
+         * The host where this feature is available
          */
-        public String mimeType;
+        public Host host;
     }
 
     /**
-     * Get a record containing the current state of the given blob.
-     * First published in XenServer 5.0.
+     * Get a record containing the current state of the given Feature.
+     * First published in XenServer 7.2.
      *
      * @return all fields from the object
      */
-    public Blob.Record getRecord(Connection c) throws
+    public Feature.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_record";
+        String method_call = "Feature.get_record";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toBlobRecord(result);
+            return Types.toFeatureRecord(result);
     }
 
     /**
-     * Get a reference to the blob instance with the specified UUID.
-     * First published in XenServer 5.0.
+     * Get a reference to the Feature instance with the specified UUID.
+     * First published in XenServer 7.2.
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-    public static Blob getByUuid(Connection c, String uuid) throws
+    public static Feature getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_by_uuid";
+        String method_call = "Feature.get_by_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toBlob(result);
+            return Types.toFeature(result);
     }
 
     /**
-     * Get all the blob instances with the given label.
-     * First published in XenServer 5.0.
+     * Get all the Feature instances with the given label.
+     * First published in XenServer 7.2.
      *
      * @param label label of object to return
      * @return references to objects with matching names
      */
-    public static Set<Blob> getByNameLabel(Connection c, String label) throws
+    public static Set<Feature> getByNameLabel(Connection c, String label) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_by_name_label";
+        String method_call = "Feature.get_by_name_label";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfBlob(result);
+            return Types.toSetOfFeature(result);
     }
 
     /**
-     * Get the uuid field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the uuid field of the given Feature.
+     * First published in XenServer 7.2.
      *
      * @return value of the field
      */
@@ -223,7 +222,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_uuid";
+        String method_call = "Feature.get_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -232,8 +231,8 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Get the name/label field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the name/label field of the given Feature.
+     * First published in XenServer 7.2.
      *
      * @return value of the field
      */
@@ -241,7 +240,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_name_label";
+        String method_call = "Feature.get_name_label";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -250,8 +249,8 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Get the name/description field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the name/description field of the given Feature.
+     * First published in XenServer 7.2.
      *
      * @return value of the field
      */
@@ -259,7 +258,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_name_description";
+        String method_call = "Feature.get_name_description";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -268,34 +267,16 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Get the size field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the enabled field of the given Feature.
+     * First published in XenServer 7.2.
      *
      * @return value of the field
      */
-    public Long getSize(Connection c) throws
+    public Boolean getEnabled(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_size";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toLong(result);
-    }
-
-    /**
-     * Get the public field of the given blob.
-     * First published in XenServer 6.1.
-     *
-     * @return value of the field
-     */
-    public Boolean getPublic(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.get_public";
+        String method_call = "Feature.get_enabled";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -304,34 +285,34 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Get the last_updated field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the experimental field of the given Feature.
+     * First published in XenServer 7.2.
      *
      * @return value of the field
      */
-    public Date getLastUpdated(Connection c) throws
+    public Boolean getExperimental(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_last_updated";
+        String method_call = "Feature.get_experimental";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toDate(result);
+            return Types.toBoolean(result);
     }
 
     /**
-     * Get the mime_type field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the version field of the given Feature.
+     * First published in XenServer 7.2.
      *
      * @return value of the field
      */
-    public String getMimeType(Connection c) throws
+    public String getVersion(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_mime_type";
+        String method_call = "Feature.get_version";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -340,145 +321,57 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Set the name/label field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the host field of the given Feature.
+     * First published in XenServer 7.2.
      *
-     * @param label New value to set
+     * @return value of the field
      */
-    public void setNameLabel(Connection c, String label) throws
+    public Host getHost(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.set_name_label";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(label)};
-        Map response = c.dispatch(method_call, method_params);
-        return;
-    }
-
-    /**
-     * Set the name/description field of the given blob.
-     * First published in XenServer 5.0.
-     *
-     * @param description New value to set
-     */
-    public void setNameDescription(Connection c, String description) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.set_name_description";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(description)};
-        Map response = c.dispatch(method_call, method_params);
-        return;
-    }
-
-    /**
-     * Set the public field of the given blob.
-     * First published in XenServer 6.1.
-     *
-     * @param _public New value to set
-     */
-    public void setPublic(Connection c, Boolean _public) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.set_public";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(_public)};
-        Map response = c.dispatch(method_call, method_params);
-        return;
-    }
-
-    /**
-     * Create a placeholder for a binary blob
-     * First published in XenServer 5.0.
-     *
-     * @param mimeType The mime-type of the blob. Defaults to 'application/octet-stream' if the empty string is supplied
-     * @return The reference to the created blob
-     */
-    public static Blob create(Connection c, String mimeType) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.create";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(mimeType)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toBlob(result);
-    }
-
-    /**
-     * Create a placeholder for a binary blob
-     * First published in XenServer 5.0.
-     *
-     * @param mimeType The mime-type of the blob. Defaults to 'application/octet-stream' if the empty string is supplied
-     * @param _public True if the blob should be publicly available First published in XenServer 6.1.
-     * @return The reference to the created blob
-     */
-    public static Blob create(Connection c, String mimeType, Boolean _public) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.create";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(mimeType), Marshalling.toXMLRPC(_public)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toBlob(result);
-    }
-
-    /**
-     * 
-     * First published in XenServer 5.0.
-     *
-     */
-    public void destroy(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.destroy";
+        String method_call = "Feature.get_host";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
-        return;
+        Object result = response.get("Value");
+            return Types.toHost(result);
     }
 
     /**
-     * Return a list of all the blobs known to the system.
-     * First published in XenServer 5.0.
+     * Return a list of all the Features known to the system.
+     * First published in XenServer 7.2.
      *
      * @return references to all objects
      */
-    public static Set<Blob> getAll(Connection c) throws
+    public static Set<Feature> getAll(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_all";
+        String method_call = "Feature.get_all";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfBlob(result);
+            return Types.toSetOfFeature(result);
     }
 
     /**
-     * Return a map of blob references to blob records for all blobs known to the system.
-     * First published in XenServer 5.0.
+     * Return a map of Feature references to Feature records for all Features known to the system.
+     * First published in XenServer 7.2.
      *
      * @return records of all objects
      */
-    public static Map<Blob, Blob.Record> getAllRecords(Connection c) throws
+    public static Map<Feature, Feature.Record> getAllRecords(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_all_records";
+        String method_call = "Feature.get_all_records";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toMapOfBlobBlobRecord(result);
+            return Types.toMapOfFeatureFeatureRecord(result);
     }
 
 }

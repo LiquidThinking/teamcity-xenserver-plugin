@@ -46,12 +46,11 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * Data sources for logging in RRDs
- * First published in XenServer 5.0.
+ * A set of high-level properties associated with an SR.
  *
  * @author Citrix Systems, Inc.
  */
-public class DataSource extends XenAPIObject {
+public class SrStat extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +60,7 @@ public class DataSource extends XenAPIObject {
     /**
      * For internal use only.
      */
-    DataSource(String ref) {
+    SrStat(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +72,14 @@ public class DataSource extends XenAPIObject {
     }
 
     /**
-     * If obj is a DataSource, compares XenAPI references for equality.
+     * If obj is a SrStat, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof DataSource)
+        if (obj != null && obj instanceof SrStat)
         {
-            DataSource other = (DataSource) obj;
+            SrStat other = (SrStat) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,71 +94,72 @@ public class DataSource extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a DataSource
+     * Represents all the fields in a SrStat
      */
     public static class Record implements Types.Record {
         public String toString() {
             StringWriter writer = new StringWriter();
             PrintWriter print = new PrintWriter(writer);
+            print.printf("%1$20s: %2$s\n", "uuid", this.uuid);
             print.printf("%1$20s: %2$s\n", "nameLabel", this.nameLabel);
             print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
-            print.printf("%1$20s: %2$s\n", "enabled", this.enabled);
-            print.printf("%1$20s: %2$s\n", "standard", this.standard);
-            print.printf("%1$20s: %2$s\n", "units", this.units);
-            print.printf("%1$20s: %2$s\n", "min", this.min);
-            print.printf("%1$20s: %2$s\n", "max", this.max);
-            print.printf("%1$20s: %2$s\n", "value", this.value);
+            print.printf("%1$20s: %2$s\n", "freeSpace", this.freeSpace);
+            print.printf("%1$20s: %2$s\n", "totalSpace", this.totalSpace);
+            print.printf("%1$20s: %2$s\n", "clustered", this.clustered);
+            print.printf("%1$20s: %2$s\n", "health", this.health);
             return writer.toString();
         }
 
         /**
-         * Convert a data_source.Record to a Map
+         * Convert a sr_stat.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
+            map.put("uuid", this.uuid == null ? null : this.uuid);
             map.put("name_label", this.nameLabel == null ? "" : this.nameLabel);
             map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
-            map.put("enabled", this.enabled == null ? false : this.enabled);
-            map.put("standard", this.standard == null ? false : this.standard);
-            map.put("units", this.units == null ? "" : this.units);
-            map.put("min", this.min == null ? 0.0 : this.min);
-            map.put("max", this.max == null ? 0.0 : this.max);
-            map.put("value", this.value == null ? 0.0 : this.value);
+            map.put("free_space", this.freeSpace == null ? 0 : this.freeSpace);
+            map.put("total_space", this.totalSpace == null ? 0 : this.totalSpace);
+            map.put("clustered", this.clustered == null ? false : this.clustered);
+            map.put("health", this.health == null ? Types.SrHealth.UNRECOGNIZED : this.health);
             return map;
         }
 
         /**
-         * a human-readable name
+         * Uuid that uniquely identifies this SR, if one is available.
+         * Experimental. First published in Unreleased.
+         */
+        public String uuid;
+        /**
+         * Short, human-readable label for the SR.
+         * Experimental. First published in Unreleased.
          */
         public String nameLabel;
         /**
-         * a notes field containing human-readable description
+         * Longer, human-readable description of the SR. Descriptions are generally only displayed by clients when the user is examining SRs in detail.
+         * Experimental. First published in Unreleased.
          */
         public String nameDescription;
         /**
-         * true if the data source is being logged
+         * Number of bytes free on the backing storage (in bytes)
+         * Experimental. First published in Unreleased.
          */
-        public Boolean enabled;
+        public Long freeSpace;
         /**
-         * true if the data source is enabled by default. Non-default data sources cannot be disabled
+         * Total physical size of the backing storage (in bytes)
+         * Experimental. First published in Unreleased.
          */
-        public Boolean standard;
+        public Long totalSpace;
         /**
-         * the units of the value
+         * Indicates whether the SR uses clustered local storage.
+         * Experimental. First published in Unreleased.
          */
-        public String units;
+        public Boolean clustered;
         /**
-         * the minimum value of the data source
+         * The health status of the SR.
+         * Experimental. First published in Unreleased.
          */
-        public Double min;
-        /**
-         * the maximum value of the data source
-         */
-        public Double max;
-        /**
-         * current value of the data source
-         */
-        public Double value;
+        public Types.SrHealth health;
     }
 
 }

@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -215,7 +215,7 @@ public class Task extends XenAPIObject {
         public Set<Task> subtasks;
         /**
          * Function call trace for debugging.
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public String backtrace;
     }
@@ -566,7 +566,7 @@ public class Task extends XenAPIObject {
 
     /**
      * Get the backtrace field of the given task.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -702,6 +702,23 @@ public class Task extends XenAPIObject {
         String method_call = "task.cancel";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Set the task status
+     * First published in XenServer 7.2.
+     *
+     * @param value task status value to be set
+     */
+    public void setStatus(Connection c, Types.TaskStatusType value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "task.set_status";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }

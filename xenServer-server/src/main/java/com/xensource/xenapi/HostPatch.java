@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -179,10 +179,11 @@ public class HostPatch extends XenAPIObject {
     /**
      * Get a record containing the current state of the given host_patch.
      * First published in XenServer 4.0.
+     * @deprecated
      *
      * @return all fields from the object
      */
-    public HostPatch.Record getRecord(Connection c) throws
+   @Deprecated public HostPatch.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -197,11 +198,12 @@ public class HostPatch extends XenAPIObject {
     /**
      * Get a reference to the host_patch instance with the specified UUID.
      * First published in XenServer 4.0.
+     * @deprecated
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-    public static HostPatch getByUuid(Connection c, String uuid) throws
+   @Deprecated public static HostPatch getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -216,11 +218,12 @@ public class HostPatch extends XenAPIObject {
     /**
      * Get all the host_patch instances with the given label.
      * First published in XenServer 4.0.
+     * @deprecated
      *
      * @param label label of object to return
      * @return references to objects with matching names
      */
-    public static Set<HostPatch> getByNameLabel(Connection c, String label) throws
+   @Deprecated public static Set<HostPatch> getByNameLabel(Connection c, String label) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -541,10 +544,11 @@ public class HostPatch extends XenAPIObject {
     /**
      * Return a list of all the host_patchs known to the system.
      * First published in XenServer 4.0.
+     * @deprecated
      *
      * @return references to all objects
      */
-    public static Set<HostPatch> getAll(Connection c) throws
+   @Deprecated public static Set<HostPatch> getAll(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {

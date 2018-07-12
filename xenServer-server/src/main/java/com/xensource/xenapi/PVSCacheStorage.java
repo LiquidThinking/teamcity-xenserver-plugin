@@ -46,12 +46,12 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * A set of permissions associated with a subject
- * First published in XenServer 5.6.
+ * Describes the storage that is available to a PVS site for caching purposes
+ * First published in XenServer 7.1.
  *
  * @author Citrix Systems, Inc.
  */
-public class Role extends XenAPIObject {
+public class PVSCacheStorage extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +61,7 @@ public class Role extends XenAPIObject {
     /**
      * For internal use only.
      */
-    Role(String ref) {
+    PVSCacheStorage(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +73,14 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * If obj is a Role, compares XenAPI references for equality.
+     * If obj is a PVSCacheStorage, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof Role)
+        if (obj != null && obj instanceof PVSCacheStorage)
         {
-            Role other = (Role) obj;
+            PVSCacheStorage other = (PVSCacheStorage) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,28 +95,32 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a Role
+     * Represents all the fields in a PVSCacheStorage
      */
     public static class Record implements Types.Record {
         public String toString() {
             StringWriter writer = new StringWriter();
             PrintWriter print = new PrintWriter(writer);
             print.printf("%1$20s: %2$s\n", "uuid", this.uuid);
-            print.printf("%1$20s: %2$s\n", "nameLabel", this.nameLabel);
-            print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
-            print.printf("%1$20s: %2$s\n", "subroles", this.subroles);
+            print.printf("%1$20s: %2$s\n", "host", this.host);
+            print.printf("%1$20s: %2$s\n", "SR", this.SR);
+            print.printf("%1$20s: %2$s\n", "site", this.site);
+            print.printf("%1$20s: %2$s\n", "size", this.size);
+            print.printf("%1$20s: %2$s\n", "VDI", this.VDI);
             return writer.toString();
         }
 
         /**
-         * Convert a role.Record to a Map
+         * Convert a PVS_cache_storage.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("uuid", this.uuid == null ? "" : this.uuid);
-            map.put("name_label", this.nameLabel == null ? "" : this.nameLabel);
-            map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
-            map.put("subroles", this.subroles == null ? new LinkedHashSet<Role>() : this.subroles);
+            map.put("host", this.host == null ? new Host("OpaqueRef:NULL") : this.host);
+            map.put("SR", this.SR == null ? new SR("OpaqueRef:NULL") : this.SR);
+            map.put("site", this.site == null ? new PVSSite("OpaqueRef:NULL") : this.site);
+            map.put("size", this.size == null ? 0 : this.size);
+            map.put("VDI", this.VDI == null ? new VDI("OpaqueRef:NULL") : this.VDI);
             return map;
         }
 
@@ -125,78 +129,141 @@ public class Role extends XenAPIObject {
          */
         public String uuid;
         /**
-         * a short user-friendly name for the role
+         * The host on which this object defines PVS cache storage
          */
-        public String nameLabel;
+        public Host host;
         /**
-         * what this role is for
+         * SR providing storage for the PVS cache
          */
-        public String nameDescription;
+        public SR SR;
         /**
-         * a list of pointers to other roles or permissions
+         * The PVS_site for which this object defines the storage
          */
-        public Set<Role> subroles;
+        public PVSSite site;
+        /**
+         * The size of the cache VDI (in bytes)
+         */
+        public Long size;
+        /**
+         * The VDI used for caching
+         */
+        public VDI VDI;
     }
 
     /**
-     * Get a record containing the current state of the given role.
-     * First published in XenServer 5.6.
+     * Get a record containing the current state of the given PVS_cache_storage.
+     * First published in XenServer 7.1.
      *
      * @return all fields from the object
      */
-    public Role.Record getRecord(Connection c) throws
+    public PVSCacheStorage.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_record";
+        String method_call = "PVS_cache_storage.get_record";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toRoleRecord(result);
+            return Types.toPVSCacheStorageRecord(result);
     }
 
     /**
-     * Get a reference to the role instance with the specified UUID.
-     * First published in XenServer 5.6.
+     * Get a reference to the PVS_cache_storage instance with the specified UUID.
+     * First published in XenServer 7.1.
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-    public static Role getByUuid(Connection c, String uuid) throws
+    public static PVSCacheStorage getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_by_uuid";
+        String method_call = "PVS_cache_storage.get_by_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toRole(result);
+            return Types.toPVSCacheStorage(result);
     }
 
     /**
-     * Get all the role instances with the given label.
-     * First published in XenServer 5.6.
+     * Create a new PVS_cache_storage instance, and return its handle.
+     * First published in XenServer 7.1.
      *
-     * @param label label of object to return
-     * @return references to objects with matching names
+     * @param record All constructor arguments
+     * @return Task
      */
-    public static Set<Role> getByNameLabel(Connection c, String label) throws
+    public static Task createAsync(Connection c, PVSCacheStorage.Record record) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_by_name_label";
+        String method_call = "Async.PVS_cache_storage.create";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
+        Map<String, Object> record_map = record.toMap();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(record_map)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+        return Types.toTask(result);
     }
 
     /**
-     * Get the uuid field of the given role.
-     * First published in XenServer 5.6.
+     * Create a new PVS_cache_storage instance, and return its handle.
+     * First published in XenServer 7.1.
+     *
+     * @param record All constructor arguments
+     * @return reference to the newly created object
+     */
+    public static PVSCacheStorage create(Connection c, PVSCacheStorage.Record record) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PVS_cache_storage.create";
+        String session = c.getSessionReference();
+        Map<String, Object> record_map = record.toMap();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(record_map)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toPVSCacheStorage(result);
+    }
+
+    /**
+     * Destroy the specified PVS_cache_storage instance.
+     * First published in XenServer 7.1.
+     *
+     * @return Task
+     */
+    public Task destroyAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.PVS_cache_storage.destroy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Destroy the specified PVS_cache_storage instance.
+     * First published in XenServer 7.1.
+     *
+     */
+    public void destroy(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PVS_cache_storage.destroy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Get the uuid field of the given PVS_cache_storage.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
@@ -204,7 +271,7 @@ public class Role extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_uuid";
+        String method_call = "PVS_cache_storage.get_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -213,166 +280,129 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * Get the name/label field of the given role.
-     * First published in XenServer 5.6.
+     * Get the host field of the given PVS_cache_storage.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
-    public String getNameLabel(Connection c) throws
+    public Host getHost(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_name_label";
+        String method_call = "PVS_cache_storage.get_host";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toString(result);
+            return Types.toHost(result);
     }
 
     /**
-     * Get the name/description field of the given role.
-     * First published in XenServer 5.6.
+     * Get the SR field of the given PVS_cache_storage.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
-    public String getNameDescription(Connection c) throws
+    public SR getSR(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_name_description";
+        String method_call = "PVS_cache_storage.get_SR";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toString(result);
+            return Types.toSR(result);
     }
 
     /**
-     * Get the subroles field of the given role.
-     * First published in XenServer 5.6.
+     * Get the site field of the given PVS_cache_storage.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
-    public Set<Role> getSubroles(Connection c) throws
+    public PVSSite getSite(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_subroles";
+        String method_call = "PVS_cache_storage.get_site";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+            return Types.toPVSSite(result);
     }
 
     /**
-     * This call returns a list of permissions given a role
-     * First published in XenServer 5.6.
+     * Get the size field of the given PVS_cache_storage.
+     * First published in XenServer 7.1.
      *
-     * @return a list of permissions
+     * @return value of the field
      */
-    public Set<Role> getPermissions(Connection c) throws
+    public Long getSize(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_permissions";
+        String method_call = "PVS_cache_storage.get_size";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+            return Types.toLong(result);
     }
 
     /**
-     * This call returns a list of permission names given a role
-     * First published in XenServer 5.6.
+     * Get the VDI field of the given PVS_cache_storage.
+     * First published in XenServer 7.1.
      *
-     * @return a list of permission names
+     * @return value of the field
      */
-    public Set<String> getPermissionsNameLabel(Connection c) throws
+    public VDI getVDI(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_permissions_name_label";
+        String method_call = "PVS_cache_storage.get_VDI";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfString(result);
+            return Types.toVDI(result);
     }
 
     /**
-     * This call returns a list of roles given a permission
-     * First published in XenServer 5.6.
-     *
-     * @return a list of references to roles
-     */
-    public Set<Role> getByPermission(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "role.get_by_permission";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfRole(result);
-    }
-
-    /**
-     * This call returns a list of roles given a permission name
-     * First published in XenServer 5.6.
-     *
-     * @param label The short friendly name of the role
-     * @return a list of references to roles
-     */
-    public static Set<Role> getByPermissionNameLabel(Connection c, String label) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "role.get_by_permission_name_label";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfRole(result);
-    }
-
-    /**
-     * Return a list of all the roles known to the system.
-     * First published in XenServer 5.6.
+     * Return a list of all the PVS_cache_storages known to the system.
+     * First published in XenServer 7.1.
      *
      * @return references to all objects
      */
-    public static Set<Role> getAll(Connection c) throws
+    public static Set<PVSCacheStorage> getAll(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_all";
+        String method_call = "PVS_cache_storage.get_all";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+            return Types.toSetOfPVSCacheStorage(result);
     }
 
     /**
-     * Return a map of role references to role records for all roles known to the system.
-     * First published in XenServer 5.6.
+     * Return a map of PVS_cache_storage references to PVS_cache_storage records for all PVS_cache_storages known to the system.
+     * First published in XenServer 7.1.
      *
      * @return records of all objects
      */
-    public static Map<Role, Role.Record> getAllRecords(Connection c) throws
+    public static Map<PVSCacheStorage, PVSCacheStorage.Record> getAllRecords(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_all_records";
+        String method_call = "PVS_cache_storage.get_all_records";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toMapOfRoleRoleRecord(result);
+            return Types.toMapOfPVSCacheStoragePVSCacheStorageRecord(result);
     }
 
 }

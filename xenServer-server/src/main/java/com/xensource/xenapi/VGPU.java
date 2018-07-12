@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -109,6 +109,8 @@ public class VGPU extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "otherConfig", this.otherConfig);
             print.printf("%1$20s: %2$s\n", "type", this.type);
             print.printf("%1$20s: %2$s\n", "residentOn", this.residentOn);
+            print.printf("%1$20s: %2$s\n", "scheduledToBeResidentOn", this.scheduledToBeResidentOn);
+            print.printf("%1$20s: %2$s\n", "compatibilityMetadata", this.compatibilityMetadata);
             return writer.toString();
         }
 
@@ -125,6 +127,8 @@ public class VGPU extends XenAPIObject {
             map.put("other_config", this.otherConfig == null ? new HashMap<String, String>() : this.otherConfig);
             map.put("type", this.type == null ? new VGPUType("OpaqueRef:NULL") : this.type);
             map.put("resident_on", this.residentOn == null ? new PGPU("OpaqueRef:NULL") : this.residentOn);
+            map.put("scheduled_to_be_resident_on", this.scheduledToBeResidentOn == null ? new PGPU("OpaqueRef:NULL") : this.scheduledToBeResidentOn);
+            map.put("compatibility_metadata", this.compatibilityMetadata == null ? new HashMap<String, String>() : this.compatibilityMetadata);
             return map;
         }
 
@@ -162,6 +166,16 @@ public class VGPU extends XenAPIObject {
          * First published in XenServer 6.2 SP1 Tech-Preview.
          */
         public PGPU residentOn;
+        /**
+         * The PGPU on which this VGPU is scheduled to run
+         * First published in XenServer 7.0.
+         */
+        public PGPU scheduledToBeResidentOn;
+        /**
+         * VGPU metadata to determine whether a VGPU can migrate between two PGPUs
+         * First published in XenServer 7.3.
+         */
+        public Map<String, String> compatibilityMetadata;
     }
 
     /**
@@ -343,6 +357,42 @@ public class VGPU extends XenAPIObject {
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
             return Types.toPGPU(result);
+    }
+
+    /**
+     * Get the scheduled_to_be_resident_on field of the given VGPU.
+     * First published in XenServer 7.0.
+     *
+     * @return value of the field
+     */
+    public PGPU getScheduledToBeResidentOn(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VGPU.get_scheduled_to_be_resident_on";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toPGPU(result);
+    }
+
+    /**
+     * Get the compatibility_metadata field of the given VGPU.
+     * First published in XenServer 7.3.
+     *
+     * @return value of the field
+     */
+    public Map<String, String> getCompatibilityMetadata(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VGPU.get_compatibility_metadata";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toMapOfStringString(result);
     }
 
     /**

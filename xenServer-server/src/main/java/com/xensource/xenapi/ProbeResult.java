@@ -46,12 +46,11 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * Data sources for logging in RRDs
- * First published in XenServer 5.0.
+ * A set of properties that describe one result element of SR.probe. Result elements and properties can change dynamically based on changes to the the SR.probe input-parameters or the target.
  *
  * @author Citrix Systems, Inc.
  */
-public class DataSource extends XenAPIObject {
+public class ProbeResult extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +60,7 @@ public class DataSource extends XenAPIObject {
     /**
      * For internal use only.
      */
-    DataSource(String ref) {
+    ProbeResult(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +72,14 @@ public class DataSource extends XenAPIObject {
     }
 
     /**
-     * If obj is a DataSource, compares XenAPI references for equality.
+     * If obj is a ProbeResult, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof DataSource)
+        if (obj != null && obj instanceof ProbeResult)
         {
-            DataSource other = (DataSource) obj;
+            ProbeResult other = (ProbeResult) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,71 +94,51 @@ public class DataSource extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a DataSource
+     * Represents all the fields in a ProbeResult
      */
     public static class Record implements Types.Record {
         public String toString() {
             StringWriter writer = new StringWriter();
             PrintWriter print = new PrintWriter(writer);
-            print.printf("%1$20s: %2$s\n", "nameLabel", this.nameLabel);
-            print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
-            print.printf("%1$20s: %2$s\n", "enabled", this.enabled);
-            print.printf("%1$20s: %2$s\n", "standard", this.standard);
-            print.printf("%1$20s: %2$s\n", "units", this.units);
-            print.printf("%1$20s: %2$s\n", "min", this.min);
-            print.printf("%1$20s: %2$s\n", "max", this.max);
-            print.printf("%1$20s: %2$s\n", "value", this.value);
+            print.printf("%1$20s: %2$s\n", "configuration", this.configuration);
+            print.printf("%1$20s: %2$s\n", "complete", this.complete);
+            print.printf("%1$20s: %2$s\n", "sr", this.sr);
+            print.printf("%1$20s: %2$s\n", "extraInfo", this.extraInfo);
             return writer.toString();
         }
 
         /**
-         * Convert a data_source.Record to a Map
+         * Convert a probe_result.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
-            map.put("name_label", this.nameLabel == null ? "" : this.nameLabel);
-            map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
-            map.put("enabled", this.enabled == null ? false : this.enabled);
-            map.put("standard", this.standard == null ? false : this.standard);
-            map.put("units", this.units == null ? "" : this.units);
-            map.put("min", this.min == null ? 0.0 : this.min);
-            map.put("max", this.max == null ? 0.0 : this.max);
-            map.put("value", this.value == null ? 0.0 : this.value);
+            map.put("configuration", this.configuration == null ? new HashMap<String, String>() : this.configuration);
+            map.put("complete", this.complete == null ? false : this.complete);
+            map.put("sr", this.sr == null ? null : this.sr);
+            map.put("extra_info", this.extraInfo == null ? new HashMap<String, String>() : this.extraInfo);
             return map;
         }
 
         /**
-         * a human-readable name
+         * Plugin-specific configuration which describes where and how to locate the storage repository. This may include the physical block device name, a remote NFS server and path or an RBD storage pool.
+         * Experimental. First published in Unreleased.
          */
-        public String nameLabel;
+        public Map<String, String> configuration;
         /**
-         * a notes field containing human-readable description
+         * True if this configuration is complete and can be used to call SR.create. False if it requires further iterative calls to SR.probe, to potentially narrow down on a configuration that can be used.
+         * Experimental. First published in Unreleased.
          */
-        public String nameDescription;
+        public Boolean complete;
         /**
-         * true if the data source is being logged
+         * Existing SR found for this configuration
+         * Experimental. First published in Unreleased.
          */
-        public Boolean enabled;
+        public SrStat.Record sr;
         /**
-         * true if the data source is enabled by default. Non-default data sources cannot be disabled
+         * Additional plugin-specific information about this configuration, that might be of use for an API user. This can for example include the LUN or the WWPN.
+         * Experimental. First published in Unreleased.
          */
-        public Boolean standard;
-        /**
-         * the units of the value
-         */
-        public String units;
-        /**
-         * the minimum value of the data source
-         */
-        public Double min;
-        /**
-         * the maximum value of the data source
-         */
-        public Double max;
-        /**
-         * current value of the data source
-         */
-        public Double value;
+        public Map<String, String> extraInfo;
     }
 
 }

@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -135,6 +135,8 @@ public class Pool extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "guestAgentConfig", this.guestAgentConfig);
             print.printf("%1$20s: %2$s\n", "cpuInfo", this.cpuInfo);
             print.printf("%1$20s: %2$s\n", "policyNoVendorDevice", this.policyNoVendorDevice);
+            print.printf("%1$20s: %2$s\n", "livePatchingDisabled", this.livePatchingDisabled);
+            print.printf("%1$20s: %2$s\n", "igmpSnoopingEnabled", this.igmpSnoopingEnabled);
             return writer.toString();
         }
 
@@ -177,6 +179,8 @@ public class Pool extends XenAPIObject {
             map.put("guest_agent_config", this.guestAgentConfig == null ? new HashMap<String, String>() : this.guestAgentConfig);
             map.put("cpu_info", this.cpuInfo == null ? new HashMap<String, String>() : this.cpuInfo);
             map.put("policy_no_vendor_device", this.policyNoVendorDevice == null ? false : this.policyNoVendorDevice);
+            map.put("live_patching_disabled", this.livePatchingDisabled == null ? false : this.livePatchingDisabled);
+            map.put("igmp_snooping_enabled", this.igmpSnoopingEnabled == null ? false : this.igmpSnoopingEnabled);
             return map;
         }
 
@@ -264,7 +268,7 @@ public class Pool extends XenAPIObject {
         public Map<String, String> guiConfig;
         /**
          * Configuration for the automatic health check feature
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Map<String, String> healthCheckConfig;
         /**
@@ -314,7 +318,7 @@ public class Pool extends XenAPIObject {
         public Set<VDI> metadataVDIs;
         /**
          * The HA cluster stack that is currently in use. Only valid when HA is enabled.
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public String haClusterStack;
         /**
@@ -327,19 +331,29 @@ public class Pool extends XenAPIObject {
         public Map<String, Types.PoolAllowedOperations> currentOperations;
         /**
          * Pool-wide guest agent configuration information
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Map<String, String> guestAgentConfig;
         /**
          * Details about the physical CPUs on the pool
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Map<String, String> cpuInfo;
         /**
          * The pool-wide policy for clients on whether to use the vendor device or not on newly created VMs. This field will also be consulted if the 'has_vendor_device' field is not specified in the VM.create call.
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Boolean policyNoVendorDevice;
+        /**
+         * The pool-wide flag to show if the live patching feauture is disabled or not.
+         * First published in XenServer 7.1.
+         */
+        public Boolean livePatchingDisabled;
+        /**
+         * true if IGMP snooping is enabled in the pool, false otherwise.
+         * First published in XenServer 7.3.
+         */
+        public Boolean igmpSnoopingEnabled;
     }
 
     /**
@@ -705,7 +719,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Get the health_check_config field of the given pool.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -832,10 +846,11 @@ public class Pool extends XenAPIObject {
     /**
      * Get the vswitch_controller field of the given pool.
      * First published in XenServer 5.6.
+     * @deprecated
      *
      * @return value of the field
      */
-    public String getVswitchController(Connection c) throws
+   @Deprecated public String getVswitchController(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -885,7 +900,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Get the ha_cluster_stack field of the given pool.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -939,7 +954,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Get the guest_agent_config field of the given pool.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -957,7 +972,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Get the cpu_info field of the given pool.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -975,7 +990,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Get the policy_no_vendor_device field of the given pool.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -984,6 +999,42 @@ public class Pool extends XenAPIObject {
        XenAPIException,
        XmlRpcException {
         String method_call = "pool.get_policy_no_vendor_device";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
+     * Get the live_patching_disabled field of the given pool.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Boolean getLivePatchingDisabled(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool.get_live_patching_disabled";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
+     * Get the igmp_snooping_enabled field of the given pool.
+     * First published in XenServer 7.3.
+     *
+     * @return value of the field
+     */
+    public Boolean getIgmpSnoopingEnabled(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool.get_igmp_snooping_enabled";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -1250,7 +1301,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Set the health_check_config field of the given pool.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param healthCheckConfig New value to set
      */
@@ -1267,7 +1318,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Add the given key-value pair to the health_check_config field of the given pool.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param key Key to add
      * @param value Value to add
@@ -1285,7 +1336,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Remove the given key and its corresponding value from the health_check_config field of the given pool.  If the key is not in that Map, then do nothing.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param key Key to remove
      */
@@ -1336,7 +1387,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Set the policy_no_vendor_device field of the given pool.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param policyNoVendorDevice New value to set
      */
@@ -1347,6 +1398,23 @@ public class Pool extends XenAPIObject {
         String method_call = "pool.set_policy_no_vendor_device";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(policyNoVendorDevice)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Set the live_patching_disabled field of the given pool.
+     * First published in XenServer 7.1.
+     *
+     * @param livePatchingDisabled New value to set
+     */
+    public void setLivePatchingDisabled(Connection c, Boolean livePatchingDisabled) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool.set_live_patching_disabled";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(livePatchingDisabled)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }
@@ -1580,6 +1648,54 @@ public class Pool extends XenAPIObject {
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
             return Types.toSetOfPIF(result);
+    }
+
+    /**
+     * Reconfigure the management network interface for all Hosts in the Pool
+     * First published in XenServer 7.3.
+     *
+     * @param network The network
+     * @return Task
+     */
+    public static Task managementReconfigureAsync(Connection c, Network network) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.HaIsEnabled,
+       Types.PifNotPresent,
+       Types.CannotPlugBondSlave,
+       Types.PifIncompatiblePrimaryAddressType,
+       Types.PifHasNoNetworkConfiguration,
+       Types.PifHasNoV6NetworkConfiguration {
+        String method_call = "Async.pool.management_reconfigure";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(network)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Reconfigure the management network interface for all Hosts in the Pool
+     * First published in XenServer 7.3.
+     *
+     * @param network The network
+     */
+    public static void managementReconfigure(Connection c, Network network) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.HaIsEnabled,
+       Types.PifNotPresent,
+       Types.CannotPlugBondSlave,
+       Types.PifIncompatiblePrimaryAddressType,
+       Types.PifHasNoNetworkConfiguration,
+       Types.PifHasNoV6NetworkConfiguration {
+        String method_call = "pool.management_reconfigure";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(network)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
     }
 
     /**
@@ -2586,11 +2702,12 @@ public class Pool extends XenAPIObject {
     /**
      * Set the IP address of the vswitch controller.
      * First published in XenServer 5.6.
+     * @deprecated
      *
      * @param address IP address of the vswitch controller.
      * @return Task
      */
-    public static Task setVswitchControllerAsync(Connection c, String address) throws
+   @Deprecated public static Task setVswitchControllerAsync(Connection c, String address) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -2605,10 +2722,11 @@ public class Pool extends XenAPIObject {
     /**
      * Set the IP address of the vswitch controller.
      * First published in XenServer 5.6.
+     * @deprecated
      *
      * @param address IP address of the vswitch controller.
      */
-    public static void setVswitchController(Connection c, String address) throws
+   @Deprecated public static void setVswitchController(Connection c, String address) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -2780,7 +2898,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Sets ssl_legacy true on each host, pool-master last. See Host.ssl_legacy and Host.set_ssl_legacy.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return Task
      */
@@ -2798,7 +2916,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Sets ssl_legacy true on each host, pool-master last. See Host.ssl_legacy and Host.set_ssl_legacy.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      */
     public void enableSslLegacy(Connection c) throws
@@ -2814,7 +2932,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Sets ssl_legacy true on each host, pool-master last. See Host.ssl_legacy and Host.set_ssl_legacy.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return Task
      */
@@ -2832,7 +2950,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Sets ssl_legacy true on each host, pool-master last. See Host.ssl_legacy and Host.set_ssl_legacy.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      */
     public void disableSslLegacy(Connection c) throws
@@ -2847,8 +2965,44 @@ public class Pool extends XenAPIObject {
     }
 
     /**
+     * Enable or disable IGMP Snooping on the pool.
+     * First published in XenServer 7.3.
+     *
+     * @param value Enable or disable IGMP Snooping on the pool
+     * @return Task
+     */
+    public Task setIgmpSnoopingEnabledAsync(Connection c, Boolean value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.pool.set_igmp_snooping_enabled";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Enable or disable IGMP Snooping on the pool.
+     * First published in XenServer 7.3.
+     *
+     * @param value Enable or disable IGMP Snooping on the pool
+     */
+    public void setIgmpSnoopingEnabled(Connection c, Boolean value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool.set_igmp_snooping_enabled";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
      * Return true if the extension is available on the pool
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param name The name of the API call
      * @return Task
@@ -2867,7 +3021,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Return true if the extension is available on the pool
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param name The name of the API call
      * @return True if the extension exists, false otherwise
@@ -2886,7 +3040,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Add a key-value pair to the pool-wide guest agent configuration
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param key The key to add
      * @param value The value to add
@@ -2906,7 +3060,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Add a key-value pair to the pool-wide guest agent configuration
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param key The key to add
      * @param value The value to add
@@ -2924,7 +3078,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Remove a key-value pair from the pool-wide guest agent configuration
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param key The key to remove
      * @return Task
@@ -2943,7 +3097,7 @@ public class Pool extends XenAPIObject {
 
     /**
      * Remove a key-value pair from the pool-wide guest agent configuration
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param key The key to remove
      */

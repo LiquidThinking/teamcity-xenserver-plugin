@@ -46,12 +46,12 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * A group of compatible GPUs across the resource pool
- * First published in XenServer 6.0.
+ * Pool-wide updates to the host software
+ * First published in XenServer 7.1.
  *
  * @author Citrix Systems, Inc.
  */
-public class GPUGroup extends XenAPIObject {
+public class PoolUpdate extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +61,7 @@ public class GPUGroup extends XenAPIObject {
     /**
      * For internal use only.
      */
-    GPUGroup(String ref) {
+    PoolUpdate(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +73,14 @@ public class GPUGroup extends XenAPIObject {
     }
 
     /**
-     * If obj is a GPUGroup, compares XenAPI references for equality.
+     * If obj is a PoolUpdate, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof GPUGroup)
+        if (obj != null && obj instanceof PoolUpdate)
         {
-            GPUGroup other = (GPUGroup) obj;
+            PoolUpdate other = (PoolUpdate) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,7 +95,7 @@ public class GPUGroup extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a GPUGroup
+     * Represents all the fields in a PoolUpdate
      */
     public static class Record implements Types.Record {
         public String toString() {
@@ -104,31 +104,33 @@ public class GPUGroup extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "uuid", this.uuid);
             print.printf("%1$20s: %2$s\n", "nameLabel", this.nameLabel);
             print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
-            print.printf("%1$20s: %2$s\n", "PGPUs", this.PGPUs);
-            print.printf("%1$20s: %2$s\n", "VGPUs", this.VGPUs);
-            print.printf("%1$20s: %2$s\n", "GPUTypes", this.GPUTypes);
+            print.printf("%1$20s: %2$s\n", "version", this.version);
+            print.printf("%1$20s: %2$s\n", "installationSize", this.installationSize);
+            print.printf("%1$20s: %2$s\n", "key", this.key);
+            print.printf("%1$20s: %2$s\n", "afterApplyGuidance", this.afterApplyGuidance);
+            print.printf("%1$20s: %2$s\n", "vdi", this.vdi);
+            print.printf("%1$20s: %2$s\n", "hosts", this.hosts);
             print.printf("%1$20s: %2$s\n", "otherConfig", this.otherConfig);
-            print.printf("%1$20s: %2$s\n", "allocationAlgorithm", this.allocationAlgorithm);
-            print.printf("%1$20s: %2$s\n", "supportedVGPUTypes", this.supportedVGPUTypes);
-            print.printf("%1$20s: %2$s\n", "enabledVGPUTypes", this.enabledVGPUTypes);
+            print.printf("%1$20s: %2$s\n", "enforceHomogeneity", this.enforceHomogeneity);
             return writer.toString();
         }
 
         /**
-         * Convert a GPU_group.Record to a Map
+         * Convert a pool_update.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("uuid", this.uuid == null ? "" : this.uuid);
             map.put("name_label", this.nameLabel == null ? "" : this.nameLabel);
             map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
-            map.put("PGPUs", this.PGPUs == null ? new LinkedHashSet<PGPU>() : this.PGPUs);
-            map.put("VGPUs", this.VGPUs == null ? new LinkedHashSet<VGPU>() : this.VGPUs);
-            map.put("GPU_types", this.GPUTypes == null ? new LinkedHashSet<String>() : this.GPUTypes);
+            map.put("version", this.version == null ? "" : this.version);
+            map.put("installation_size", this.installationSize == null ? 0 : this.installationSize);
+            map.put("key", this.key == null ? "" : this.key);
+            map.put("after_apply_guidance", this.afterApplyGuidance == null ? new LinkedHashSet<Types.UpdateAfterApplyGuidance>() : this.afterApplyGuidance);
+            map.put("vdi", this.vdi == null ? new VDI("OpaqueRef:NULL") : this.vdi);
+            map.put("hosts", this.hosts == null ? new LinkedHashSet<Host>() : this.hosts);
             map.put("other_config", this.otherConfig == null ? new HashMap<String, String>() : this.otherConfig);
-            map.put("allocation_algorithm", this.allocationAlgorithm == null ? Types.AllocationAlgorithm.UNRECOGNIZED : this.allocationAlgorithm);
-            map.put("supported_VGPU_types", this.supportedVGPUTypes == null ? new LinkedHashSet<VGPUType>() : this.supportedVGPUTypes);
-            map.put("enabled_VGPU_types", this.enabledVGPUTypes == null ? new LinkedHashSet<VGPUType>() : this.enabledVGPUTypes);
+            map.put("enforce_homogeneity", this.enforceHomogeneity == null ? false : this.enforceHomogeneity);
             return map;
         }
 
@@ -145,97 +147,100 @@ public class GPUGroup extends XenAPIObject {
          */
         public String nameDescription;
         /**
-         * List of pGPUs in the group
+         * Update version number
          */
-        public Set<PGPU> PGPUs;
+        public String version;
         /**
-         * List of vGPUs using the group
+         * Size of the update in bytes
          */
-        public Set<VGPU> VGPUs;
+        public Long installationSize;
         /**
-         * List of GPU types (vendor+device ID) that can be in this group
+         * GPG key of the update
          */
-        public Set<String> GPUTypes;
+        public String key;
         /**
-         * Additional configuration
+         * What the client should do after this update has been applied.
+         */
+        public Set<Types.UpdateAfterApplyGuidance> afterApplyGuidance;
+        /**
+         * VDI the update was uploaded to
+         */
+        public VDI vdi;
+        /**
+         * The hosts that have applied this update.
+         */
+        public Set<Host> hosts;
+        /**
+         * additional configuration
+         * First published in XenServer 7.3.
          */
         public Map<String, String> otherConfig;
         /**
-         * Current allocation of vGPUs to pGPUs for this group
-         * First published in XenServer 6.2 SP1 Tech-Preview.
+         * Flag - if true, all hosts in a pool must apply this update
+         * First published in XenServer 7.3.
          */
-        public Types.AllocationAlgorithm allocationAlgorithm;
-        /**
-         * vGPU types supported on at least one of the pGPUs in this group
-         * First published in XenServer 6.2 SP1.
-         */
-        public Set<VGPUType> supportedVGPUTypes;
-        /**
-         * vGPU types supported on at least one of the pGPUs in this group
-         * First published in XenServer 6.2 SP1.
-         */
-        public Set<VGPUType> enabledVGPUTypes;
+        public Boolean enforceHomogeneity;
     }
 
     /**
-     * Get a record containing the current state of the given GPU_group.
-     * First published in XenServer 6.0.
+     * Get a record containing the current state of the given pool_update.
+     * First published in XenServer 7.1.
      *
      * @return all fields from the object
      */
-    public GPUGroup.Record getRecord(Connection c) throws
+    public PoolUpdate.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_record";
+        String method_call = "pool_update.get_record";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toGPUGroupRecord(result);
+            return Types.toPoolUpdateRecord(result);
     }
 
     /**
-     * Get a reference to the GPU_group instance with the specified UUID.
-     * First published in XenServer 6.0.
+     * Get a reference to the pool_update instance with the specified UUID.
+     * First published in XenServer 7.1.
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-    public static GPUGroup getByUuid(Connection c, String uuid) throws
+    public static PoolUpdate getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_by_uuid";
+        String method_call = "pool_update.get_by_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toGPUGroup(result);
+            return Types.toPoolUpdate(result);
     }
 
     /**
-     * Get all the GPU_group instances with the given label.
-     * First published in XenServer 6.0.
+     * Get all the pool_update instances with the given label.
+     * First published in XenServer 7.1.
      *
      * @param label label of object to return
      * @return references to objects with matching names
      */
-    public static Set<GPUGroup> getByNameLabel(Connection c, String label) throws
+    public static Set<PoolUpdate> getByNameLabel(Connection c, String label) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_by_name_label";
+        String method_call = "pool_update.get_by_name_label";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfGPUGroup(result);
+            return Types.toSetOfPoolUpdate(result);
     }
 
     /**
-     * Get the uuid field of the given GPU_group.
-     * First published in XenServer 6.0.
+     * Get the uuid field of the given pool_update.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
@@ -243,7 +248,7 @@ public class GPUGroup extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_uuid";
+        String method_call = "pool_update.get_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -252,8 +257,8 @@ public class GPUGroup extends XenAPIObject {
     }
 
     /**
-     * Get the name/label field of the given GPU_group.
-     * First published in XenServer 6.0.
+     * Get the name/label field of the given pool_update.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
@@ -261,7 +266,7 @@ public class GPUGroup extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_name_label";
+        String method_call = "pool_update.get_name_label";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -270,8 +275,8 @@ public class GPUGroup extends XenAPIObject {
     }
 
     /**
-     * Get the name/description field of the given GPU_group.
-     * First published in XenServer 6.0.
+     * Get the name/description field of the given pool_update.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
@@ -279,7 +284,7 @@ public class GPUGroup extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_name_description";
+        String method_call = "pool_update.get_name_description";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -288,62 +293,116 @@ public class GPUGroup extends XenAPIObject {
     }
 
     /**
-     * Get the PGPUs field of the given GPU_group.
-     * First published in XenServer 6.0.
+     * Get the version field of the given pool_update.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
-    public Set<PGPU> getPGPUs(Connection c) throws
+    public String getVersion(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_PGPUs";
+        String method_call = "pool_update.get_version";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfPGPU(result);
+            return Types.toString(result);
     }
 
     /**
-     * Get the VGPUs field of the given GPU_group.
-     * First published in XenServer 6.0.
+     * Get the installation_size field of the given pool_update.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
-    public Set<VGPU> getVGPUs(Connection c) throws
+    public Long getInstallationSize(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_VGPUs";
+        String method_call = "pool_update.get_installation_size";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfVGPU(result);
+            return Types.toLong(result);
     }
 
     /**
-     * Get the GPU_types field of the given GPU_group.
-     * First published in XenServer 6.0.
+     * Get the key field of the given pool_update.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
-    public Set<String> getGPUTypes(Connection c) throws
+    public String getKey(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_GPU_types";
+        String method_call = "pool_update.get_key";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfString(result);
+            return Types.toString(result);
     }
 
     /**
-     * Get the other_config field of the given GPU_group.
-     * First published in XenServer 6.0.
+     * Get the after_apply_guidance field of the given pool_update.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Set<Types.UpdateAfterApplyGuidance> getAfterApplyGuidance(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool_update.get_after_apply_guidance";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfUpdateAfterApplyGuidance(result);
+    }
+
+    /**
+     * Get the vdi field of the given pool_update.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public VDI getVdi(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool_update.get_vdi";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toVDI(result);
+    }
+
+    /**
+     * Get the hosts field of the given pool_update.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Set<Host> getHosts(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool_update.get_hosts";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfHost(result);
+    }
+
+    /**
+     * Get the other_config field of the given pool_update.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
@@ -351,7 +410,7 @@ public class GPUGroup extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_other_config";
+        String method_call = "pool_update.get_other_config";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -360,96 +419,26 @@ public class GPUGroup extends XenAPIObject {
     }
 
     /**
-     * Get the allocation_algorithm field of the given GPU_group.
-     * First published in XenServer 6.2 SP1 Tech-Preview.
+     * Get the enforce_homogeneity field of the given pool_update.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
-    public Types.AllocationAlgorithm getAllocationAlgorithm(Connection c) throws
+    public Boolean getEnforceHomogeneity(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_allocation_algorithm";
+        String method_call = "pool_update.get_enforce_homogeneity";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toAllocationAlgorithm(result);
+            return Types.toBoolean(result);
     }
 
     /**
-     * Get the supported_VGPU_types field of the given GPU_group.
-     * First published in XenServer 6.2 SP1.
-     *
-     * @return value of the field
-     */
-    public Set<VGPUType> getSupportedVGPUTypes(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "GPU_group.get_supported_VGPU_types";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfVGPUType(result);
-    }
-
-    /**
-     * Get the enabled_VGPU_types field of the given GPU_group.
-     * First published in XenServer 6.2 SP1.
-     *
-     * @return value of the field
-     */
-    public Set<VGPUType> getEnabledVGPUTypes(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "GPU_group.get_enabled_VGPU_types";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfVGPUType(result);
-    }
-
-    /**
-     * Set the name/label field of the given GPU_group.
-     * First published in XenServer 6.0.
-     *
-     * @param label New value to set
-     */
-    public void setNameLabel(Connection c, String label) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "GPU_group.set_name_label";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(label)};
-        Map response = c.dispatch(method_call, method_params);
-        return;
-    }
-
-    /**
-     * Set the name/description field of the given GPU_group.
-     * First published in XenServer 6.0.
-     *
-     * @param description New value to set
-     */
-    public void setNameDescription(Connection c, String description) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "GPU_group.set_name_description";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(description)};
-        Map response = c.dispatch(method_call, method_params);
-        return;
-    }
-
-    /**
-     * Set the other_config field of the given GPU_group.
-     * First published in XenServer 6.0.
+     * Set the other_config field of the given pool_update.
+     * First published in XenServer 7.3.
      *
      * @param otherConfig New value to set
      */
@@ -457,7 +446,7 @@ public class GPUGroup extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.set_other_config";
+        String method_call = "pool_update.set_other_config";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(otherConfig)};
         Map response = c.dispatch(method_call, method_params);
@@ -465,8 +454,8 @@ public class GPUGroup extends XenAPIObject {
     }
 
     /**
-     * Add the given key-value pair to the other_config field of the given GPU_group.
-     * First published in XenServer 6.0.
+     * Add the given key-value pair to the other_config field of the given pool_update.
+     * First published in XenServer 7.3.
      *
      * @param key Key to add
      * @param value Value to add
@@ -475,7 +464,7 @@ public class GPUGroup extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.add_to_other_config";
+        String method_call = "pool_update.add_to_other_config";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(key), Marshalling.toXMLRPC(value)};
         Map response = c.dispatch(method_call, method_params);
@@ -483,8 +472,8 @@ public class GPUGroup extends XenAPIObject {
     }
 
     /**
-     * Remove the given key and its corresponding value from the other_config field of the given GPU_group.  If the key is not in that Map, then do nothing.
-     * First published in XenServer 6.0.
+     * Remove the given key and its corresponding value from the other_config field of the given pool_update.  If the key is not in that Map, then do nothing.
+     * First published in XenServer 7.3.
      *
      * @param key Key to remove
      */
@@ -492,7 +481,7 @@ public class GPUGroup extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.remove_from_other_config";
+        String method_call = "pool_update.remove_from_other_config";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(key)};
         Map response = c.dispatch(method_call, method_params);
@@ -500,67 +489,188 @@ public class GPUGroup extends XenAPIObject {
     }
 
     /**
-     * Set the allocation_algorithm field of the given GPU_group.
-     * First published in XenServer 6.2 SP1 Tech-Preview.
+     * Introduce update VDI
+     * First published in XenServer 7.1.
      *
-     * @param allocationAlgorithm New value to set
-     */
-    public void setAllocationAlgorithm(Connection c, Types.AllocationAlgorithm allocationAlgorithm) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "GPU_group.set_allocation_algorithm";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(allocationAlgorithm)};
-        Map response = c.dispatch(method_call, method_params);
-        return;
-    }
-
-    /**
-     * 
-     * First published in XenServer 6.0.
-     *
-     * @param nameLabel 
-     * @param nameDescription 
-     * @param otherConfig 
+     * @param vdi The VDI which contains a software update.
      * @return Task
      */
-    public static Task createAsync(Connection c, String nameLabel, String nameDescription, Map<String, String> otherConfig) throws
+    public static Task introduceAsync(Connection c, VDI vdi) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "Async.GPU_group.create";
+        String method_call = "Async.pool_update.introduce";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(nameLabel), Marshalling.toXMLRPC(nameDescription), Marshalling.toXMLRPC(otherConfig)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(vdi)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
         return Types.toTask(result);
     }
 
     /**
-     * 
-     * First published in XenServer 6.0.
+     * Introduce update VDI
+     * First published in XenServer 7.1.
      *
-     * @param nameLabel 
-     * @param nameDescription 
-     * @param otherConfig 
-     * @return 
+     * @param vdi The VDI which contains a software update.
+     * @return the introduced pool update
      */
-    public static GPUGroup create(Connection c, String nameLabel, String nameDescription, Map<String, String> otherConfig) throws
+    public static PoolUpdate introduce(Connection c, VDI vdi) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.create";
+        String method_call = "pool_update.introduce";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(nameLabel), Marshalling.toXMLRPC(nameDescription), Marshalling.toXMLRPC(otherConfig)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(vdi)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toGPUGroup(result);
+            return Types.toPoolUpdate(result);
     }
 
     /**
-     * 
-     * First published in XenServer 6.0.
+     * Execute the precheck stage of the selected update on a host
+     * First published in XenServer 7.1.
+     *
+     * @param host The host to run the prechecks on.
+     * @return Task
+     */
+    public Task precheckAsync(Connection c, Host host) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.pool_update.precheck";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(host)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Execute the precheck stage of the selected update on a host
+     * First published in XenServer 7.1.
+     *
+     * @param host The host to run the prechecks on.
+     * @return The precheck pool update
+     */
+    public Types.LivepatchStatus precheck(Connection c, Host host) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool_update.precheck";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(host)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toLivepatchStatus(result);
+    }
+
+    /**
+     * Apply the selected update to a host
+     * First published in XenServer 7.1.
+     *
+     * @param host The host to apply the update to.
+     * @return Task
+     */
+    public Task applyAsync(Connection c, Host host) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.pool_update.apply";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(host)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Apply the selected update to a host
+     * First published in XenServer 7.1.
+     *
+     * @param host The host to apply the update to.
+     */
+    public void apply(Connection c, Host host) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool_update.apply";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(host)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Apply the selected update to all hosts in the pool
+     * First published in XenServer 7.1.
+     *
+     * @return Task
+     */
+    public Task poolApplyAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.pool_update.pool_apply";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Apply the selected update to all hosts in the pool
+     * First published in XenServer 7.1.
+     *
+     */
+    public void poolApply(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool_update.pool_apply";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Removes the update's files from all hosts in the pool, but does not revert the update
+     * First published in XenServer 7.1.
+     *
+     * @return Task
+     */
+    public Task poolCleanAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.pool_update.pool_clean";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Removes the update's files from all hosts in the pool, but does not revert the update
+     * First published in XenServer 7.1.
+     *
+     */
+    public void poolClean(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool_update.pool_clean";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Removes the database entry. Only works on unapplied update.
+     * First published in XenServer 7.1.
      *
      * @return Task
      */
@@ -568,7 +678,7 @@ public class GPUGroup extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "Async.GPU_group.destroy";
+        String method_call = "Async.pool_update.destroy";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -577,15 +687,15 @@ public class GPUGroup extends XenAPIObject {
     }
 
     /**
-     * 
-     * First published in XenServer 6.0.
+     * Removes the database entry. Only works on unapplied update.
+     * First published in XenServer 7.1.
      *
      */
     public void destroy(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.destroy";
+        String method_call = "pool_update.destroy";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -593,77 +703,39 @@ public class GPUGroup extends XenAPIObject {
     }
 
     /**
-     * 
-     * First published in XenServer 6.2 SP1 Tech-Preview.
-     *
-     * @param vgpuType The VGPU_type for which the remaining capacity will be calculated
-     * @return Task
-     */
-    public Task getRemainingCapacityAsync(Connection c, VGPUType vgpuType) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "Async.GPU_group.get_remaining_capacity";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(vgpuType)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-        return Types.toTask(result);
-    }
-
-    /**
-     * 
-     * First published in XenServer 6.2 SP1 Tech-Preview.
-     *
-     * @param vgpuType The VGPU_type for which the remaining capacity will be calculated
-     * @return The number of VGPUs of the given type which can still be started on the PGPUs in the group
-     */
-    public Long getRemainingCapacity(Connection c, VGPUType vgpuType) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "GPU_group.get_remaining_capacity";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(vgpuType)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toLong(result);
-    }
-
-    /**
-     * Return a list of all the GPU_groups known to the system.
-     * First published in XenServer 6.0.
+     * Return a list of all the pool_updates known to the system.
+     * First published in XenServer 7.1.
      *
      * @return references to all objects
      */
-    public static Set<GPUGroup> getAll(Connection c) throws
+    public static Set<PoolUpdate> getAll(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_all";
+        String method_call = "pool_update.get_all";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfGPUGroup(result);
+            return Types.toSetOfPoolUpdate(result);
     }
 
     /**
-     * Return a map of GPU_group references to GPU_group records for all GPU_groups known to the system.
-     * First published in XenServer 6.0.
+     * Return a map of pool_update references to pool_update records for all pool_updates known to the system.
+     * First published in XenServer 7.1.
      *
      * @return records of all objects
      */
-    public static Map<GPUGroup, GPUGroup.Record> getAllRecords(Connection c) throws
+    public static Map<PoolUpdate, PoolUpdate.Record> getAllRecords(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "GPU_group.get_all_records";
+        String method_call = "pool_update.get_all_records";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toMapOfGPUGroupGPUGroupRecord(result);
+            return Types.toMapOfPoolUpdatePoolUpdateRecord(result);
     }
 
 }

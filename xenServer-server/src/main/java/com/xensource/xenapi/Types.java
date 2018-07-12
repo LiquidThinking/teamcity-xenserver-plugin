@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -45,7 +45,7 @@ import org.apache.xmlrpc.XmlRpcException;
 
 /**
  * This class holds vital marshalling functions, enum types and exceptions.
- * 
+ *
  * @author Citrix Systems, Inc.
  */
 public class Types
@@ -190,6 +190,11 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.AuthEnableFailedDomainLookupFailed(p1);
             }
+            if (ErrorDescription[0].equals("PVS_SITE_CONTAINS_RUNNING_PROXIES"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PvsSiteContainsRunningProxies(p1);
+            }
             if (ErrorDescription[0].equals("HA_ENABLE_IN_PROGRESS"))
             {
                 throw new Types.HaEnableInProgress();
@@ -198,6 +203,12 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.DiskVbdMustBeReadwriteForHvm(p1);
+            }
+            if (ErrorDescription[0].equals("UPDATE_PRECHECK_FAILED_UNKNOWN_ERROR"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.UpdatePrecheckFailedUnknownError(p1, p2);
             }
             if (ErrorDescription[0].equals("VDI_NOT_IN_MAP"))
             {
@@ -214,6 +225,11 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.HostDisabledUntilReboot(p1);
+            }
+            if (ErrorDescription[0].equals("PIF_IS_NOT_PHYSICAL"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PifIsNotPhysical(p1);
             }
             if (ErrorDescription[0].equals("CANNOT_CONTACT_HOST"))
             {
@@ -232,6 +248,16 @@ public class Types
             if (ErrorDescription[0].equals("JOINING_HOST_CANNOT_CONTAIN_SHARED_SRS"))
             {
                 throw new Types.JoiningHostCannotContainSharedSrs();
+            }
+            if (ErrorDescription[0].equals("CANNOT_ADD_TUNNEL_TO_VLAN_ON_SRIOV_LOGICAL"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.CannotAddTunnelToVlanOnSriovLogical(p1);
+            }
+            if (ErrorDescription[0].equals("CLUSTER_STACK_IN_USE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.ClusterStackInUse(p1);
             }
             if (ErrorDescription[0].equals("AUTH_DISABLE_FAILED_PERMISSION_DENIED"))
             {
@@ -258,6 +284,10 @@ public class Types
             {
                 throw new Types.HostHasNoManagementIp();
             }
+            if (ErrorDescription[0].equals("CLUSTER_ALREADY_EXISTS"))
+            {
+                throw new Types.ClusterAlreadyExists();
+            }
             if (ErrorDescription[0].equals("INCOMPATIBLE_CLUSTER_STACK_ACTIVE"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -271,6 +301,17 @@ public class Types
             if (ErrorDescription[0].equals("ACTIVATION_WHILE_NOT_FREE"))
             {
                 throw new Types.ActivationWhileNotFree();
+            }
+            if (ErrorDescription[0].equals("PUSB_VDI_CONFLICT"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.PusbVdiConflict(p1, p2);
+            }
+            if (ErrorDescription[0].equals("NETWORK_INCOMPATIBLE_WITH_VLAN_ON_BRIDGE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.NetworkIncompatibleWithVlanOnBridge(p1);
             }
             if (ErrorDescription[0].equals("VM_CALL_PLUGIN_RATE_LIMIT"))
             {
@@ -299,6 +340,12 @@ public class Types
             {
                 throw new Types.WlbXenserverAuthenticationFailed();
             }
+            if (ErrorDescription[0].equals("NETWORK_SRIOV_DISABLE_FAILED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.NetworkSriovDisableFailed(p1, p2);
+            }
             if (ErrorDescription[0].equals("CPU_FEATURE_MASKING_NOT_SUPPORTED"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -313,6 +360,10 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.PgpuInsufficientCapacityForVgpu(p1, p2);
+            }
+            if (ErrorDescription[0].equals("POOL_JOINING_HOST_HAS_BONDS"))
+            {
+                throw new Types.PoolJoiningHostHasBonds();
             }
             if (ErrorDescription[0].equals("HA_CONSTRAINT_VIOLATION_SR_NOT_SHARED"))
             {
@@ -362,7 +413,8 @@ public class Types
             }
             if (ErrorDescription[0].equals("PIF_INCOMPATIBLE_PRIMARY_ADDRESS_TYPE"))
             {
-                throw new Types.PifIncompatiblePrimaryAddressType();
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PifIncompatiblePrimaryAddressType(p1);
             }
             if (ErrorDescription[0].equals("VMPP_HAS_VM"))
             {
@@ -393,6 +445,17 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.PifVlanExists(p1);
             }
+            if (ErrorDescription[0].equals("POOL_JOINING_HOST_MANAGEMENT_VLAN_DOES_NOT_MATCH"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.PoolJoiningHostManagementVlanDoesNotMatch(p1, p2);
+            }
+            if (ErrorDescription[0].equals("PVS_PROXY_ALREADY_PRESENT"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PvsProxyAlreadyPresent(p1);
+            }
             if (ErrorDescription[0].equals("VM_BIOS_STRINGS_ALREADY_SET"))
             {
                 throw new Types.VmBiosStringsAlreadySet();
@@ -419,6 +482,11 @@ public class Types
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 String p3 = ErrorDescription.length > 3 ? ErrorDescription[3] : "";
                 throw new Types.PatchPrecheckFailedWrongServerBuild(p1, p2, p3);
+            }
+            if (ErrorDescription[0].equals("CLUSTER_FORCE_DESTROY_FAILED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.ClusterForceDestroyFailed(p1);
             }
             if (ErrorDescription[0].equals("NETWORK_CONTAINS_VIF"))
             {
@@ -467,6 +535,11 @@ public class Types
             {
                 throw new Types.WlbConnectionReset();
             }
+            if (ErrorDescription[0].equals("UPDATE_ALREADY_EXISTS"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.UpdateAlreadyExists(p1);
+            }
             if (ErrorDescription[0].equals("SR_BACKEND_FAILURE"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -506,6 +579,11 @@ public class Types
                 String p3 = ErrorDescription.length > 3 ? ErrorDescription[3] : "";
                 throw new Types.FailedToStartEmulator(p1, p2, p3);
             }
+            if (ErrorDescription[0].equals("AUTH_ENABLE_FAILED_INVALID_OU"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.AuthEnableFailedInvalidOu(p1);
+            }
             if (ErrorDescription[0].equals("OBJECT_NOLONGER_EXISTS"))
             {
                 throw new Types.ObjectNolongerExists();
@@ -520,10 +598,24 @@ public class Types
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.PatchPrecheckFailedUnknownError(p1, p2);
             }
+            if (ErrorDescription[0].equals("CLUSTER_CREATE_IN_PROGRESS"))
+            {
+                throw new Types.ClusterCreateInProgress();
+            }
+            if (ErrorDescription[0].equals("VM_LACKS_FEATURE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.VmLacksFeature(p1);
+            }
             if (ErrorDescription[0].equals("INVALID_PATCH_WITH_LOG"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.InvalidPatchWithLog(p1);
+            }
+            if (ErrorDescription[0].equals("AUTH_ENABLE_FAILED_INVALID_ACCOUNT"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.AuthEnableFailedInvalidAccount(p1);
             }
             if (ErrorDescription[0].equals("XEN_VSS_REQ_ERROR_ADDING_VOLUME_TO_SNAPSET_FAILED"))
             {
@@ -573,6 +665,12 @@ public class Types
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.OperationBlocked(p1, p2);
             }
+            if (ErrorDescription[0].equals("TLS_CONNECTION_FAILED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.TlsConnectionFailed(p1, p2);
+            }
             if (ErrorDescription[0].equals("SR_DOES_NOT_SUPPORT_MIGRATION"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -586,6 +684,11 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.VmLacksFeatureShutdown(p1);
+            }
+            if (ErrorDescription[0].equals("PVS_SERVER_ADDRESS_IN_USE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PvsServerAddressInUse(p1);
             }
             if (ErrorDescription[0].equals("PROVISION_FAILED_OUT_OF_SPACE"))
             {
@@ -607,6 +710,10 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.RbacPermissionDenied(p1, p2);
+            }
+            if (ErrorDescription[0].equals("POOL_JOINING_HOST_HAS_NON_MANAGEMENT_VLANS"))
+            {
+                throw new Types.PoolJoiningHostHasNonManagementVlans();
             }
             if (ErrorDescription[0].equals("PIF_BOND_NEEDS_MORE_MEMBERS"))
             {
@@ -646,6 +753,13 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.MacStillExists(p1);
             }
+            if (ErrorDescription[0].equals("UPDATE_PRECHECK_FAILED_OUT_OF_SPACE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                String p3 = ErrorDescription.length > 3 ? ErrorDescription[3] : "";
+                throw new Types.UpdatePrecheckFailedOutOfSpace(p1, p2, p3);
+            }
             if (ErrorDescription[0].equals("AUTH_UNKNOWN_TYPE"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -683,6 +797,18 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.CannotChangePifProperties(p1);
             }
+            if (ErrorDescription[0].equals("POOL_AUTH_ENABLE_FAILED_UNAVAILABLE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.PoolAuthEnableFailedUnavailable(p1, p2);
+            }
+            if (ErrorDescription[0].equals("NETWORK_HAS_INCOMPATIBLE_SRIOV_PIFS"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.NetworkHasIncompatibleSriovPifs(p1, p2);
+            }
             if (ErrorDescription[0].equals("VM_HAS_CHECKPOINT"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -692,6 +818,17 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.VmHasTooManySnapshots(p1);
+            }
+            if (ErrorDescription[0].equals("POOL_JOINING_HOST_MUST_HAVE_SAME_API_VERSION"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.PoolJoiningHostMustHaveSameApiVersion(p1, p2);
+            }
+            if (ErrorDescription[0].equals("CANNOT_FORGET_SRIOV_LOGICAL"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.CannotForgetSriovLogical(p1);
             }
             if (ErrorDescription[0].equals("VDI_NOT_MANAGED"))
             {
@@ -704,10 +841,21 @@ public class Types
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.VmRequiresNetwork(p1, p2);
             }
+            if (ErrorDescription[0].equals("CLUSTER_DOES_NOT_HAVE_ONE_NODE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.ClusterDoesNotHaveOneNode(p1);
+            }
             if (ErrorDescription[0].equals("COULD_NOT_IMPORT_DATABASE"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.CouldNotImportDatabase(p1);
+            }
+            if (ErrorDescription[0].equals("VM_HOST_INCOMPATIBLE_VERSION_MIGRATE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.VmHostIncompatibleVersionMigrate(p1, p2);
             }
             if (ErrorDescription[0].equals("HOST_IN_EMERGENCY_MODE"))
             {
@@ -777,6 +925,11 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.FeatureRequiresHvm(p1);
             }
+            if (ErrorDescription[0].equals("SUSPEND_IMAGE_NOT_ACCESSIBLE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.SuspendImageNotAccessible(p1);
+            }
             if (ErrorDescription[0].equals("TOO_MANY_PENDING_TASKS"))
             {
                 throw new Types.TooManyPendingTasks();
@@ -792,6 +945,28 @@ public class Types
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.OtherOperationInProgress(p1, p2);
             }
+            if (ErrorDescription[0].equals("PIF_NOT_PRESENT"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.PifNotPresent(p1, p2);
+            }
+            if (ErrorDescription[0].equals("CLUSTERING_ENABLED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.ClusteringEnabled(p1);
+            }
+            if (ErrorDescription[0].equals("USB_GROUP_CONTAINS_VUSB"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.UsbGroupContainsVusb(p1);
+            }
+            if (ErrorDescription[0].equals("VM_REQUIRES_VUSB"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.VmRequiresVusb(p1, p2);
+            }
             if (ErrorDescription[0].equals("PIF_BOND_MORE_THAN_ONE_IP"))
             {
                 throw new Types.PifBondMoreThanOneIp();
@@ -800,6 +975,11 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.PifIsPhysical(p1);
+            }
+            if (ErrorDescription[0].equals("NETWORK_INCOMPATIBLE_WITH_BOND"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.NetworkIncompatibleWithBond(p1);
             }
             if (ErrorDescription[0].equals("MESSAGE_DEPRECATED"))
             {
@@ -820,6 +1000,11 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.VmHvmRequired(p1);
+            }
+            if (ErrorDescription[0].equals("SR_SOURCE_SPACE_INSUFFICIENT"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.SrSourceSpaceInsufficient(p1);
             }
             if (ErrorDescription[0].equals("HA_NO_PLAN"))
             {
@@ -873,6 +1058,12 @@ public class Types
             {
                 throw new Types.IncompatiblePifProperties();
             }
+            if (ErrorDescription[0].equals("USB_ALREADY_ATTACHED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.UsbAlreadyAttached(p1, p2);
+            }
             if (ErrorDescription[0].equals("VM_REQUIRES_IOMMU"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -888,15 +1079,35 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.HostIsLive(p1);
             }
+            if (ErrorDescription[0].equals("VM_IS_IMMOBILE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.VmIsImmobile(p1);
+            }
             if (ErrorDescription[0].equals("VM_NO_EMPTY_CD_VBD"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.VmNoEmptyCdVbd(p1);
             }
+            if (ErrorDescription[0].equals("TOO_MANY_VUSBS"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.TooManyVusbs(p1);
+            }
+            if (ErrorDescription[0].equals("UPDATE_ALREADY_APPLIED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.UpdateAlreadyApplied(p1);
+            }
             if (ErrorDescription[0].equals("VM_ATTACHED_TO_MORE_THAN_ONE_VDI_WITH_TIMEOFFSET_MARKED_AS_RESET_ON_BOOT"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.VmAttachedToMoreThanOneVdiWithTimeoffsetMarkedAsResetOnBoot(p1);
+            }
+            if (ErrorDescription[0].equals("NETWORK_INCOMPATIBLE_WITH_SRIOV"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.NetworkIncompatibleWithSriov(p1);
             }
             if (ErrorDescription[0].equals("POOL_JOINING_HOST_MUST_HAVE_SAME_PRODUCT_VERSION"))
             {
@@ -917,6 +1128,11 @@ public class Types
             {
                 throw new Types.JoiningHostServiceFailed();
             }
+            if (ErrorDescription[0].equals("BALLOONING_TIMEOUT_BEFORE_MIGRATION"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.BallooningTimeoutBeforeMigration(p1);
+            }
             if (ErrorDescription[0].equals("JOINING_HOST_CANNOT_BE_MASTER_OF_OTHER_HOSTS"))
             {
                 throw new Types.JoiningHostCannotBeMasterOfOtherHosts();
@@ -930,6 +1146,17 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.AddressViolatesLockingConstraint(p1);
+            }
+            if (ErrorDescription[0].equals("NETWORK_SRIOV_ALREADY_ENABLED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.NetworkSriovAlreadyEnabled(p1);
+            }
+            if (ErrorDescription[0].equals("UPDATE_PRECHECK_FAILED_PREREQUISITE_MISSING"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.UpdatePrecheckFailedPrerequisiteMissing(p1, p2);
             }
             if (ErrorDescription[0].equals("VDI_INCOMPATIBLE_TYPE"))
             {
@@ -958,6 +1185,16 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.PifDoesNotAllowUnplug(p1);
+            }
+            if (ErrorDescription[0].equals("PVS_CACHE_STORAGE_IS_IN_USE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PvsCacheStorageIsInUse(p1);
+            }
+            if (ErrorDescription[0].equals("PIF_IS_NOT_SRIOV_CAPABLE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PifIsNotSriovCapable(p1);
             }
             if (ErrorDescription[0].equals("DEVICE_ALREADY_EXISTS"))
             {
@@ -1031,6 +1268,11 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.PatchAlreadyExists(p1);
             }
+            if (ErrorDescription[0].equals("NETWORK_INCOMPATIBLE_WITH_TUNNEL"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.NetworkIncompatibleWithTunnel(p1);
+            }
             if (ErrorDescription[0].equals("HA_CANNOT_CHANGE_BOND_STATUS_OF_MGMT_IFACE"))
             {
                 throw new Types.HaCannotChangeBondStatusOfMgmtIface();
@@ -1040,10 +1282,21 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.HaHostIsArmed(p1);
             }
+            if (ErrorDescription[0].equals("NETWORK_HAS_INCOMPATIBLE_VLAN_ON_SRIOV_PIFS"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.NetworkHasIncompatibleVlanOnSriovPifs(p1, p2);
+            }
             if (ErrorDescription[0].equals("SR_HAS_NO_PBDS"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.SrHasNoPbds(p1);
+            }
+            if (ErrorDescription[0].equals("INVALID_UPDATE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.InvalidUpdate(p1);
             }
             if (ErrorDescription[0].equals("VDI_IS_NOT_ISO"))
             {
@@ -1076,6 +1329,12 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.DeviceNotAttached(p1);
             }
+            if (ErrorDescription[0].equals("VM_ASSIGNED_TO_SNAPSHOT_SCHEDULE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.VmAssignedToSnapshotSchedule(p1, p2);
+            }
             if (ErrorDescription[0].equals("VM_CHECKPOINT_SUSPEND_FAILED"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -1102,6 +1361,12 @@ public class Types
             if (ErrorDescription[0].equals("HA_HOST_CANNOT_ACCESS_STATEFILE"))
             {
                 throw new Types.HaHostCannotAccessStatefile();
+            }
+            if (ErrorDescription[0].equals("NETWORK_INCOMPATIBLE_PURPOSES"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.NetworkIncompatiblePurposes(p1, p2);
             }
             if (ErrorDescription[0].equals("PATCH_APPLY_FAILED_BACKUP_FILES_EXIST"))
             {
@@ -1149,10 +1414,19 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.HostEvacuateInProgress(p1);
             }
+            if (ErrorDescription[0].equals("PIF_SRIOV_STILL_EXISTS"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PifSriovStillExists(p1);
+            }
             if (ErrorDescription[0].equals("PIF_UNMANAGED"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.PifUnmanaged(p1);
+            }
+            if (ErrorDescription[0].equals("VMSS_HAS_VM"))
+            {
+                throw new Types.VmssHasVm();
             }
             if (ErrorDescription[0].equals("IMPORT_ERROR_ATTACHED_DISKS_NOT_FOUND"))
             {
@@ -1162,10 +1436,20 @@ public class Types
             {
                 throw new Types.NotInEmergencyMode();
             }
+            if (ErrorDescription[0].equals("PIF_ALLOWS_UNPLUG"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PifAllowsUnplug(p1);
+            }
             if (ErrorDescription[0].equals("DEFAULT_SR_NOT_FOUND"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.DefaultSrNotFound(p1);
+            }
+            if (ErrorDescription[0].equals("NVIDIA_TOOLS_ERROR"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.NvidiaToolsError(p1);
             }
             if (ErrorDescription[0].equals("RESTORE_INCOMPATIBLE_VERSION"))
             {
@@ -1230,6 +1514,11 @@ public class Types
             {
                 throw new Types.MissingConnectionDetails();
             }
+            if (ErrorDescription[0].equals("USB_GROUP_CONTAINS_PUSB"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.UsbGroupContainsPusb(p1);
+            }
             if (ErrorDescription[0].equals("CRL_CORRUPT"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -1263,6 +1552,11 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.AuthAlreadyEnabled(p1, p2);
+            }
+            if (ErrorDescription[0].equals("VM_HAS_NO_SUSPEND_VDI"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.VmHasNoSuspendVdi(p1);
             }
             if (ErrorDescription[0].equals("DEVICE_DETACH_TIMEOUT"))
             {
@@ -1301,6 +1595,13 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.FieldTypeError(p1);
             }
+            if (ErrorDescription[0].equals("UPDATE_PRECHECK_FAILED_WRONG_SERVER_VERSION"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                String p3 = ErrorDescription.length > 3 ? ErrorDescription[3] : "";
+                throw new Types.UpdatePrecheckFailedWrongServerVersion(p1, p2, p3);
+            }
             if (ErrorDescription[0].equals("VM_HAS_VGPU"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -1327,6 +1628,11 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.MirrorFailed(p1);
+            }
+            if (ErrorDescription[0].equals("NO_COMPATIBLE_CLUSTER_HOST"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.NoCompatibleClusterHost(p1);
             }
             if (ErrorDescription[0].equals("IMPORT_ERROR"))
             {
@@ -1359,6 +1665,12 @@ public class Types
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 String p3 = ErrorDescription.length > 3 ? ErrorDescription[3] : "";
                 throw new Types.DbUniquenessConstraintViolation(p1, p2, p3);
+            }
+            if (ErrorDescription[0].equals("PVS_CACHE_STORAGE_ALREADY_PRESENT"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.PvsCacheStorageAlreadyPresent(p1, p2);
             }
             if (ErrorDescription[0].equals("VBD_NOT_REMOVABLE_MEDIA"))
             {
@@ -1395,6 +1707,12 @@ public class Types
             if (ErrorDescription[0].equals("WLB_NOT_INITIALIZED"))
             {
                 throw new Types.WlbNotInitialized();
+            }
+            if (ErrorDescription[0].equals("POOL_AUTH_ENABLE_FAILED_INVALID_ACCOUNT"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.PoolAuthEnableFailedInvalidAccount(p1, p2);
             }
             if (ErrorDescription[0].equals("HA_TOO_FEW_HOSTS"))
             {
@@ -1449,6 +1767,11 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.SslVerifyError(p1);
             }
+            if (ErrorDescription[0].equals("NETWORK_SRIOV_INSUFFICIENT_CAPACITY"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.NetworkSriovInsufficientCapacity(p1);
+            }
             if (ErrorDescription[0].equals("XEN_VSS_REQ_ERROR_CREATING_SNAPSHOT_XML_STRING"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -1465,6 +1788,13 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.NotSystemDomain(p1);
+            }
+            if (ErrorDescription[0].equals("VGPU_DESTINATION_INCOMPATIBLE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                String p3 = ErrorDescription.length > 3 ? ErrorDescription[3] : "";
+                throw new Types.VgpuDestinationIncompatible(p1, p2, p3);
             }
             if (ErrorDescription[0].equals("OPENVSWITCH_NOT_ACTIVE"))
             {
@@ -1486,6 +1816,15 @@ public class Types
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.VmRevertFailed(p1, p2);
             }
+            if (ErrorDescription[0].equals("COULD_NOT_UPDATE_IGMP_SNOOPING_EVERYWHERE"))
+            {
+                throw new Types.CouldNotUpdateIgmpSnoopingEverywhere();
+            }
+            if (ErrorDescription[0].equals("VDI_NO_CBT_METADATA"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.VdiNoCbtMetadata(p1);
+            }
             if (ErrorDescription[0].equals("SR_VDI_LOCKING_FAILED"))
             {
                 throw new Types.SrVdiLockingFailed();
@@ -1495,9 +1834,27 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.CertificateDoesNotExist(p1);
             }
+            if (ErrorDescription[0].equals("PIF_HAS_FCOE_SR_IN_USE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.PifHasFcoeSrInUse(p1, p2);
+            }
+            if (ErrorDescription[0].equals("CLUSTERING_ENABLED_ON_NETWORK"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.ClusteringEnabledOnNetwork(p1);
+            }
+            if (ErrorDescription[0].equals("POOL_AUTH_DISABLE_FAILED_INVALID_ACCOUNT"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.PoolAuthDisableFailedInvalidAccount(p1, p2);
+            }
             if (ErrorDescription[0].equals("PIF_HAS_NO_NETWORK_CONFIGURATION"))
             {
-                throw new Types.PifHasNoNetworkConfiguration();
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PifHasNoNetworkConfiguration(p1);
             }
             if (ErrorDescription[0].equals("CERTIFICATE_CORRUPT"))
             {
@@ -1527,6 +1884,11 @@ public class Types
             {
                 throw new Types.WlbXenserverUnknownHost();
             }
+            if (ErrorDescription[0].equals("BRIDGE_NAME_EXISTS"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.BridgeNameExists(p1);
+            }
             if (ErrorDescription[0].equals("WLB_XENSERVER_TIMEOUT"))
             {
                 throw new Types.WlbXenserverTimeout();
@@ -1555,9 +1917,24 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.SrIsCacheSr(p1);
             }
+            if (ErrorDescription[0].equals("MEMORY_CONSTRAINT_VIOLATION"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.MemoryConstraintViolation(p1);
+            }
             if (ErrorDescription[0].equals("SYSTEM_STATUS_MUST_USE_TAR_ON_OEM"))
             {
                 throw new Types.SystemStatusMustUseTarOnOem();
+            }
+            if (ErrorDescription[0].equals("UPDATE_PRECHECK_FAILED_GPGKEY_NOT_IMPORTED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.UpdatePrecheckFailedGpgkeyNotImported(p1);
+            }
+            if (ErrorDescription[0].equals("PASSTHROUGH_NOT_ENABLED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PassthroughNotEnabled(p1);
             }
             if (ErrorDescription[0].equals("POOL_AUTH_ENABLE_FAILED_INVALID_OU"))
             {
@@ -1621,6 +1998,16 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.DuplicatePifDeviceName(p1);
             }
+            if (ErrorDescription[0].equals("CANNOT_ADD_TUNNEL_TO_SRIOV_LOGICAL"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.CannotAddTunnelToSriovLogical(p1);
+            }
+            if (ErrorDescription[0].equals("UPDATE_ALREADY_APPLIED_IN_POOL"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.UpdateAlreadyAppliedInPool(p1);
+            }
             if (ErrorDescription[0].equals("RESTORE_TARGET_MGMT_IF_NOT_IN_BACKUP"))
             {
                 throw new Types.RestoreTargetMgmtIfNotInBackup();
@@ -1630,9 +2017,19 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.CannotAddTunnelToBondSlave(p1);
             }
+            if (ErrorDescription[0].equals("USB_GROUP_CONFLICT"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.UsbGroupConflict(p1);
+            }
             if (ErrorDescription[0].equals("HA_IS_ENABLED"))
             {
                 throw new Types.HaIsEnabled();
+            }
+            if (ErrorDescription[0].equals("UPDATE_POOL_APPLY_FAILED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.UpdatePoolApplyFailed(p1);
             }
             if (ErrorDescription[0].equals("INVALID_PATCH"))
             {
@@ -1646,6 +2043,11 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.OperationNotAllowed(p1);
+            }
+            if (ErrorDescription[0].equals("PVS_SITE_CONTAINS_SERVERS"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PvsSiteContainsServers(p1);
             }
             if (ErrorDescription[0].equals("WLB_TIMEOUT"))
             {
@@ -1674,6 +2076,10 @@ public class Types
             {
                 throw new Types.VmppArchiveMoreFrequentThanBackup();
             }
+            if (ErrorDescription[0].equals("POOL_JOINING_HOST_HAS_TUNNELS"))
+            {
+                throw new Types.PoolJoiningHostHasTunnels();
+            }
             if (ErrorDescription[0].equals("PIF_IS_MANAGEMENT_INTERFACE"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -1690,6 +2096,10 @@ public class Types
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.PoolAuthEnableFailedWrongCredentials(p1, p2);
             }
+            if (ErrorDescription[0].equals("UPDATE_IS_APPLIED"))
+            {
+                throw new Types.UpdateIsApplied();
+            }
             if (ErrorDescription[0].equals("LICENCE_RESTRICTION"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -1704,6 +2114,10 @@ public class Types
             {
                 throw new Types.PifCannotBondCrossHost();
             }
+            if (ErrorDescription[0].equals("VM_MIGRATE_CONTACT_REMOTE_SERVICE_FAILED"))
+            {
+                throw new Types.VmMigrateContactRemoteServiceFailed();
+            }
             if (ErrorDescription[0].equals("HA_POOL_IS_ENABLED_BUT_HOST_IS_DISABLED"))
             {
                 throw new Types.HaPoolIsEnabledButHostIsDisabled();
@@ -1712,6 +2126,10 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.GpuGroupContainsVgpu(p1);
+            }
+            if (ErrorDescription[0].equals("CANNOT_FIND_UPDATE"))
+            {
+                throw new Types.CannotFindUpdate();
             }
             if (ErrorDescription[0].equals("DEVICE_ALREADY_ATTACHED"))
             {
@@ -1737,7 +2155,8 @@ public class Types
             }
             if (ErrorDescription[0].equals("PIF_HAS_NO_V6_NETWORK_CONFIGURATION"))
             {
-                throw new Types.PifHasNoV6NetworkConfiguration();
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PifHasNoV6NetworkConfiguration(p1);
             }
             if (ErrorDescription[0].equals("XMLRPC_UNMARSHAL_FAILURE"))
             {
@@ -1756,6 +2175,15 @@ public class Types
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 String p3 = ErrorDescription.length > 3 ? ErrorDescription[3] : "";
                 throw new Types.HostInUse(p1, p2, p3);
+            }
+            if (ErrorDescription[0].equals("VM_HAS_VUSBS"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.VmHasVusbs(p1);
+            }
+            if (ErrorDescription[0].equals("POOL_JOINING_HOST_HAS_NETWORK_SRIOVS"))
+            {
+                throw new Types.PoolJoiningHostHasNetworkSriovs();
             }
             if (ErrorDescription[0].equals("LICENSE_HOST_POOL_MISMATCH"))
             {
@@ -1783,6 +2211,11 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.DuplicateMacSeed(p1);
             }
+            if (ErrorDescription[0].equals("UPDATE_APPLY_FAILED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.UpdateApplyFailed(p1);
+            }
             if (ErrorDescription[0].equals("SUBJECT_ALREADY_EXISTS"))
             {
                 throw new Types.SubjectAlreadyExists();
@@ -1798,6 +2231,12 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.AuthEnableFailedUnavailable(p1);
+            }
+            if (ErrorDescription[0].equals("NETWORK_SRIOV_ENABLE_FAILED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.NetworkSriovEnableFailed(p1, p2);
             }
             if (ErrorDescription[0].equals("NOT_IMPLEMENTED"))
             {
@@ -1883,6 +2322,11 @@ public class Types
             {
                 throw new Types.PoolJoiningHostMustOnlyHavePhysicalPifs();
             }
+            if (ErrorDescription[0].equals("VM_IS_USING_NESTED_VIRT"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.VmIsUsingNestedVirt(p1);
+            }
             if (ErrorDescription[0].equals("EVENTS_LOST"))
             {
                 throw new Types.EventsLost();
@@ -1894,9 +2338,16 @@ public class Types
                 String p3 = ErrorDescription.length > 3 ? ErrorDescription[3] : "";
                 throw new Types.VmOldPvDrivers(p1, p2, p3);
             }
+            if (ErrorDescription[0].equals("UPDATE_PRECHECK_FAILED_CONFLICT_PRESENT"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.UpdatePrecheckFailedConflictPresent(p1, p2);
+            }
             if (ErrorDescription[0].equals("VM_FAILED_SHUTDOWN_ACKNOWLEDGMENT"))
             {
-                throw new Types.VmFailedShutdownAcknowledgment();
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.VmFailedShutdownAcknowledgment(p1);
             }
             if (ErrorDescription[0].equals("HOST_CANNOT_ATTACH_NETWORK"))
             {
@@ -1942,6 +2393,12 @@ public class Types
                 String p3 = ErrorDescription.length > 3 ? ErrorDescription[3] : "";
                 throw new Types.VgpuTypeNotCompatibleWithRunningType(p1, p2, p3);
             }
+            if (ErrorDescription[0].equals("VLAN_IN_USE"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.VlanInUse(p1, p2);
+            }
             if (ErrorDescription[0].equals("OPERATION_PARTIALLY_FAILED"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -1981,6 +2438,11 @@ public class Types
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.DeviceAttachTimeout(p1, p2);
             }
+            if (ErrorDescription[0].equals("NETWORK_UNMANAGED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.NetworkUnmanaged(p1);
+            }
             if (ErrorDescription[0].equals("SR_UNKNOWN_DRIVER"))
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
@@ -1997,6 +2459,11 @@ public class Types
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.XenVssReqErrorInitFailed(p1, p2);
             }
+            if (ErrorDescription[0].equals("USB_GROUP_CONTAINS_NO_PUSBS"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.UsbGroupContainsNoPusbs(p1);
+            }
             if (ErrorDescription[0].equals("POOL_JOINING_EXTERNAL_AUTH_MISMATCH"))
             {
                 throw new Types.PoolJoiningExternalAuthMismatch();
@@ -2005,6 +2472,11 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.AuthEnableFailedWrongCredentials(p1);
+            }
+            if (ErrorDescription[0].equals("PIF_IS_SRIOV_LOGICAL"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.PifIsSriovLogical(p1);
             }
             if (ErrorDescription[0].equals("PATCH_PRECHECK_FAILED_ISO_MOUNTED"))
             {
@@ -2040,6 +2512,11 @@ public class Types
             {
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 throw new Types.CannotDestroySystemNetwork(p1);
+            }
+            if (ErrorDescription[0].equals("NETWORK_INCOMPATIBLE_WITH_VLAN_ON_SRIOV"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.NetworkIncompatibleWithVlanOnSriov(p1);
             }
             if (ErrorDescription[0].equals("MESSAGE_PARAMETER_COUNT_MISMATCH"))
             {
@@ -2119,6 +2596,12 @@ public class Types
             {
                 throw new Types.WlbInternalError();
             }
+            if (ErrorDescription[0].equals("POOL_JOINING_HOST_MUST_HAVE_SAME_DB_SCHEMA"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
+                throw new Types.PoolJoiningHostMustHaveSameDbSchema(p1, p2);
+            }
             if (ErrorDescription[0].equals("JOINING_HOST_CANNOT_HAVE_VMS_WITH_CURRENT_OPERATIONS"))
             {
                 throw new Types.JoiningHostCannotHaveVmsWithCurrentOperations();
@@ -2126,6 +2609,11 @@ public class Types
             if (ErrorDescription[0].equals("REDO_LOG_IS_ENABLED"))
             {
                 throw new Types.RedoLogIsEnabled();
+            }
+            if (ErrorDescription[0].equals("CLUSTERING_DISABLED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.ClusteringDisabled(p1);
             }
             if (ErrorDescription[0].equals("CERTIFICATE_LIBRARY_CORRUPT"))
             {
@@ -2169,6 +2657,11 @@ public class Types
                 String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
                 String p2 = ErrorDescription.length > 2 ? ErrorDescription[2] : "";
                 throw new Types.VmRequiresVdi(p1, p2);
+            }
+            if (ErrorDescription[0].equals("VDI_CBT_ENABLED"))
+            {
+                String p1 = ErrorDescription.length > 1 ? ErrorDescription[1] : "";
+                throw new Types.VdiCbtEnabled(p1);
             }
             if (ErrorDescription[0].equals("SR_REQUIRES_UPGRADE"))
             {
@@ -2241,6 +2734,30 @@ public class Types
          */
         VDI_SNAPSHOT,
         /**
+         * Mirroring a VDI
+         */
+        VDI_MIRROR,
+        /**
+         * Enabling changed block tracking for a VDI
+         */
+        VDI_ENABLE_CBT,
+        /**
+         * Disabling changed block tracking for a VDI
+         */
+        VDI_DISABLE_CBT,
+        /**
+         * Deleting the data of the VDI
+         */
+        VDI_DATA_DESTROY,
+        /**
+         * Exporting a bitmap that shows the changed blocks between two VDIs
+         */
+        VDI_LIST_CHANGED_BLOCKS,
+        /**
+         * Setting the on_boot field of the VDI
+         */
+        VDI_SET_ON_BOOT,
+        /**
          * Creating a PBD for this SR
          */
         PBD_CREATE,
@@ -2262,6 +2779,12 @@ public class Types
             if (this == VDI_RESIZE) return "vdi_resize";
             if (this == VDI_CLONE) return "vdi_clone";
             if (this == VDI_SNAPSHOT) return "vdi_snapshot";
+            if (this == VDI_MIRROR) return "vdi_mirror";
+            if (this == VDI_ENABLE_CBT) return "vdi_enable_cbt";
+            if (this == VDI_DISABLE_CBT) return "vdi_disable_cbt";
+            if (this == VDI_DATA_DESTROY) return "vdi_data_destroy";
+            if (this == VDI_LIST_CHANGED_BLOCKS) return "vdi_list_changed_blocks";
+            if (this == VDI_SET_ON_BOOT) return "vdi_set_on_boot";
             if (this == PBD_CREATE) return "pbd_create";
             if (this == PBD_DESTROY) return "pbd_destroy";
         /* This can never be reached */
@@ -2297,6 +2820,34 @@ public class Types
             if (this == RESTARTPV) return "restartPV";
             if (this == RESTARTHOST) return "restartHost";
             if (this == RESTARTXAPI) return "restartXAPI";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
+    public enum ClusterHostOperation {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * enabling cluster membership on a particular host
+         */
+        ENABLE,
+        /**
+         * disabling cluster membership on a particular host
+         */
+        DISABLE,
+        /**
+         * completely destroying a cluster host
+         */
+        DESTROY;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == ENABLE) return "enable";
+            if (this == DISABLE) return "disable";
+            if (this == DESTROY) return "destroy";
         /* This can never be reached */
         return "illegal enum";
         }
@@ -2343,7 +2894,15 @@ public class Types
         /**
          * a disk that stores SR-level RRDs
          */
-        RRD;
+        RRD,
+        /**
+         * a disk that stores PVS cache data
+         */
+        PVS_CACHE,
+        /**
+         * Metadata about a snapshot VDI that has been deleted: the set of blocks that changed between some previous version of the disk and the version tracked by the snapshot.
+         */
+        CBT_METADATA;
         public String toString() {
             if (this == UNRECOGNIZED) return "UNRECOGNIZED";
             if (this == SYSTEM) return "system";
@@ -2355,6 +2914,8 @@ public class Types
             if (this == METADATA) return "metadata";
             if (this == REDO_LOG) return "redo_log";
             if (this == RRD) return "rrd";
+            if (this == PVS_CACHE) return "pvs_cache";
+            if (this == CBT_METADATA) return "cbt_metadata";
         /* This can never be reached */
         return "illegal enum";
         }
@@ -2627,6 +3188,44 @@ public class Types
 
     };
 
+    public enum ClusterOperation {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * adding a new member to the cluster
+         */
+        ADD,
+        /**
+         * removing a member from the cluster
+         */
+        REMOVE,
+        /**
+         * enabling any cluster member
+         */
+        ENABLE,
+        /**
+         * disabling any cluster member
+         */
+        DISABLE,
+        /**
+         * completely destroying a cluster
+         */
+        DESTROY;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == ADD) return "add";
+            if (this == REMOVE) return "remove";
+            if (this == ENABLE) return "enable";
+            if (this == DISABLE) return "disable";
+            if (this == DESTROY) return "destroy";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
     public enum NetworkDefaultLockingMode {
         /**
          * The value does not belong to this enumeration
@@ -2706,6 +3305,34 @@ public class Types
 
     };
 
+    public enum VusbOperations {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * Attempting to attach this VUSB to a VM
+         */
+        ATTACH,
+        /**
+         * Attempting to plug this VUSB into a VM
+         */
+        PLUG,
+        /**
+         * Attempting to hot unplug this VUSB
+         */
+        UNPLUG;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == ATTACH) return "attach";
+            if (this == PLUG) return "plug";
+            if (this == UNPLUG) return "unplug";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
     public enum PrimaryAddressType {
         /**
          * The value does not belong to this enumeration
@@ -2773,12 +3400,17 @@ public class Types
         /**
          * vGPU using Intel GVT-g
          */
-        GVT_G;
+        GVT_G,
+        /**
+         * vGPU using AMD MxGPU
+         */
+        MXGPU;
         public String toString() {
             if (this == UNRECOGNIZED) return "UNRECOGNIZED";
             if (this == PASSTHROUGH) return "passthrough";
             if (this == NVIDIA) return "nvidia";
             if (this == GVT_G) return "gvt_g";
+            if (this == MXGPU) return "mxgpu";
         /* This can never be reached */
         return "illegal enum";
         }
@@ -2861,6 +3493,39 @@ public class Types
 
     };
 
+    public enum UpdateAfterApplyGuidance {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * This update requires HVM guests to be restarted once applied.
+         */
+        RESTARTHVM,
+        /**
+         * This update requires PV guests to be restarted once applied.
+         */
+        RESTARTPV,
+        /**
+         * This update requires the host to be restarted once applied.
+         */
+        RESTARTHOST,
+        /**
+         * This update requires XAPI to be restarted once applied.
+         */
+        RESTARTXAPI;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == RESTARTHVM) return "restartHVM";
+            if (this == RESTARTPV) return "restartPV";
+            if (this == RESTARTHOST) return "restartHost";
+            if (this == RESTARTXAPI) return "restartXAPI";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
     public enum TaskStatusType {
         /**
          * The value does not belong to this enumeration
@@ -2927,6 +3592,95 @@ public class Types
 
     };
 
+    public enum LivepatchStatus {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * An applicable live patch exists for every required component
+         */
+        OK_LIVEPATCH_COMPLETE,
+        /**
+         * An applicable live patch exists but it is not sufficient
+         */
+        OK_LIVEPATCH_INCOMPLETE,
+        /**
+         * There is no applicable live patch
+         */
+        OK;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == OK_LIVEPATCH_COMPLETE) return "ok_livepatch_complete";
+            if (this == OK_LIVEPATCH_INCOMPLETE) return "ok_livepatch_incomplete";
+            if (this == OK) return "ok";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
+    public enum PvsProxyStatus {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * The proxy is not currently running
+         */
+        STOPPED,
+        /**
+         * The proxy is setup but has not yet cached anything
+         */
+        INITIALISED,
+        /**
+         * The proxy is currently caching data
+         */
+        CACHING,
+        /**
+         * The PVS device is configured to use an incompatible write-cache mode
+         */
+        INCOMPATIBLE_WRITE_CACHE_MODE,
+        /**
+         * The PVS protocol in use is not compatible with the PVS proxy
+         */
+        INCOMPATIBLE_PROTOCOL_VERSION;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == STOPPED) return "stopped";
+            if (this == INITIALISED) return "initialised";
+            if (this == CACHING) return "caching";
+            if (this == INCOMPATIBLE_WRITE_CACHE_MODE) return "incompatible_write_cache_mode";
+            if (this == INCOMPATIBLE_PROTOCOL_VERSION) return "incompatible_protocol_version";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
+    public enum SrHealth {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * Storage is fully available
+         */
+        HEALTHY,
+        /**
+         * Storage is busy recovering, e.g. rebuilding mirrors.
+         */
+        RECOVERING;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == HEALTHY) return "healthy";
+            if (this == RECOVERING) return "recovering";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
     public enum VmApplianceOperation {
         /**
          * The value does not belong to this enumeration
@@ -2954,6 +3708,34 @@ public class Types
             if (this == CLEAN_SHUTDOWN) return "clean_shutdown";
             if (this == HARD_SHUTDOWN) return "hard_shutdown";
             if (this == SHUTDOWN) return "shutdown";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
+    public enum VmssFrequency {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * Hourly snapshots
+         */
+        HOURLY,
+        /**
+         * Daily snapshots
+         */
+        DAILY,
+        /**
+         * Weekly snapshots
+         */
+        WEEKLY;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == HOURLY) return "hourly";
+            if (this == DAILY) return "daily";
+            if (this == WEEKLY) return "weekly";
         /* This can never be reached */
         return "illegal enum";
         }
@@ -3028,11 +3810,16 @@ public class Types
         /**
          * Indicates this pool is in the process of disabling HA
          */
-        HA_DISABLE;
+        HA_DISABLE,
+        /**
+         * Indicates this pool is in the process of creating a cluster
+         */
+        CLUSTER_CREATE;
         public String toString() {
             if (this == UNRECOGNIZED) return "UNRECOGNIZED";
             if (this == HA_ENABLE) return "ha_enable";
             if (this == HA_DISABLE) return "ha_disable";
+            if (this == CLUSTER_CREATE) return "cluster_create";
         /* This can never be reached */
         return "illegal enum";
         }
@@ -3056,6 +3843,34 @@ public class Types
             if (this == UNRECOGNIZED) return "UNRECOGNIZED";
             if (this == SNAPSHOT) return "snapshot";
             if (this == CHECKPOINT) return "checkpoint";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
+    public enum SriovConfigurationMode {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * Configure network sriov by sysfs, do not need reboot
+         */
+        SYSFS,
+        /**
+         * Configure network sriov by modprobe, need reboot
+         */
+        MODPROBE,
+        /**
+         * Unknown mode
+         */
+        UNKNOWN;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == SYSFS) return "sysfs";
+            if (this == MODPROBE) return "modprobe";
+            if (this == UNKNOWN) return "unknown";
         /* This can never be reached */
         return "illegal enum";
         }
@@ -3246,7 +4061,19 @@ public class Types
         /**
          * VMPP
          */
-        VMPP;
+        VMPP,
+        /**
+         * VMSS
+         */
+        VMSS,
+        /**
+         * PVS_proxy
+         */
+        PVS_PROXY,
+        /**
+         * VDI
+         */
+        VDI;
         public String toString() {
             if (this == UNRECOGNIZED) return "UNRECOGNIZED";
             if (this == VM) return "VM";
@@ -3254,6 +4081,9 @@ public class Types
             if (this == SR) return "SR";
             if (this == POOL) return "Pool";
             if (this == VMPP) return "VMPP";
+            if (this == VMSS) return "VMSS";
+            if (this == PVS_PROXY) return "PVS_proxy";
+            if (this == VDI) return "VDI";
         /* This can never be reached */
         return "illegal enum";
         }
@@ -3310,6 +4140,39 @@ public class Types
             if (this == DISABLE_ON_REBOOT) return "disable_on_reboot";
             if (this == DISABLED) return "disabled";
             if (this == ENABLE_ON_REBOOT) return "enable_on_reboot";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
+    public enum DomainType {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * HVM; Fully Virtualised
+         */
+        HVM,
+        /**
+         * PV: Paravirtualised
+         */
+        PV,
+        /**
+         * PV inside a PVH container
+         */
+        PV_IN_PVH,
+        /**
+         * Not specified or unknown domain type
+         */
+        UNSPECIFIED;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == HVM) return "hvm";
+            if (this == PV) return "pv";
+            if (this == PV_IN_PVH) return "pv_in_pvh";
+            if (this == UNSPECIFIED) return "unspecified";
         /* This can never be reached */
         return "illegal enum";
         }
@@ -3433,6 +4296,34 @@ public class Types
 
     };
 
+    public enum VmssType {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * The snapshot is a disk snapshot
+         */
+        SNAPSHOT,
+        /**
+         * The snapshot is a checkpoint
+         */
+        CHECKPOINT,
+        /**
+         * The snapshot is a VSS
+         */
+        SNAPSHOT_WITH_QUIESCE;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == SNAPSHOT) return "snapshot";
+            if (this == CHECKPOINT) return "checkpoint";
+            if (this == SNAPSHOT_WITH_QUIESCE) return "snapshot_with_quiesce";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
     public enum XenAPIObjects {
         /**
          * The value does not belong to this enumeration
@@ -3471,6 +4362,10 @@ public class Types
          */
         POOL_PATCH,
         /**
+         * Pool-wide updates to the host software
+         */
+        POOL_UPDATE,
+        /**
          * A virtual machine (or 'guest').
          */
         VM,
@@ -3486,6 +4381,10 @@ public class Types
          * VM Protection Policy
          */
         VMPP,
+        /**
+         * VM Snapshot Schedule
+         */
+        VMSS,
         /**
          * VM appliance
          */
@@ -3551,6 +4450,14 @@ public class Types
          */
         SR,
         /**
+         * A set of high-level properties associated with an SR.
+         */
+        SR_STAT,
+        /**
+         * A set of properties that describe one result element of SR.probe. Result elements and properties can change dynamically based on changes to the the SR.probe input-parameters or the target.
+         */
+        PROBE_RESULT,
+        /**
          * LVHD SR specific operations
          */
         LVHD,
@@ -3607,6 +4514,10 @@ public class Types
          */
         TUNNEL,
         /**
+         * network-sriov which connects logical pif and physical pif
+         */
+        NETWORK_SRIOV,
+        /**
          * A PCI device
          */
         PCI,
@@ -3625,7 +4536,55 @@ public class Types
         /**
          * A type of virtual GPU
          */
-        VGPU_TYPE;
+        VGPU_TYPE,
+        /**
+         * machines serving blocks of data for provisioning VMs
+         */
+        PVS_SITE,
+        /**
+         * individual machine serving provisioning (block) data
+         */
+        PVS_SERVER,
+        /**
+         * a proxy connects a VM/VIF with a PVS site
+         */
+        PVS_PROXY,
+        /**
+         * Describes the storage that is available to a PVS site for caching purposes
+         */
+        PVS_CACHE_STORAGE,
+        /**
+         * A new piece of functionality
+         */
+        FEATURE,
+        /**
+         * Describes the SDN controller that is to connect with the pool
+         */
+        SDN_CONTROLLER,
+        /**
+         * Details for connecting to a VDI using the Network Block Device protocol
+         */
+        VDI_NBD_SERVER_INFO,
+        /**
+         * A physical USB device
+         */
+        PUSB,
+        /**
+         * A group of compatible USBs across the resource pool
+         */
+        USB_GROUP,
+        /**
+         * Describes the vusb device
+         */
+        VUSB,
+        /**
+         * Cluster-wide Cluster metadata
+         */
+        CLUSTER,
+        /**
+         * Cluster member metadata
+         */
+        CLUSTER_HOST;
         public String toString() {
             if (this == UNRECOGNIZED) return "UNRECOGNIZED";
             if (this == SESSION) return "session";
@@ -3636,10 +4595,12 @@ public class Types
             if (this == EVENT) return "event";
             if (this == POOL) return "pool";
             if (this == POOL_PATCH) return "pool_patch";
+            if (this == POOL_UPDATE) return "pool_update";
             if (this == VM) return "VM";
             if (this == VM_METRICS) return "VM_metrics";
             if (this == VM_GUEST_METRICS) return "VM_guest_metrics";
             if (this == VMPP) return "VMPP";
+            if (this == VMSS) return "VMSS";
             if (this == VM_APPLIANCE) return "VM_appliance";
             if (this == DR_TASK) return "DR_task";
             if (this == HOST) return "host";
@@ -3656,6 +4617,8 @@ public class Types
             if (this == VLAN) return "VLAN";
             if (this == SM) return "SM";
             if (this == SR) return "SR";
+            if (this == SR_STAT) return "sr_stat";
+            if (this == PROBE_RESULT) return "probe_result";
             if (this == LVHD) return "LVHD";
             if (this == VDI) return "VDI";
             if (this == VBD) return "VBD";
@@ -3670,11 +4633,24 @@ public class Types
             if (this == MESSAGE) return "message";
             if (this == SECRET) return "secret";
             if (this == TUNNEL) return "tunnel";
+            if (this == NETWORK_SRIOV) return "network_sriov";
             if (this == PCI) return "PCI";
             if (this == PGPU) return "PGPU";
             if (this == GPU_GROUP) return "GPU_group";
             if (this == VGPU) return "VGPU";
             if (this == VGPU_TYPE) return "VGPU_type";
+            if (this == PVS_SITE) return "PVS_site";
+            if (this == PVS_SERVER) return "PVS_server";
+            if (this == PVS_PROXY) return "PVS_proxy";
+            if (this == PVS_CACHE_STORAGE) return "PVS_cache_storage";
+            if (this == FEATURE) return "Feature";
+            if (this == SDN_CONTROLLER) return "SDN_controller";
+            if (this == VDI_NBD_SERVER_INFO) return "vdi_nbd_server_info";
+            if (this == PUSB) return "PUSB";
+            if (this == USB_GROUP) return "USB_group";
+            if (this == VUSB) return "VUSB";
+            if (this == CLUSTER) return "Cluster";
+            if (this == CLUSTER_HOST) return "Cluster_host";
         /* This can never be reached */
         return "illegal enum";
         }
@@ -3686,10 +4662,6 @@ public class Types
          * The value does not belong to this enumeration
          */
         UNRECOGNIZED,
-        /**
-         * Scanning backends for new or deleted VDIs
-         */
-        SCAN,
         /**
          * Cloning the VDI
          */
@@ -3711,6 +4683,10 @@ public class Types
          */
         SNAPSHOT,
         /**
+         * Mirroring the VDI
+         */
+        MIRROR,
+        /**
          * Destroying the VDI
          */
         DESTROY,
@@ -3731,22 +4707,47 @@ public class Types
          */
         GENERATE_CONFIG,
         /**
+         * Enabling changed block tracking for a VDI
+         */
+        ENABLE_CBT,
+        /**
+         * Disabling changed block tracking for a VDI
+         */
+        DISABLE_CBT,
+        /**
+         * Deleting the data of the VDI
+         */
+        DATA_DESTROY,
+        /**
+         * Exporting a bitmap that shows the changed blocks between two VDIs
+         */
+        LIST_CHANGED_BLOCKS,
+        /**
+         * Setting the on_boot field of the VDI
+         */
+        SET_ON_BOOT,
+        /**
          * Operations on this VDI are temporarily blocked
          */
         BLOCKED;
         public String toString() {
             if (this == UNRECOGNIZED) return "UNRECOGNIZED";
-            if (this == SCAN) return "scan";
             if (this == CLONE) return "clone";
             if (this == COPY) return "copy";
             if (this == RESIZE) return "resize";
             if (this == RESIZE_ONLINE) return "resize_online";
             if (this == SNAPSHOT) return "snapshot";
+            if (this == MIRROR) return "mirror";
             if (this == DESTROY) return "destroy";
             if (this == FORGET) return "forget";
             if (this == UPDATE) return "update";
             if (this == FORCE_UNLOCK) return "force_unlock";
             if (this == GENERATE_CONFIG) return "generate_config";
+            if (this == ENABLE_CBT) return "enable_cbt";
+            if (this == DISABLE_CBT) return "disable_cbt";
+            if (this == DATA_DESTROY) return "data_destroy";
+            if (this == LIST_CHANGED_BLOCKS) return "list_changed_blocks";
+            if (this == SET_ON_BOOT) return "set_on_boot";
             if (this == BLOCKED) return "blocked";
         /* This can never be reached */
         return "illegal enum";
@@ -3810,6 +4811,29 @@ public class Types
 
     };
 
+    public enum NetworkPurpose {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * Network Block Device service using TLS
+         */
+        NBD,
+        /**
+         * Network Block Device service without integrity or confidentiality: NOT RECOMMENDED
+         */
+        INSECURE_NBD;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == NBD) return "nbd";
+            if (this == INSECURE_NBD) return "insecure_nbd";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
     public enum TaskAllowedOperations {
         /**
          * The value does not belong to this enumeration
@@ -3850,6 +4874,57 @@ public class Types
             if (this == UNRECOGNIZED) return "UNRECOGNIZED";
             if (this == RESET) return "reset";
             if (this == PERSIST) return "persist";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
+    public enum SdnControllerProtocol {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * Active ssl connection
+         */
+        SSL,
+        /**
+         * Passive ssl connection
+         */
+        PSSL;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == SSL) return "ssl";
+            if (this == PSSL) return "pssl";
+        /* This can never be reached */
+        return "illegal enum";
+        }
+
+    };
+
+    public enum PifIgmpStatus {
+        /**
+         * The value does not belong to this enumeration
+         */
+        UNRECOGNIZED,
+        /**
+         * IGMP Snooping is enabled in the corresponding backend bridge.'
+         */
+        ENABLED,
+        /**
+         * IGMP Snooping is disabled in the corresponding backend bridge.'
+         */
+        DISABLED,
+        /**
+         * IGMP snooping status is unknown. If this is a VLAN master, then please consult the underlying VLAN slave PIF.
+         */
+        UNKNOWN;
+        public String toString() {
+            if (this == UNRECOGNIZED) return "UNRECOGNIZED";
+            if (this == ENABLED) return "enabled";
+            if (this == DISABLED) return "disabled";
+            if (this == UNKNOWN) return "unknown";
         /* This can never be reached */
         return "illegal enum";
         }
@@ -3957,6 +5032,24 @@ public class Types
     }
 
     /**
+     * The PVS site contains running proxies.
+     */
+    public static class PvsSiteContainsRunningProxies extends XenAPIException {
+        public final String proxies;
+
+        /**
+         * Create a new PvsSiteContainsRunningProxies
+         *
+         * @param proxies
+         */
+        public PvsSiteContainsRunningProxies(String proxies) {
+            super("The PVS site contains running proxies.");
+            this.proxies = proxies;
+        }
+
+    }
+
+    /**
      * The operation could not be performed because HA enable is in progress
      */
     public static class HaEnableInProgress extends XenAPIException {
@@ -3984,6 +5077,27 @@ public class Types
         public DiskVbdMustBeReadwriteForHvm(String vbd) {
             super("All VBDs of type 'disk' must be read/write for HVM guests");
             this.vbd = vbd;
+        }
+
+    }
+
+    /**
+     * The update precheck stage failed with an unknown error.
+     */
+    public static class UpdatePrecheckFailedUnknownError extends XenAPIException {
+        public final String update;
+        public final String info;
+
+        /**
+         * Create a new UpdatePrecheckFailedUnknownError
+         *
+         * @param update
+         * @param info
+         */
+        public UpdatePrecheckFailedUnknownError(String update, String info) {
+            super("The update precheck stage failed with an unknown error.");
+            this.update = update;
+            this.info = info;
         }
 
     }
@@ -4041,6 +5155,24 @@ public class Types
         public HostDisabledUntilReboot(String host) {
             super("The specified host is disabled and cannot be re-enabled until after it has rebooted.");
             this.host = host;
+        }
+
+    }
+
+    /**
+     * You tried to perform an operation which is only available on physical PIF
+     */
+    public static class PifIsNotPhysical extends XenAPIException {
+        public final String PIF;
+
+        /**
+         * Create a new PifIsNotPhysical
+         *
+         * @param PIF
+         */
+        public PifIsNotPhysical(String PIF) {
+            super("You tried to perform an operation which is only available on physical PIF");
+            this.PIF = PIF;
         }
 
     }
@@ -4105,6 +5237,42 @@ public class Types
          */
         public JoiningHostCannotContainSharedSrs() {
             super("The host joining the pool cannot contain any shared storage.");
+        }
+
+    }
+
+    /**
+     * This is a vlan PIF on network SR-IOV and cannot have a tunnel on it.
+     */
+    public static class CannotAddTunnelToVlanOnSriovLogical extends XenAPIException {
+        public final String PIF;
+
+        /**
+         * Create a new CannotAddTunnelToVlanOnSriovLogical
+         *
+         * @param PIF
+         */
+        public CannotAddTunnelToVlanOnSriovLogical(String PIF) {
+            super("This is a vlan PIF on network SR-IOV and cannot have a tunnel on it.");
+            this.PIF = PIF;
+        }
+
+    }
+
+    /**
+     * The cluster stack is already in use.
+     */
+    public static class ClusterStackInUse extends XenAPIException {
+        public final String clusterStack;
+
+        /**
+         * Create a new ClusterStackInUse
+         *
+         * @param clusterStack
+         */
+        public ClusterStackInUse(String clusterStack) {
+            super("The cluster stack is already in use.");
+            this.clusterStack = clusterStack;
         }
 
     }
@@ -4199,6 +5367,20 @@ public class Types
     }
 
     /**
+     * A cluster already exists in the pool.
+     */
+    public static class ClusterAlreadyExists extends XenAPIException {
+
+        /**
+         * Create a new ClusterAlreadyExists
+         */
+        public ClusterAlreadyExists() {
+            super("A cluster already exists in the pool.");
+        }
+
+    }
+
+    /**
      * This operation cannot be performed, because it is incompatible with the currently active HA cluster stack.
      */
     public static class IncompatibleClusterStackActive extends XenAPIException {
@@ -4244,6 +5426,45 @@ public class Types
          */
         public ActivationWhileNotFree() {
             super("An activation key can only be applied when the edition is set to 'free'.");
+        }
+
+    }
+
+    /**
+     * The VDI corresponding to this PUSB has existing VBDs.
+     */
+    public static class PusbVdiConflict extends XenAPIException {
+        public final String PUSB;
+        public final String VDI;
+
+        /**
+         * Create a new PusbVdiConflict
+         *
+         * @param PUSB
+         * @param VDI
+         */
+        public PusbVdiConflict(String PUSB, String VDI) {
+            super("The VDI corresponding to this PUSB has existing VBDs.");
+            this.PUSB = PUSB;
+            this.VDI = VDI;
+        }
+
+    }
+
+    /**
+     * The network is incompatible with vlan on bridge
+     */
+    public static class NetworkIncompatibleWithVlanOnBridge extends XenAPIException {
+        public final String network;
+
+        /**
+         * Create a new NetworkIncompatibleWithVlanOnBridge
+         *
+         * @param network
+         */
+        public NetworkIncompatibleWithVlanOnBridge(String network) {
+            super("The network is incompatible with vlan on bridge");
+            this.network = network;
         }
 
     }
@@ -4343,6 +5564,27 @@ public class Types
     }
 
     /**
+     * Failed to disable SR-IOV on PIF
+     */
+    public static class NetworkSriovDisableFailed extends XenAPIException {
+        public final String PIF;
+        public final String msg;
+
+        /**
+         * Create a new NetworkSriovDisableFailed
+         *
+         * @param PIF
+         * @param msg
+         */
+        public NetworkSriovDisableFailed(String PIF, String msg) {
+            super("Failed to disable SR-IOV on PIF");
+            this.PIF = PIF;
+            this.msg = msg;
+        }
+
+    }
+
+    /**
      * The CPU does not support masking of features.
      */
     public static class CpuFeatureMaskingNotSupported extends XenAPIException {
@@ -4391,6 +5633,20 @@ public class Types
             super("There is insufficient capacity on this PGPU to run the VGPU.");
             this.pgpu = pgpu;
             this.vgpuType = vgpuType;
+        }
+
+    }
+
+    /**
+     * The host joining the pool must not have any bonds.
+     */
+    public static class PoolJoiningHostHasBonds extends XenAPIException {
+
+        /**
+         * Create a new PoolJoiningHostHasBonds
+         */
+        public PoolJoiningHostHasBonds() {
+            super("The host joining the pool must not have any bonds.");
         }
 
     }
@@ -4503,7 +5759,7 @@ public class Types
     }
 
     /**
-     * The pool failed to disable the external authentication of at least one host.
+     * External authentication has been disabled with errors: Your AD machine account was not disabled on the AD server as permission was denied.
      */
     public static class PoolAuthDisableFailedPermissionDenied extends XenAPIException {
         public final String host;
@@ -4516,7 +5772,7 @@ public class Types
          * @param message
          */
         public PoolAuthDisableFailedPermissionDenied(String host, String message) {
-            super("The pool failed to disable the external authentication of at least one host.");
+            super("External authentication has been disabled with errors: Your AD machine account was not disabled on the AD server as permission was denied.");
             this.host = host;
             this.message = message;
         }
@@ -4563,12 +5819,16 @@ public class Types
      * The primary address types are not compatible
      */
     public static class PifIncompatiblePrimaryAddressType extends XenAPIException {
+        public final String PIF;
 
         /**
          * Create a new PifIncompatiblePrimaryAddressType
+         *
+         * @param PIF
          */
-        public PifIncompatiblePrimaryAddressType() {
+        public PifIncompatiblePrimaryAddressType(String PIF) {
             super("The primary address types are not compatible");
+            this.PIF = PIF;
         }
 
     }
@@ -4678,7 +5938,46 @@ public class Types
     }
 
     /**
-     * The BIOS strings for this VM have already been set and cannot be changed anymore.
+     * The host joining the pool must have the same management vlan.
+     */
+    public static class PoolJoiningHostManagementVlanDoesNotMatch extends XenAPIException {
+        public final String local;
+        public final String remote;
+
+        /**
+         * Create a new PoolJoiningHostManagementVlanDoesNotMatch
+         *
+         * @param local
+         * @param remote
+         */
+        public PoolJoiningHostManagementVlanDoesNotMatch(String local, String remote) {
+            super("The host joining the pool must have the same management vlan.");
+            this.local = local;
+            this.remote = remote;
+        }
+
+    }
+
+    /**
+     * The VIF is already associated with a PVS proxy
+     */
+    public static class PvsProxyAlreadyPresent extends XenAPIException {
+        public final String proxies;
+
+        /**
+         * Create a new PvsProxyAlreadyPresent
+         *
+         * @param proxies
+         */
+        public PvsProxyAlreadyPresent(String proxies) {
+            super("The VIF is already associated with a PVS proxy");
+            this.proxies = proxies;
+        }
+
+    }
+
+    /**
+     * The BIOS strings for this VM have already been set and cannot be changed.
      */
     public static class VmBiosStringsAlreadySet extends XenAPIException {
 
@@ -4686,7 +5985,7 @@ public class Types
          * Create a new VmBiosStringsAlreadySet
          */
         public VmBiosStringsAlreadySet() {
-            super("The BIOS strings for this VM have already been set and cannot be changed anymore.");
+            super("The BIOS strings for this VM have already been set and cannot be changed.");
         }
 
     }
@@ -4767,6 +6066,24 @@ public class Types
             this.patch = patch;
             this.foundBuild = foundBuild;
             this.requiredBuild = requiredBuild;
+        }
+
+    }
+
+    /**
+     * Force destroy failed on a Cluster_host while force destroying the cluster.
+     */
+    public static class ClusterForceDestroyFailed extends XenAPIException {
+        public final String cluster;
+
+        /**
+         * Create a new ClusterForceDestroyFailed
+         *
+         * @param cluster
+         */
+        public ClusterForceDestroyFailed(String cluster) {
+            super("Force destroy failed on a Cluster_host while force destroying the cluster.");
+            this.cluster = cluster;
         }
 
     }
@@ -4938,6 +6255,24 @@ public class Types
     }
 
     /**
+     * The uploaded update already exists
+     */
+    public static class UpdateAlreadyExists extends XenAPIException {
+        public final String uuid;
+
+        /**
+         * Create a new UpdateAlreadyExists
+         *
+         * @param uuid
+         */
+        public UpdateAlreadyExists(String uuid) {
+            super("The uploaded update already exists");
+            this.uuid = uuid;
+        }
+
+    }
+
+    /**
      * There was an SR backend failure.
      */
     public static class SrBackendFailure extends XenAPIException {
@@ -5076,6 +6411,24 @@ public class Types
     }
 
     /**
+     * The host failed to enable external authentication.
+     */
+    public static class AuthEnableFailedInvalidOu extends XenAPIException {
+        public final String message;
+
+        /**
+         * Create a new AuthEnableFailedInvalidOu
+         *
+         * @param message
+         */
+        public AuthEnableFailedInvalidOu(String message) {
+            super("The host failed to enable external authentication.");
+            this.message = message;
+        }
+
+    }
+
+    /**
      * The specified object no longer exists.
      */
     public static class ObjectNolongerExists extends XenAPIException {
@@ -5125,6 +6478,38 @@ public class Types
     }
 
     /**
+     * The operation could not be performed because cluster creation is in progress.
+     */
+    public static class ClusterCreateInProgress extends XenAPIException {
+
+        /**
+         * Create a new ClusterCreateInProgress
+         */
+        public ClusterCreateInProgress() {
+            super("The operation could not be performed because cluster creation is in progress.");
+        }
+
+    }
+
+    /**
+     * You attempted an operation on a VM which lacks the feature.
+     */
+    public static class VmLacksFeature extends XenAPIException {
+        public final String vm;
+
+        /**
+         * Create a new VmLacksFeature
+         *
+         * @param vm
+         */
+        public VmLacksFeature(String vm) {
+            super("You attempted an operation on a VM which lacks the feature.");
+            this.vm = vm;
+        }
+
+    }
+
+    /**
      * The uploaded patch file is invalid.  See attached log for more details.
      */
     public static class InvalidPatchWithLog extends XenAPIException {
@@ -5138,6 +6523,24 @@ public class Types
         public InvalidPatchWithLog(String log) {
             super("The uploaded patch file is invalid.  See attached log for more details.");
             this.log = log;
+        }
+
+    }
+
+    /**
+     * The host failed to enable external authentication.
+     */
+    public static class AuthEnableFailedInvalidAccount extends XenAPIException {
+        public final String message;
+
+        /**
+         * Create a new AuthEnableFailedInvalidAccount
+         *
+         * @param message
+         */
+        public AuthEnableFailedInvalidAccount(String message) {
+            super("The host failed to enable external authentication.");
+            this.message = message;
         }
 
     }
@@ -5313,7 +6716,28 @@ public class Types
     }
 
     /**
-     * You attempted to migrate a VDI on SR which doesn't have snapshot capability
+     * Cannot contact the other host using TLS on the specified address and port
+     */
+    public static class TlsConnectionFailed extends XenAPIException {
+        public final String address;
+        public final String port;
+
+        /**
+         * Create a new TlsConnectionFailed
+         *
+         * @param address
+         * @param port
+         */
+        public TlsConnectionFailed(String address, String port) {
+            super("Cannot contact the other host using TLS on the specified address and port");
+            this.address = address;
+            this.port = port;
+        }
+
+    }
+
+    /**
+     * You attempted to migrate a VDI to or from an SR which doesn't support migration
      */
     public static class SrDoesNotSupportMigration extends XenAPIException {
         public final String sr;
@@ -5324,7 +6748,7 @@ public class Types
          * @param sr
          */
         public SrDoesNotSupportMigration(String sr) {
-            super("You attempted to migrate a VDI on SR which doesn't have snapshot capability");
+            super("You attempted to migrate a VDI to or from an SR which doesn't support migration");
             this.sr = sr;
         }
 
@@ -5358,6 +6782,24 @@ public class Types
         public VmLacksFeatureShutdown(String vm) {
             super("You attempted an operation which needs the cooperative shutdown feature on a VM which lacks it.");
             this.vm = vm;
+        }
+
+    }
+
+    /**
+     * The address specified is already in use by an existing PVS_server object
+     */
+    public static class PvsServerAddressInUse extends XenAPIException {
+        public final String address;
+
+        /**
+         * Create a new PvsServerAddressInUse
+         *
+         * @param address
+         */
+        public PvsServerAddressInUse(String address) {
+            super("The address specified is already in use by an existing PVS_server object");
+            this.address = address;
         }
 
     }
@@ -5431,6 +6873,20 @@ public class Types
             super("RBAC permission denied.");
             this.permission = permission;
             this.message = message;
+        }
+
+    }
+
+    /**
+     * The host joining the pool must not have any non-management vlans.
+     */
+    public static class PoolJoiningHostHasNonManagementVlans extends XenAPIException {
+
+        /**
+         * Create a new PoolJoiningHostHasNonManagementVlans
+         */
+        public PoolJoiningHostHasNonManagementVlans() {
+            super("The host joining the pool must not have any non-management vlans.");
         }
 
     }
@@ -5571,6 +7027,30 @@ public class Types
     }
 
     /**
+     * The update precheck stage failed: the server does not have enough space.
+     */
+    public static class UpdatePrecheckFailedOutOfSpace extends XenAPIException {
+        public final String update;
+        public final String availableSpace;
+        public final String requiredSpace;
+
+        /**
+         * Create a new UpdatePrecheckFailedOutOfSpace
+         *
+         * @param update
+         * @param availableSpace
+         * @param requiredSpace
+         */
+        public UpdatePrecheckFailedOutOfSpace(String update, String availableSpace, String requiredSpace) {
+            super("The update precheck stage failed: the server does not have enough space.");
+            this.update = update;
+            this.availableSpace = availableSpace;
+            this.requiredSpace = requiredSpace;
+        }
+
+    }
+
+    /**
      * Unknown type of external authentication.
      */
     public static class AuthUnknownType extends XenAPIException {
@@ -5701,6 +7181,48 @@ public class Types
     }
 
     /**
+     * The pool failed to enable external authentication.
+     */
+    public static class PoolAuthEnableFailedUnavailable extends XenAPIException {
+        public final String host;
+        public final String message;
+
+        /**
+         * Create a new PoolAuthEnableFailedUnavailable
+         *
+         * @param host
+         * @param message
+         */
+        public PoolAuthEnableFailedUnavailable(String host, String message) {
+            super("The pool failed to enable external authentication.");
+            this.host = host;
+            this.message = message;
+        }
+
+    }
+
+    /**
+     * The PIF is not compatible with the selected SR-IOV network
+     */
+    public static class NetworkHasIncompatibleSriovPifs extends XenAPIException {
+        public final String PIF;
+        public final String network;
+
+        /**
+         * Create a new NetworkHasIncompatibleSriovPifs
+         *
+         * @param PIF
+         * @param network
+         */
+        public NetworkHasIncompatibleSriovPifs(String PIF, String network) {
+            super("The PIF is not compatible with the selected SR-IOV network");
+            this.PIF = PIF;
+            this.network = network;
+        }
+
+    }
+
+    /**
      * You attempted to migrate a VM which has a checkpoint.
      */
     public static class VmHasCheckpoint extends XenAPIException {
@@ -5732,6 +7254,45 @@ public class Types
         public VmHasTooManySnapshots(String vm) {
             super("You attempted to migrate a VM with more than one snapshot.");
             this.vm = vm;
+        }
+
+    }
+
+    /**
+     * The host joining the pool must have the same API version as the pool master.
+     */
+    public static class PoolJoiningHostMustHaveSameApiVersion extends XenAPIException {
+        public final String hostApiVersion;
+        public final String masterApiVersion;
+
+        /**
+         * Create a new PoolJoiningHostMustHaveSameApiVersion
+         *
+         * @param hostApiVersion
+         * @param masterApiVersion
+         */
+        public PoolJoiningHostMustHaveSameApiVersion(String hostApiVersion, String masterApiVersion) {
+            super("The host joining the pool must have the same API version as the pool master.");
+            this.hostApiVersion = hostApiVersion;
+            this.masterApiVersion = masterApiVersion;
+        }
+
+    }
+
+    /**
+     * This is a network SR-IOV logical PIF and cannot do forget on it
+     */
+    public static class CannotForgetSriovLogical extends XenAPIException {
+        public final String PIF;
+
+        /**
+         * Create a new CannotForgetSriovLogical
+         *
+         * @param PIF
+         */
+        public CannotForgetSriovLogical(String PIF) {
+            super("This is a network SR-IOV logical PIF and cannot do forget on it");
+            this.PIF = PIF;
         }
 
     }
@@ -5776,6 +7337,24 @@ public class Types
     }
 
     /**
+     * The cluster does not have only one node.
+     */
+    public static class ClusterDoesNotHaveOneNode extends XenAPIException {
+        public final String numberOfNodes;
+
+        /**
+         * Create a new ClusterDoesNotHaveOneNode
+         *
+         * @param numberOfNodes
+         */
+        public ClusterDoesNotHaveOneNode(String numberOfNodes) {
+            super("The cluster does not have only one node.");
+            this.numberOfNodes = numberOfNodes;
+        }
+
+    }
+
+    /**
      * An error occurred while attempting to import a database from a metadata VDI
      */
     public static class CouldNotImportDatabase extends XenAPIException {
@@ -5789,6 +7368,27 @@ public class Types
         public CouldNotImportDatabase(String reason) {
             super("An error occurred while attempting to import a database from a metadata VDI");
             this.reason = reason;
+        }
+
+    }
+
+    /**
+     * You attempted to migrate a VM to a destination host which is older than the source host.
+     */
+    public static class VmHostIncompatibleVersionMigrate extends XenAPIException {
+        public final String host;
+        public final String vm;
+
+        /**
+         * Create a new VmHostIncompatibleVersionMigrate
+         *
+         * @param host
+         * @param vm
+         */
+        public VmHostIncompatibleVersionMigrate(String host, String vm) {
+            super("You attempted to migrate a VM to a destination host which is older than the source host.");
+            this.host = host;
+            this.vm = vm;
         }
 
     }
@@ -6033,6 +7633,24 @@ public class Types
     }
 
     /**
+     * The suspend image of a checkpoint is not accessible from the host on which the VM is running
+     */
+    public static class SuspendImageNotAccessible extends XenAPIException {
+        public final String vdi;
+
+        /**
+         * Create a new SuspendImageNotAccessible
+         *
+         * @param vdi
+         */
+        public SuspendImageNotAccessible(String vdi) {
+            super("The suspend image of a checkpoint is not accessible from the host on which the VM is running");
+            this.vdi = vdi;
+        }
+
+    }
+
+    /**
      * The request was rejected because there are too many pending tasks on the server.
      */
     public static class TooManyPendingTasks extends XenAPIException {
@@ -6086,6 +7704,84 @@ public class Types
     }
 
     /**
+     * This host has no PIF on the given network.
+     */
+    public static class PifNotPresent extends XenAPIException {
+        public final String host;
+        public final String network;
+
+        /**
+         * Create a new PifNotPresent
+         *
+         * @param host
+         * @param network
+         */
+        public PifNotPresent(String host, String network) {
+            super("This host has no PIF on the given network.");
+            this.host = host;
+            this.network = network;
+        }
+
+    }
+
+    /**
+     * An operation was attempted while clustering was enabled on the cluster_host.
+     */
+    public static class ClusteringEnabled extends XenAPIException {
+        public final String clusterHost;
+
+        /**
+         * Create a new ClusteringEnabled
+         *
+         * @param clusterHost
+         */
+        public ClusteringEnabled(String clusterHost) {
+            super("An operation was attempted while clustering was enabled on the cluster_host.");
+            this.clusterHost = clusterHost;
+        }
+
+    }
+
+    /**
+     * The USB group contains active VUSBs and cannot be deleted.
+     */
+    public static class UsbGroupContainsVusb extends XenAPIException {
+        public final String vusbs;
+
+        /**
+         * Create a new UsbGroupContainsVusb
+         *
+         * @param vusbs
+         */
+        public UsbGroupContainsVusb(String vusbs) {
+            super("The USB group contains active VUSBs and cannot be deleted.");
+            this.vusbs = vusbs;
+        }
+
+    }
+
+    /**
+     * You attempted to run a VM on a host on which the VUSB required by the VM cannot be allocated on any PUSBs in the USB_group needed by the VM.
+     */
+    public static class VmRequiresVusb extends XenAPIException {
+        public final String vm;
+        public final String USBGroup;
+
+        /**
+         * Create a new VmRequiresVusb
+         *
+         * @param vm
+         * @param USBGroup
+         */
+        public VmRequiresVusb(String vm, String USBGroup) {
+            super("You attempted to run a VM on a host on which the VUSB required by the VM cannot be allocated on any PUSBs in the USB_group needed by the VM.");
+            this.vm = vm;
+            this.USBGroup = USBGroup;
+        }
+
+    }
+
+    /**
      * Only one PIF on a bond is allowed to have an IP configuration.
      */
     public static class PifBondMoreThanOneIp extends XenAPIException {
@@ -6113,6 +7809,24 @@ public class Types
         public PifIsPhysical(String PIF) {
             super("You tried to destroy a PIF, but it represents an aspect of the physical host configuration, and so cannot be destroyed.  The parameter echoes the PIF handle you gave.");
             this.PIF = PIF;
+        }
+
+    }
+
+    /**
+     * The network is incompatible with bond
+     */
+    public static class NetworkIncompatibleWithBond extends XenAPIException {
+        public final String network;
+
+        /**
+         * Create a new NetworkIncompatibleWithBond
+         *
+         * @param network
+         */
+        public NetworkIncompatibleWithBond(String network) {
+            super("The network is incompatible with bond");
+            this.network = network;
         }
 
     }
@@ -6184,6 +7898,24 @@ public class Types
         public VmHvmRequired(String vm) {
             super("HVM is required for this operation");
             this.vm = vm;
+        }
+
+    }
+
+    /**
+     * The source SR does not have sufficient temporary space available to proceed the operation.
+     */
+    public static class SrSourceSpaceInsufficient extends XenAPIException {
+        public final String sr;
+
+        /**
+         * Create a new SrSourceSpaceInsufficient
+         *
+         * @param sr
+         */
+        public SrSourceSpaceInsufficient(String sr) {
+            super("The source SR does not have sufficient temporary space available to proceed the operation.");
+            this.sr = sr;
         }
 
     }
@@ -6371,6 +8103,27 @@ public class Types
     }
 
     /**
+     * The USB device is currently attached to a VM.
+     */
+    public static class UsbAlreadyAttached extends XenAPIException {
+        public final String PUSB;
+        public final String VM;
+
+        /**
+         * Create a new UsbAlreadyAttached
+         *
+         * @param PUSB
+         * @param VM
+         */
+        public UsbAlreadyAttached(String PUSB, String VM) {
+            super("The USB device is currently attached to a VM.");
+            this.PUSB = PUSB;
+            this.VM = VM;
+        }
+
+    }
+
+    /**
      * You attempted to run a VM on a host which doesn't have I/O virtualization (IOMMU/VT-d) enabled, which is needed by the VM.
      */
     public static class VmRequiresIommu extends XenAPIException {
@@ -6425,6 +8178,24 @@ public class Types
     }
 
     /**
+     * The VM is configured in a way that prevents it from being mobile.
+     */
+    public static class VmIsImmobile extends XenAPIException {
+        public final String VM;
+
+        /**
+         * Create a new VmIsImmobile
+         *
+         * @param VM
+         */
+        public VmIsImmobile(String VM) {
+            super("The VM is configured in a way that prevents it from being mobile.");
+            this.VM = VM;
+        }
+
+    }
+
+    /**
      * The VM has no empty CD drive (VBD).
      */
     public static class VmNoEmptyCdVbd extends XenAPIException {
@@ -6443,6 +8214,42 @@ public class Types
     }
 
     /**
+     * The VM has too many VUSBs.
+     */
+    public static class TooManyVusbs extends XenAPIException {
+        public final String number;
+
+        /**
+         * Create a new TooManyVusbs
+         *
+         * @param number
+         */
+        public TooManyVusbs(String number) {
+            super("The VM has too many VUSBs.");
+            this.number = number;
+        }
+
+    }
+
+    /**
+     * This update has already been applied.
+     */
+    public static class UpdateAlreadyApplied extends XenAPIException {
+        public final String update;
+
+        /**
+         * Create a new UpdateAlreadyApplied
+         *
+         * @param update
+         */
+        public UpdateAlreadyApplied(String update) {
+            super("This update has already been applied.");
+            this.update = update;
+        }
+
+    }
+
+    /**
      * You attempted to start a VM that's attached to more than one VDI with a timeoffset marked as reset-on-boot.
      */
     public static class VmAttachedToMoreThanOneVdiWithTimeoffsetMarkedAsResetOnBoot extends XenAPIException {
@@ -6456,6 +8263,24 @@ public class Types
         public VmAttachedToMoreThanOneVdiWithTimeoffsetMarkedAsResetOnBoot(String vm) {
             super("You attempted to start a VM that's attached to more than one VDI with a timeoffset marked as reset-on-boot.");
             this.vm = vm;
+        }
+
+    }
+
+    /**
+     * The network is incompatible with sriov
+     */
+    public static class NetworkIncompatibleWithSriov extends XenAPIException {
+        public final String network;
+
+        /**
+         * Create a new NetworkIncompatibleWithSriov
+         *
+         * @param network
+         */
+        public NetworkIncompatibleWithSriov(String network) {
+            super("The network is incompatible with sriov");
+            this.network = network;
         }
 
     }
@@ -6528,6 +8353,24 @@ public class Types
     }
 
     /**
+     * Timeout trying to balloon down memory before VM migration. If the error occurs repeatedly, consider increasing the memory-dynamic-min value.
+     */
+    public static class BallooningTimeoutBeforeMigration extends XenAPIException {
+        public final String vm;
+
+        /**
+         * Create a new BallooningTimeoutBeforeMigration
+         *
+         * @param vm
+         */
+        public BallooningTimeoutBeforeMigration(String vm) {
+            super("Timeout trying to balloon down memory before VM migration. If the error occurs repeatedly, consider increasing the memory-dynamic-min value.");
+            this.vm = vm;
+        }
+
+    }
+
+    /**
      * The host joining the pool cannot already be a master of another pool.
      */
     public static class JoiningHostCannotBeMasterOfOtherHosts extends XenAPIException {
@@ -6573,6 +8416,45 @@ public class Types
         public AddressViolatesLockingConstraint(String address) {
             super("The specified IP address violates the VIF locking configuration.");
             this.address = address;
+        }
+
+    }
+
+    /**
+     * The PIF selected for the SR-IOV network is already enabled
+     */
+    public static class NetworkSriovAlreadyEnabled extends XenAPIException {
+        public final String PIF;
+
+        /**
+         * Create a new NetworkSriovAlreadyEnabled
+         *
+         * @param PIF
+         */
+        public NetworkSriovAlreadyEnabled(String PIF) {
+            super("The PIF selected for the SR-IOV network is already enabled");
+            this.PIF = PIF;
+        }
+
+    }
+
+    /**
+     * The update precheck stage failed: prerequisite update(s) are missing.
+     */
+    public static class UpdatePrecheckFailedPrerequisiteMissing extends XenAPIException {
+        public final String update;
+        public final String prerequisiteUpdate;
+
+        /**
+         * Create a new UpdatePrecheckFailedPrerequisiteMissing
+         *
+         * @param update
+         * @param prerequisiteUpdate
+         */
+        public UpdatePrecheckFailedPrerequisiteMissing(String update, String prerequisiteUpdate) {
+            super("The update precheck stage failed: prerequisite update(s) are missing.");
+            this.update = update;
+            this.prerequisiteUpdate = prerequisiteUpdate;
         }
 
     }
@@ -6671,6 +8553,42 @@ public class Types
          */
         public PifDoesNotAllowUnplug(String PIF) {
             super("The operation you requested cannot be performed because the specified PIF does not allow unplug.");
+            this.PIF = PIF;
+        }
+
+    }
+
+    /**
+     * The PVS cache storage is in use by the site and cannot be removed.
+     */
+    public static class PvsCacheStorageIsInUse extends XenAPIException {
+        public final String PVSCacheStorage;
+
+        /**
+         * Create a new PvsCacheStorageIsInUse
+         *
+         * @param PVSCacheStorage
+         */
+        public PvsCacheStorageIsInUse(String PVSCacheStorage) {
+            super("The PVS cache storage is in use by the site and cannot be removed.");
+            this.PVSCacheStorage = PVSCacheStorage;
+        }
+
+    }
+
+    /**
+     * The selected PIF is not capable of network SR-IOV
+     */
+    public static class PifIsNotSriovCapable extends XenAPIException {
+        public final String PIF;
+
+        /**
+         * Create a new PifIsNotSriovCapable
+         *
+         * @param PIF
+         */
+        public PifIsNotSriovCapable(String PIF) {
+            super("The selected PIF is not capable of network SR-IOV");
             this.PIF = PIF;
         }
 
@@ -6932,6 +8850,24 @@ public class Types
     }
 
     /**
+     * The network is incompatible with tunnel
+     */
+    public static class NetworkIncompatibleWithTunnel extends XenAPIException {
+        public final String network;
+
+        /**
+         * Create a new NetworkIncompatibleWithTunnel
+         *
+         * @param network
+         */
+        public NetworkIncompatibleWithTunnel(String network) {
+            super("The network is incompatible with tunnel");
+            this.network = network;
+        }
+
+    }
+
+    /**
      * This operation cannot be performed because creating or deleting a bond involving the management interface is not allowed while HA is on. In order to do that, disable HA, create or delete the bond then re-enable HA.
      */
     public static class HaCannotChangeBondStatusOfMgmtIface extends XenAPIException {
@@ -6964,6 +8900,27 @@ public class Types
     }
 
     /**
+     * VLAN on the PIF is not compatible with the selected SR-IOV VLAN network
+     */
+    public static class NetworkHasIncompatibleVlanOnSriovPifs extends XenAPIException {
+        public final String PIF;
+        public final String network;
+
+        /**
+         * Create a new NetworkHasIncompatibleVlanOnSriovPifs
+         *
+         * @param PIF
+         * @param network
+         */
+        public NetworkHasIncompatibleVlanOnSriovPifs(String PIF, String network) {
+            super("VLAN on the PIF is not compatible with the selected SR-IOV VLAN network");
+            this.PIF = PIF;
+            this.network = network;
+        }
+
+    }
+
+    /**
      * The SR has no attached PBDs
      */
     public static class SrHasNoPbds extends XenAPIException {
@@ -6977,6 +8934,24 @@ public class Types
         public SrHasNoPbds(String sr) {
             super("The SR has no attached PBDs");
             this.sr = sr;
+        }
+
+    }
+
+    /**
+     * The uploaded update package is invalid.
+     */
+    public static class InvalidUpdate extends XenAPIException {
+        public final String info;
+
+        /**
+         * Create a new InvalidUpdate
+         *
+         * @param info
+         */
+        public InvalidUpdate(String info) {
+            super("The uploaded update package is invalid.");
+            this.info = info;
         }
 
     }
@@ -7092,6 +9067,27 @@ public class Types
     }
 
     /**
+     * This VM is assigned to a snapshot schedule.
+     */
+    public static class VmAssignedToSnapshotSchedule extends XenAPIException {
+        public final String vm;
+        public final String vmss;
+
+        /**
+         * Create a new VmAssignedToSnapshotSchedule
+         *
+         * @param vm
+         * @param vmss
+         */
+        public VmAssignedToSnapshotSchedule(String vm, String vmss) {
+            super("This VM is assigned to a snapshot schedule.");
+            this.vm = vm;
+            this.vmss = vmss;
+        }
+
+    }
+
+    /**
      * An error occured while saving the memory image of the specified virtual machine
      */
     public static class VmCheckpointSuspendFailed extends XenAPIException {
@@ -7183,6 +9179,27 @@ public class Types
          */
         public HaHostCannotAccessStatefile() {
             super("The host could not join the liveset because the HA daemon could not access the heartbeat disk.");
+        }
+
+    }
+
+    /**
+     * You tried to add a purpose to a network but the new purpose is not compatible with an existing purpose of the network or other networks.
+     */
+    public static class NetworkIncompatiblePurposes extends XenAPIException {
+        public final String newPurpose;
+        public final String conflictingPurpose;
+
+        /**
+         * Create a new NetworkIncompatiblePurposes
+         *
+         * @param newPurpose
+         * @param conflictingPurpose
+         */
+        public NetworkIncompatiblePurposes(String newPurpose, String conflictingPurpose) {
+            super("You tried to add a purpose to a network but the new purpose is not compatible with an existing purpose of the network or other networks.");
+            this.newPurpose = newPurpose;
+            this.conflictingPurpose = conflictingPurpose;
         }
 
     }
@@ -7352,6 +9369,24 @@ public class Types
     }
 
     /**
+     * The PIF is still related with a network SR-IOV
+     */
+    public static class PifSriovStillExists extends XenAPIException {
+        public final String PIF;
+
+        /**
+         * Create a new PifSriovStillExists
+         *
+         * @param PIF
+         */
+        public PifSriovStillExists(String PIF) {
+            super("The PIF is still related with a network SR-IOV");
+            this.PIF = PIF;
+        }
+
+    }
+
+    /**
      * The operation you requested cannot be performed because the specified PIF is not managed by xapi.
      */
     public static class PifUnmanaged extends XenAPIException {
@@ -7365,6 +9400,20 @@ public class Types
         public PifUnmanaged(String PIF) {
             super("The operation you requested cannot be performed because the specified PIF is not managed by xapi.");
             this.PIF = PIF;
+        }
+
+    }
+
+    /**
+     * There is at least one VM assigned to snapshot schedule.
+     */
+    public static class VmssHasVm extends XenAPIException {
+
+        /**
+         * Create a new VmssHasVm
+         */
+        public VmssHasVm() {
+            super("There is at least one VM assigned to snapshot schedule.");
         }
 
     }
@@ -7398,6 +9447,24 @@ public class Types
     }
 
     /**
+     * The operation you requested cannot be performed because the specified PIF allows unplug.
+     */
+    public static class PifAllowsUnplug extends XenAPIException {
+        public final String PIF;
+
+        /**
+         * Create a new PifAllowsUnplug
+         *
+         * @param PIF
+         */
+        public PifAllowsUnplug(String PIF) {
+            super("The operation you requested cannot be performed because the specified PIF allows unplug.");
+            this.PIF = PIF;
+        }
+
+    }
+
+    /**
      * The default SR reference does not point to a valid SR
      */
     public static class DefaultSrNotFound extends XenAPIException {
@@ -7411,6 +9478,24 @@ public class Types
         public DefaultSrNotFound(String sr) {
             super("The default SR reference does not point to a valid SR");
             this.sr = sr;
+        }
+
+    }
+
+    /**
+     * Nvidia tools error. Please ensure that the latest Nvidia tools are installed
+     */
+    public static class NvidiaToolsError extends XenAPIException {
+        public final String host;
+
+        /**
+         * Create a new NvidiaToolsError
+         *
+         * @param host
+         */
+        public NvidiaToolsError(String host) {
+            super("Nvidia tools error. Please ensure that the latest Nvidia tools are installed");
+            this.host = host;
         }
 
     }
@@ -7639,6 +9724,24 @@ public class Types
     }
 
     /**
+     * The USB group contains active PUSBs and cannot be deleted.
+     */
+    public static class UsbGroupContainsPusb extends XenAPIException {
+        public final String pusbs;
+
+        /**
+         * Create a new UsbGroupContainsPusb
+         *
+         * @param pusbs
+         */
+        public UsbGroupContainsPusb(String pusbs) {
+            super("The USB group contains active PUSBs and cannot be deleted.");
+            this.pusbs = pusbs;
+        }
+
+    }
+
+    /**
      * The specified CRL is corrupt or unreadable.
      */
     public static class CrlCorrupt extends XenAPIException {
@@ -7755,6 +9858,24 @@ public class Types
             super("External authentication for this host is already enabled.");
             this.currentAuthType = currentAuthType;
             this.currentServiceName = currentServiceName;
+        }
+
+    }
+
+    /**
+     * VM cannot be resumed because it has no suspend VDI
+     */
+    public static class VmHasNoSuspendVdi extends XenAPIException {
+        public final String vm;
+
+        /**
+         * Create a new VmHasNoSuspendVdi
+         *
+         * @param vm
+         */
+        public VmHasNoSuspendVdi(String vm) {
+            super("VM cannot be resumed because it has no suspend VDI");
+            this.vm = vm;
         }
 
     }
@@ -7891,6 +10012,30 @@ public class Types
     }
 
     /**
+     * The update precheck stage failed: the server is of an incorrect version.
+     */
+    public static class UpdatePrecheckFailedWrongServerVersion extends XenAPIException {
+        public final String update;
+        public final String installedVersion;
+        public final String requiredVersion;
+
+        /**
+         * Create a new UpdatePrecheckFailedWrongServerVersion
+         *
+         * @param update
+         * @param installedVersion
+         * @param requiredVersion
+         */
+        public UpdatePrecheckFailedWrongServerVersion(String update, String installedVersion, String requiredVersion) {
+            super("The update precheck stage failed: the server is of an incorrect version.");
+            this.update = update;
+            this.installedVersion = installedVersion;
+            this.requiredVersion = requiredVersion;
+        }
+
+    }
+
+    /**
      * This operation could not be performed, because the VM has one or more virtual GPUs.
      */
     public static class VmHasVgpu extends XenAPIException {
@@ -7982,6 +10127,24 @@ public class Types
         public MirrorFailed(String vdi) {
             super("The VDI mirroring cannot be performed");
             this.vdi = vdi;
+        }
+
+    }
+
+    /**
+     * The host does not have a Cluster_host with a compatible cluster stack.
+     */
+    public static class NoCompatibleClusterHost extends XenAPIException {
+        public final String host;
+
+        /**
+         * Create a new NoCompatibleClusterHost
+         *
+         * @param host
+         */
+        public NoCompatibleClusterHost(String host) {
+            super("The host does not have a Cluster_host with a compatible cluster stack.");
+            this.host = host;
         }
 
     }
@@ -8095,6 +10258,27 @@ public class Types
             this.table = table;
             this.field = field;
             this.value = value;
+        }
+
+    }
+
+    /**
+     * The PVS site already has cache storage configured for the host.
+     */
+    public static class PvsCacheStorageAlreadyPresent extends XenAPIException {
+        public final String site;
+        public final String host;
+
+        /**
+         * Create a new PvsCacheStorageAlreadyPresent
+         *
+         * @param site
+         * @param host
+         */
+        public PvsCacheStorageAlreadyPresent(String site, String host) {
+            super("The PVS site already has cache storage configured for the host.");
+            this.site = site;
+            this.host = host;
         }
 
     }
@@ -8223,6 +10407,27 @@ public class Types
          */
         public WlbNotInitialized() {
             super("No WLB connection is configured.");
+        }
+
+    }
+
+    /**
+     * The pool failed to enable external authentication.
+     */
+    public static class PoolAuthEnableFailedInvalidAccount extends XenAPIException {
+        public final String host;
+        public final String message;
+
+        /**
+         * Create a new PoolAuthEnableFailedInvalidAccount
+         *
+         * @param host
+         * @param message
+         */
+        public PoolAuthEnableFailedInvalidAccount(String host, String message) {
+            super("The pool failed to enable external authentication.");
+            this.host = host;
+            this.message = message;
         }
 
     }
@@ -8416,6 +10621,24 @@ public class Types
     }
 
     /**
+     * There is insufficient capacity for VF reservation
+     */
+    public static class NetworkSriovInsufficientCapacity extends XenAPIException {
+        public final String network;
+
+        /**
+         * Create a new NetworkSriovInsufficientCapacity
+         *
+         * @param network
+         */
+        public NetworkSriovInsufficientCapacity(String network) {
+            super("There is insufficient capacity for VF reservation");
+            this.network = network;
+        }
+
+    }
+
+    /**
      * Could not create the XML string generated by the transportable snapshot
      */
     public static class XenVssReqErrorCreatingSnapshotXmlString extends XenAPIException {
@@ -8471,6 +10694,30 @@ public class Types
         public NotSystemDomain(String vm) {
             super("The given VM is not registered as a system domain. This operation can only be performed on a registered system domain.");
             this.vm = vm;
+        }
+
+    }
+
+    /**
+     * The VGPU is not compatible with any PGPU in the destination.
+     */
+    public static class VgpuDestinationIncompatible extends XenAPIException {
+        public final String reason;
+        public final String vgpu;
+        public final String host;
+
+        /**
+         * Create a new VgpuDestinationIncompatible
+         *
+         * @param reason
+         * @param vgpu
+         * @param host
+         */
+        public VgpuDestinationIncompatible(String reason, String vgpu, String host) {
+            super("The VGPU is not compatible with any PGPU in the destination.");
+            this.reason = reason;
+            this.vgpu = vgpu;
+            this.host = host;
         }
 
     }
@@ -8546,6 +10793,38 @@ public class Types
     }
 
     /**
+     * The IGMP Snooping setting cannot be applied for some of the host, network(s).
+     */
+    public static class CouldNotUpdateIgmpSnoopingEverywhere extends XenAPIException {
+
+        /**
+         * Create a new CouldNotUpdateIgmpSnoopingEverywhere
+         */
+        public CouldNotUpdateIgmpSnoopingEverywhere() {
+            super("The IGMP Snooping setting cannot be applied for some of the host, network(s).");
+        }
+
+    }
+
+    /**
+     * The requested operation is not allowed because the specified VDI does not have changed block tracking metadata.
+     */
+    public static class VdiNoCbtMetadata extends XenAPIException {
+        public final String vdi;
+
+        /**
+         * Create a new VdiNoCbtMetadata
+         *
+         * @param vdi
+         */
+        public VdiNoCbtMetadata(String vdi) {
+            super("The requested operation is not allowed because the specified VDI does not have changed block tracking metadata.");
+            this.vdi = vdi;
+        }
+
+    }
+
+    /**
      * The operation could not proceed because necessary VDIs were already locked at the storage level.
      */
     public static class SrVdiLockingFailed extends XenAPIException {
@@ -8578,15 +10857,79 @@ public class Types
     }
 
     /**
+     * The operation you requested cannot be performed because the specified PIF has FCoE SR in use.
+     */
+    public static class PifHasFcoeSrInUse extends XenAPIException {
+        public final String PIF;
+        public final String SR;
+
+        /**
+         * Create a new PifHasFcoeSrInUse
+         *
+         * @param PIF
+         * @param SR
+         */
+        public PifHasFcoeSrInUse(String PIF, String SR) {
+            super("The operation you requested cannot be performed because the specified PIF has FCoE SR in use.");
+            this.PIF = PIF;
+            this.SR = SR;
+        }
+
+    }
+
+    /**
+     * The network has cluster objects attached.
+     */
+    public static class ClusteringEnabledOnNetwork extends XenAPIException {
+        public final String network;
+
+        /**
+         * Create a new ClusteringEnabledOnNetwork
+         *
+         * @param network
+         */
+        public ClusteringEnabledOnNetwork(String network) {
+            super("The network has cluster objects attached.");
+            this.network = network;
+        }
+
+    }
+
+    /**
+     * External authentication has been disabled with errors: Some AD machine accounts were not disabled on the AD server due to invalid account.
+     */
+    public static class PoolAuthDisableFailedInvalidAccount extends XenAPIException {
+        public final String host;
+        public final String message;
+
+        /**
+         * Create a new PoolAuthDisableFailedInvalidAccount
+         *
+         * @param host
+         * @param message
+         */
+        public PoolAuthDisableFailedInvalidAccount(String host, String message) {
+            super("External authentication has been disabled with errors: Some AD machine accounts were not disabled on the AD server due to invalid account.");
+            this.host = host;
+            this.message = message;
+        }
+
+    }
+
+    /**
      * PIF has no IP configuration (mode currently set to 'none')
      */
     public static class PifHasNoNetworkConfiguration extends XenAPIException {
+        public final String PIF;
 
         /**
          * Create a new PifHasNoNetworkConfiguration
+         *
+         * @param PIF
          */
-        public PifHasNoNetworkConfiguration() {
+        public PifHasNoNetworkConfiguration(String PIF) {
             super("PIF has no IP configuration (mode currently set to 'none')");
+            this.PIF = PIF;
         }
 
     }
@@ -8692,6 +11035,24 @@ public class Types
     }
 
     /**
+     * The specified bridge already exists.
+     */
+    public static class BridgeNameExists extends XenAPIException {
+        public final String bridge;
+
+        /**
+         * Create a new BridgeNameExists
+         *
+         * @param bridge
+         */
+        public BridgeNameExists(String bridge) {
+            super("The specified bridge already exists.");
+            this.bridge = bridge;
+        }
+
+    }
+
+    /**
      * WLB reported that communication with the server timed out.
      */
     public static class WlbXenserverTimeout extends XenAPIException {
@@ -8792,6 +11153,24 @@ public class Types
     }
 
     /**
+     * The dynamic memory range does not satisfy the following constraint.
+     */
+    public static class MemoryConstraintViolation extends XenAPIException {
+        public final String constraint;
+
+        /**
+         * Create a new MemoryConstraintViolation
+         *
+         * @param constraint
+         */
+        public MemoryConstraintViolation(String constraint) {
+            super("The dynamic memory range does not satisfy the following constraint.");
+            this.constraint = constraint;
+        }
+
+    }
+
+    /**
      * You must use tar output to retrieve system status from an OEM host.
      */
     public static class SystemStatusMustUseTarOnOem extends XenAPIException {
@@ -8801,6 +11180,42 @@ public class Types
          */
         public SystemStatusMustUseTarOnOem() {
             super("You must use tar output to retrieve system status from an OEM host.");
+        }
+
+    }
+
+    /**
+     * The update precheck stage failed: RPM package validation requires a GPG key that is not present on the host.
+     */
+    public static class UpdatePrecheckFailedGpgkeyNotImported extends XenAPIException {
+        public final String update;
+
+        /**
+         * Create a new UpdatePrecheckFailedGpgkeyNotImported
+         *
+         * @param update
+         */
+        public UpdatePrecheckFailedGpgkeyNotImported(String update) {
+            super("The update precheck stage failed: RPM package validation requires a GPG key that is not present on the host.");
+            this.update = update;
+        }
+
+    }
+
+    /**
+     * The passthrough_enabled must be true before passthrough usb to vm.
+     */
+    public static class PassthroughNotEnabled extends XenAPIException {
+        public final String PUSB;
+
+        /**
+         * Create a new PassthroughNotEnabled
+         *
+         * @param PUSB
+         */
+        public PassthroughNotEnabled(String PUSB) {
+            super("The passthrough_enabled must be true before passthrough usb to vm.");
+            this.PUSB = PUSB;
         }
 
     }
@@ -9027,6 +11442,42 @@ public class Types
     }
 
     /**
+     * This is a network SR-IOV logical PIF and cannot have a tunnel on it.
+     */
+    public static class CannotAddTunnelToSriovLogical extends XenAPIException {
+        public final String PIF;
+
+        /**
+         * Create a new CannotAddTunnelToSriovLogical
+         *
+         * @param PIF
+         */
+        public CannotAddTunnelToSriovLogical(String PIF) {
+            super("This is a network SR-IOV logical PIF and cannot have a tunnel on it.");
+            this.PIF = PIF;
+        }
+
+    }
+
+    /**
+     * This update has already been applied to all hosts in the pool.
+     */
+    public static class UpdateAlreadyAppliedInPool extends XenAPIException {
+        public final String update;
+
+        /**
+         * Create a new UpdateAlreadyAppliedInPool
+         *
+         * @param update
+         */
+        public UpdateAlreadyAppliedInPool(String update) {
+            super("This update has already been applied to all hosts in the pool.");
+            this.update = update;
+        }
+
+    }
+
+    /**
      * The restore could not be performed because the host's current management interface is not in the backup. The interfaces mentioned in the backup are:
      */
     public static class RestoreTargetMgmtIfNotInBackup extends XenAPIException {
@@ -9059,6 +11510,24 @@ public class Types
     }
 
     /**
+     * USB_groups are currently restricted to contain no more than one VUSB.
+     */
+    public static class UsbGroupConflict extends XenAPIException {
+        public final String USBGroup;
+
+        /**
+         * Create a new UsbGroupConflict
+         *
+         * @param USBGroup
+         */
+        public UsbGroupConflict(String USBGroup) {
+            super("USB_groups are currently restricted to contain no more than one VUSB.");
+            this.USBGroup = USBGroup;
+        }
+
+    }
+
+    /**
      * The operation could not be performed because HA is enabled on the Pool
      */
     public static class HaIsEnabled extends XenAPIException {
@@ -9068,6 +11537,24 @@ public class Types
          */
         public HaIsEnabled() {
             super("The operation could not be performed because HA is enabled on the Pool");
+        }
+
+    }
+
+    /**
+     * The update cannot be applied for the following host(s).
+     */
+    public static class UpdatePoolApplyFailed extends XenAPIException {
+        public final String hosts;
+
+        /**
+         * Create a new UpdatePoolApplyFailed
+         *
+         * @param hosts
+         */
+        public UpdatePoolApplyFailed(String hosts) {
+            super("The update cannot be applied for the following host(s).");
+            this.hosts = hosts;
         }
 
     }
@@ -9114,6 +11601,24 @@ public class Types
         public OperationNotAllowed(String reason) {
             super("You attempted an operation that was not allowed.");
             this.reason = reason;
+        }
+
+    }
+
+    /**
+     * The PVS site contains servers and cannot be forgotten.
+     */
+    public static class PvsSiteContainsServers extends XenAPIException {
+        public final String servers;
+
+        /**
+         * Create a new PvsSiteContainsServers
+         *
+         * @param servers
+         */
+        public PvsSiteContainsServers(String servers) {
+            super("The PVS site contains servers and cannot be forgotten.");
+            this.servers = servers;
         }
 
     }
@@ -9215,6 +11720,20 @@ public class Types
     }
 
     /**
+     * The host joining the pool must not have any tunnels.
+     */
+    public static class PoolJoiningHostHasTunnels extends XenAPIException {
+
+        /**
+         * Create a new PoolJoiningHostHasTunnels
+         */
+        public PoolJoiningHostHasTunnels() {
+            super("The host joining the pool must not have any tunnels.");
+        }
+
+    }
+
+    /**
      * The operation you requested cannot be performed because the specified PIF is the management interface.
      */
     public static class PifIsManagementInterface extends XenAPIException {
@@ -9272,6 +11791,20 @@ public class Types
     }
 
     /**
+     * The specified update has been applied and cannot be destroyed.
+     */
+    public static class UpdateIsApplied extends XenAPIException {
+
+        /**
+         * Create a new UpdateIsApplied
+         */
+        public UpdateIsApplied() {
+            super("The specified update has been applied and cannot be destroyed.");
+        }
+
+    }
+
+    /**
      * This operation is not allowed because your license lacks a needed feature.  Please contact your support representative.
      */
     public static class LicenceRestriction extends XenAPIException {
@@ -9322,6 +11855,20 @@ public class Types
     }
 
     /**
+     * Failed to contact service on the destination host.
+     */
+    public static class VmMigrateContactRemoteServiceFailed extends XenAPIException {
+
+        /**
+         * Create a new VmMigrateContactRemoteServiceFailed
+         */
+        public VmMigrateContactRemoteServiceFailed() {
+            super("Failed to contact service on the destination host.");
+        }
+
+    }
+
+    /**
      * This host cannot join the pool because the pool has HA enabled but this host has HA disabled.
      */
     public static class HaPoolIsEnabledButHostIsDisabled extends XenAPIException {
@@ -9349,6 +11896,20 @@ public class Types
         public GpuGroupContainsVgpu(String vgpus) {
             super("The GPU group contains active VGPUs and cannot be deleted.");
             this.vgpus = vgpus;
+        }
+
+    }
+
+    /**
+     * The requested update could not be found. Please upload the update again. This can occur when you run xe update-pool-clean before xe update-apply. 
+     */
+    public static class CannotFindUpdate extends XenAPIException {
+
+        /**
+         * Create a new CannotFindUpdate
+         */
+        public CannotFindUpdate() {
+            super("The requested update could not be found. Please upload the update again. This can occur when you run xe update-pool-clean before xe update-apply. ");
         }
 
     }
@@ -9434,12 +11995,16 @@ public class Types
      * PIF has no IPv6 configuration (mode currently set to 'none')
      */
     public static class PifHasNoV6NetworkConfiguration extends XenAPIException {
+        public final String PIF;
 
         /**
          * Create a new PifHasNoV6NetworkConfiguration
+         *
+         * @param PIF
          */
-        public PifHasNoV6NetworkConfiguration() {
+        public PifHasNoV6NetworkConfiguration(String PIF) {
             super("PIF has no IPv6 configuration (mode currently set to 'none')");
+            this.PIF = PIF;
         }
 
     }
@@ -9503,6 +12068,38 @@ public class Types
             this.host = host;
             this.type = type;
             this.ref = ref;
+        }
+
+    }
+
+    /**
+     * The operation is not allowed when the VM has VUSBs.
+     */
+    public static class VmHasVusbs extends XenAPIException {
+        public final String VM;
+
+        /**
+         * Create a new VmHasVusbs
+         *
+         * @param VM
+         */
+        public VmHasVusbs(String VM) {
+            super("The operation is not allowed when the VM has VUSBs.");
+            this.VM = VM;
+        }
+
+    }
+
+    /**
+     * The host joining the pool must not have any network SR-IOVs.
+     */
+    public static class PoolJoiningHostHasNetworkSriovs extends XenAPIException {
+
+        /**
+         * Create a new PoolJoiningHostHasNetworkSriovs
+         */
+        public PoolJoiningHostHasNetworkSriovs() {
+            super("The host joining the pool must not have any network SR-IOVs.");
         }
 
     }
@@ -9600,6 +12197,24 @@ public class Types
     }
 
     /**
+     * The update failed to apply. Please see attached output.
+     */
+    public static class UpdateApplyFailed extends XenAPIException {
+        public final String output;
+
+        /**
+         * Create a new UpdateApplyFailed
+         *
+         * @param output
+         */
+        public UpdateApplyFailed(String output) {
+            super("The update failed to apply. Please see attached output.");
+            this.output = output;
+        }
+
+    }
+
+    /**
      * Subject already exists.
      */
     public static class SubjectAlreadyExists extends XenAPIException {
@@ -9651,6 +12266,27 @@ public class Types
         public AuthEnableFailedUnavailable(String message) {
             super("The host failed to enable external authentication.");
             this.message = message;
+        }
+
+    }
+
+    /**
+     * Failed to enable SR-IOV on PIF
+     */
+    public static class NetworkSriovEnableFailed extends XenAPIException {
+        public final String PIF;
+        public final String msg;
+
+        /**
+         * Create a new NetworkSriovEnableFailed
+         *
+         * @param PIF
+         * @param msg
+         */
+        public NetworkSriovEnableFailed(String PIF, String msg) {
+            super("Failed to enable SR-IOV on PIF");
+            this.PIF = PIF;
+            this.msg = msg;
         }
 
     }
@@ -9939,7 +12575,7 @@ public class Types
     }
 
     /**
-     * The host joining the pool may not have any bonds, VLANs or tunnels.
+     * The host joining the pool must not have any bonds, VLANs or tunnels.
      */
     public static class PoolJoiningHostMustOnlyHavePhysicalPifs extends XenAPIException {
 
@@ -9947,7 +12583,25 @@ public class Types
          * Create a new PoolJoiningHostMustOnlyHavePhysicalPifs
          */
         public PoolJoiningHostMustOnlyHavePhysicalPifs() {
-            super("The host joining the pool may not have any bonds, VLANs or tunnels.");
+            super("The host joining the pool must not have any bonds, VLANs or tunnels.");
+        }
+
+    }
+
+    /**
+     * This operation is illegal because the VM is using nested virtualisation.
+     */
+    public static class VmIsUsingNestedVirt extends XenAPIException {
+        public final String VM;
+
+        /**
+         * Create a new VmIsUsingNestedVirt
+         *
+         * @param VM
+         */
+        public VmIsUsingNestedVirt(String VM) {
+            super("This operation is illegal because the VM is using nested virtualisation.");
+            this.VM = VM;
         }
 
     }
@@ -9991,15 +12645,40 @@ public class Types
     }
 
     /**
+     * The update precheck stage failed: conflicting update(s) are present.
+     */
+    public static class UpdatePrecheckFailedConflictPresent extends XenAPIException {
+        public final String update;
+        public final String conflictUpdate;
+
+        /**
+         * Create a new UpdatePrecheckFailedConflictPresent
+         *
+         * @param update
+         * @param conflictUpdate
+         */
+        public UpdatePrecheckFailedConflictPresent(String update, String conflictUpdate) {
+            super("The update precheck stage failed: conflicting update(s) are present.");
+            this.update = update;
+            this.conflictUpdate = conflictUpdate;
+        }
+
+    }
+
+    /**
      * VM didn't acknowledge the need to shutdown.
      */
     public static class VmFailedShutdownAcknowledgment extends XenAPIException {
+        public final String vm;
 
         /**
          * Create a new VmFailedShutdownAcknowledgment
+         *
+         * @param vm
          */
-        public VmFailedShutdownAcknowledgment() {
+        public VmFailedShutdownAcknowledgment(String vm) {
             super("VM didn't acknowledge the need to shutdown.");
+            this.vm = vm;
         }
 
     }
@@ -10080,7 +12759,7 @@ public class Types
     }
 
     /**
-     * This operation is not permitted on VMs containing VDIs in the 'on-boot=reset' mode
+     * This operation is not permitted on VDIs in the 'on-boot=reset' mode, or on VMs having such VDIs.
      */
     public static class VdiOnBootModeIncompatibleWithOperation extends XenAPIException {
 
@@ -10088,7 +12767,7 @@ public class Types
          * Create a new VdiOnBootModeIncompatibleWithOperation
          */
         public VdiOnBootModeIncompatibleWithOperation() {
-            super("This operation is not permitted on VMs containing VDIs in the 'on-boot=reset' mode");
+            super("This operation is not permitted on VDIs in the 'on-boot=reset' mode, or on VMs having such VDIs.");
         }
 
     }
@@ -10155,6 +12834,27 @@ public class Types
             this.pgpu = pgpu;
             this.type = type;
             this.runningType = runningType;
+        }
+
+    }
+
+    /**
+     * Operation cannot be performed because this VLAN is already in use. Please check your network configuration.
+     */
+    public static class VlanInUse extends XenAPIException {
+        public final String device;
+        public final String vlan;
+
+        /**
+         * Create a new VlanInUse
+         *
+         * @param device
+         * @param vlan
+         */
+        public VlanInUse(String device, String vlan) {
+            super("Operation cannot be performed because this VLAN is already in use. Please check your network configuration.");
+            this.device = device;
+            this.vlan = vlan;
         }
 
     }
@@ -10297,6 +12997,24 @@ public class Types
     }
 
     /**
+     * The network is not managed by xapi.
+     */
+    public static class NetworkUnmanaged extends XenAPIException {
+        public final String network;
+
+        /**
+         * Create a new NetworkUnmanaged
+         *
+         * @param network
+         */
+        public NetworkUnmanaged(String network) {
+            super("The network is not managed by xapi.");
+            this.network = network;
+        }
+
+    }
+
+    /**
      * The SR could not be connected because the driver was not recognised.
      */
     public static class SrUnknownDriver extends XenAPIException {
@@ -10354,6 +13072,24 @@ public class Types
     }
 
     /**
+     * The USB group does not contain any PUSBs.
+     */
+    public static class UsbGroupContainsNoPusbs extends XenAPIException {
+        public final String usbGroup;
+
+        /**
+         * Create a new UsbGroupContainsNoPusbs
+         *
+         * @param usbGroup
+         */
+        public UsbGroupContainsNoPusbs(String usbGroup) {
+            super("The USB group does not contain any PUSBs.");
+            this.usbGroup = usbGroup;
+        }
+
+    }
+
+    /**
      * Cannot join pool whose external authentication configuration is different.
      */
     public static class PoolJoiningExternalAuthMismatch extends XenAPIException {
@@ -10386,6 +13122,24 @@ public class Types
     }
 
     /**
+     * You tried to create a bond on top of a network SR-IOV logical PIF - use the underlying physical PIF instead
+     */
+    public static class PifIsSriovLogical extends XenAPIException {
+        public final String PIF;
+
+        /**
+         * Create a new PifIsSriovLogical
+         *
+         * @param PIF
+         */
+        public PifIsSriovLogical(String PIF) {
+            super("You tried to create a bond on top of a network SR-IOV logical PIF - use the underlying physical PIF instead");
+            this.PIF = PIF;
+        }
+
+    }
+
+    /**
      * Tools ISO must be ejected from all running VMs.
      */
     public static class PatchPrecheckFailedIsoMounted extends XenAPIException {
@@ -10404,7 +13158,7 @@ public class Types
     }
 
     /**
-     * The pool failed to disable the external authentication of at least one host.
+     * External authentication has been disabled with errors: Some AD machine accounts were not disabled on the AD server due to invalid credentials.
      */
     public static class PoolAuthDisableFailedWrongCredentials extends XenAPIException {
         public final String host;
@@ -10417,7 +13171,7 @@ public class Types
          * @param message
          */
         public PoolAuthDisableFailedWrongCredentials(String host, String message) {
-            super("The pool failed to disable the external authentication of at least one host.");
+            super("External authentication has been disabled with errors: Some AD machine accounts were not disabled on the AD server due to invalid credentials.");
             this.host = host;
             this.message = message;
         }
@@ -10504,6 +13258,24 @@ public class Types
          */
         public CannotDestroySystemNetwork(String network) {
             super("You tried to destroy a system network: these cannot be destroyed.");
+            this.network = network;
+        }
+
+    }
+
+    /**
+     * The network is incompatible with vlan on sriov
+     */
+    public static class NetworkIncompatibleWithVlanOnSriov extends XenAPIException {
+        public final String network;
+
+        /**
+         * Create a new NetworkIncompatibleWithVlanOnSriov
+         *
+         * @param network
+         */
+        public NetworkIncompatibleWithVlanOnSriov(String network) {
+            super("The network is incompatible with vlan on sriov");
             this.network = network;
         }
 
@@ -10786,6 +13558,27 @@ public class Types
     }
 
     /**
+     * The host joining the pool must have the same database schema as the pool master.
+     */
+    public static class PoolJoiningHostMustHaveSameDbSchema extends XenAPIException {
+        public final String hostDbSchema;
+        public final String masterDbSchema;
+
+        /**
+         * Create a new PoolJoiningHostMustHaveSameDbSchema
+         *
+         * @param hostDbSchema
+         * @param masterDbSchema
+         */
+        public PoolJoiningHostMustHaveSameDbSchema(String hostDbSchema, String masterDbSchema) {
+            super("The host joining the pool must have the same database schema as the pool master.");
+            this.hostDbSchema = hostDbSchema;
+            this.masterDbSchema = masterDbSchema;
+        }
+
+    }
+
+    /**
      * The host joining the pool cannot have any VMs with active tasks.
      */
     public static class JoiningHostCannotHaveVmsWithCurrentOperations extends XenAPIException {
@@ -10809,6 +13602,24 @@ public class Types
          */
         public RedoLogIsEnabled() {
             super("The operation could not be performed because a redo log is enabled on the Pool.");
+        }
+
+    }
+
+    /**
+     * An operation was attempted while clustering was disabled on the cluster_host.
+     */
+    public static class ClusteringDisabled extends XenAPIException {
+        public final String clusterHost;
+
+        /**
+         * Create a new ClusteringDisabled
+         *
+         * @param clusterHost
+         */
+        public ClusteringDisabled(String clusterHost) {
+            super("An operation was attempted while clustering was disabled on the cluster_host.");
+            this.clusterHost = clusterHost;
         }
 
     }
@@ -10966,6 +13777,24 @@ public class Types
     }
 
     /**
+     * The requested operation is not allowed for VDIs with CBT enabled or VMs having such VDIs, and CBT is enabled for the specified VDI.
+     */
+    public static class VdiCbtEnabled extends XenAPIException {
+        public final String vdi;
+
+        /**
+         * Create a new VdiCbtEnabled
+         *
+         * @param vdi
+         */
+        public VdiCbtEnabled(String vdi) {
+            super("The requested operation is not allowed for VDIs with CBT enabled or VMs having such VDIs, and CBT is enabled for the specified VDI.");
+            this.vdi = vdi;
+        }
+
+    }
+
+    /**
      * The operation cannot be performed until the SR has been upgraded
      */
     public static class SrRequiresUpgrade extends XenAPIException {
@@ -11033,8 +13862,8 @@ public class Types
         try {
             return (Date) object;
         } catch (ClassCastException e){
-            //Occasionally the date comes back as an ocaml float rather than 
-            //in the xmlrpc format! Catch this and convert. 
+            //Occasionally the date comes back as an ocaml float rather than
+            //in the xmlrpc format! Catch this and convert.
             return (new Date((long) (1000*Double.parseDouble((String) object))));
         }
     }
@@ -11094,6 +13923,28 @@ public class Types
         }
     }
 
+    public static Types.ClusterHostOperation toClusterHostOperation(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return ClusterHostOperation.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return ClusterHostOperation.UNRECOGNIZED;
+        }
+    }
+
+    public static Types.ClusterOperation toClusterOperation(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return ClusterOperation.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return ClusterOperation.UNRECOGNIZED;
+        }
+    }
+
     public static Types.ConsoleProtocol toConsoleProtocol(Object object) {
         if (object == null) {
             return null;
@@ -11102,6 +13953,17 @@ public class Types
             return ConsoleProtocol.valueOf(((String) object).toUpperCase().replace('-','_'));
         } catch (IllegalArgumentException ex) {
             return ConsoleProtocol.UNRECOGNIZED;
+        }
+    }
+
+    public static Types.DomainType toDomainType(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return DomainType.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return DomainType.UNRECOGNIZED;
         }
     }
 
@@ -11160,6 +14022,17 @@ public class Types
         }
     }
 
+    public static Types.LivepatchStatus toLivepatchStatus(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return LivepatchStatus.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return LivepatchStatus.UNRECOGNIZED;
+        }
+    }
+
     public static Types.NetworkDefaultLockingMode toNetworkDefaultLockingMode(Object object) {
         if (object == null) {
             return null;
@@ -11179,6 +14052,17 @@ public class Types
             return NetworkOperations.valueOf(((String) object).toUpperCase().replace('-','_'));
         } catch (IllegalArgumentException ex) {
             return NetworkOperations.UNRECOGNIZED;
+        }
+    }
+
+    public static Types.NetworkPurpose toNetworkPurpose(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return NetworkPurpose.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return NetworkPurpose.UNRECOGNIZED;
         }
     }
 
@@ -11226,6 +14110,17 @@ public class Types
         }
     }
 
+    public static Types.PifIgmpStatus toPifIgmpStatus(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return PifIgmpStatus.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return PifIgmpStatus.UNRECOGNIZED;
+        }
+    }
+
     public static Types.PoolAllowedOperations toPoolAllowedOperations(Object object) {
         if (object == null) {
             return null;
@@ -11245,6 +14140,50 @@ public class Types
             return PrimaryAddressType.valueOf(((String) object).toUpperCase().replace('-','_'));
         } catch (IllegalArgumentException ex) {
             return PrimaryAddressType.UNRECOGNIZED;
+        }
+    }
+
+    public static Types.PvsProxyStatus toPvsProxyStatus(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return PvsProxyStatus.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return PvsProxyStatus.UNRECOGNIZED;
+        }
+    }
+
+    public static Types.SdnControllerProtocol toSdnControllerProtocol(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return SdnControllerProtocol.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return SdnControllerProtocol.UNRECOGNIZED;
+        }
+    }
+
+    public static Types.SrHealth toSrHealth(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return SrHealth.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return SrHealth.UNRECOGNIZED;
+        }
+    }
+
+    public static Types.SriovConfigurationMode toSriovConfigurationMode(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return SriovConfigurationMode.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return SriovConfigurationMode.UNRECOGNIZED;
         }
     }
 
@@ -11289,6 +14228,17 @@ public class Types
             return TristateType.valueOf(((String) object).toUpperCase().replace('-','_'));
         } catch (IllegalArgumentException ex) {
             return TristateType.UNRECOGNIZED;
+        }
+    }
+
+    public static Types.UpdateAfterApplyGuidance toUpdateAfterApplyGuidance(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return UpdateAfterApplyGuidance.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return UpdateAfterApplyGuidance.UNRECOGNIZED;
         }
     }
 
@@ -11479,6 +14429,39 @@ public class Types
         }
     }
 
+    public static Types.VmssFrequency toVmssFrequency(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return VmssFrequency.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return VmssFrequency.UNRECOGNIZED;
+        }
+    }
+
+    public static Types.VmssType toVmssType(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return VmssType.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return VmssType.UNRECOGNIZED;
+        }
+    }
+
+    public static Types.VusbOperations toVusbOperations(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return VusbOperations.valueOf(((String) object).toUpperCase().replace('-','_'));
+        } catch (IllegalArgumentException ex) {
+            return VusbOperations.UNRECOGNIZED;
+        }
+    }
+
     public static Set<String> toSetOfString(Object object) {
         if (object == null) {
             return null;
@@ -11518,6 +14501,32 @@ public class Types
         return result;
     }
 
+    public static Set<Types.ClusterHostOperation> toSetOfClusterHostOperation(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<Types.ClusterHostOperation> result = new LinkedHashSet<Types.ClusterHostOperation>();
+        for(Object item: items) {
+            Types.ClusterHostOperation typed = toClusterHostOperation(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<Types.ClusterOperation> toSetOfClusterOperation(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<Types.ClusterOperation> result = new LinkedHashSet<Types.ClusterOperation>();
+        for(Object item: items) {
+            Types.ClusterOperation typed = toClusterOperation(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
     public static Set<Types.HostAllowedOperations> toSetOfHostAllowedOperations(Object object) {
         if (object == null) {
             return null;
@@ -11539,6 +14548,19 @@ public class Types
         Set<Types.NetworkOperations> result = new LinkedHashSet<Types.NetworkOperations>();
         for(Object item: items) {
             Types.NetworkOperations typed = toNetworkOperations(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<Types.NetworkPurpose> toSetOfNetworkPurpose(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<Types.NetworkPurpose> result = new LinkedHashSet<Types.NetworkPurpose>();
+        for(Object item: items) {
+            Types.NetworkPurpose typed = toNetworkPurpose(item);
             result.add(typed);
         }
         return result;
@@ -11578,6 +14600,19 @@ public class Types
         Set<Types.TaskAllowedOperations> result = new LinkedHashSet<Types.TaskAllowedOperations>();
         for(Object item: items) {
             Types.TaskAllowedOperations typed = toTaskAllowedOperations(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<Types.UpdateAfterApplyGuidance> toSetOfUpdateAfterApplyGuidance(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<Types.UpdateAfterApplyGuidance> result = new LinkedHashSet<Types.UpdateAfterApplyGuidance>();
+        for(Object item: items) {
+            Types.UpdateAfterApplyGuidance typed = toUpdateAfterApplyGuidance(item);
             result.add(typed);
         }
         return result;
@@ -11648,6 +14683,19 @@ public class Types
         return result;
     }
 
+    public static Set<Types.VusbOperations> toSetOfVusbOperations(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<Types.VusbOperations> result = new LinkedHashSet<Types.VusbOperations>();
+        for(Object item: items) {
+            Types.VusbOperations typed = toVusbOperations(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
     public static Set<Bond> toSetOfBond(Object object) {
         if (object == null) {
             return null;
@@ -11661,6 +14709,32 @@ public class Types
         return result;
     }
 
+    public static Set<Cluster> toSetOfCluster(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<Cluster> result = new LinkedHashSet<Cluster>();
+        for(Object item: items) {
+            Cluster typed = toCluster(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<ClusterHost> toSetOfClusterHost(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<ClusterHost> result = new LinkedHashSet<ClusterHost>();
+        for(Object item: items) {
+            ClusterHost typed = toClusterHost(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
     public static Set<DRTask> toSetOfDRTask(Object object) {
         if (object == null) {
             return null;
@@ -11669,6 +14743,19 @@ public class Types
         Set<DRTask> result = new LinkedHashSet<DRTask>();
         for(Object item: items) {
             DRTask typed = toDRTask(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<Feature> toSetOfFeature(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<Feature> result = new LinkedHashSet<Feature>();
+        for(Object item: items) {
+            Feature typed = toFeature(item);
             result.add(typed);
         }
         return result;
@@ -11752,6 +14839,84 @@ public class Types
         return result;
     }
 
+    public static Set<PUSB> toSetOfPUSB(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<PUSB> result = new LinkedHashSet<PUSB>();
+        for(Object item: items) {
+            PUSB typed = toPUSB(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<PVSCacheStorage> toSetOfPVSCacheStorage(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<PVSCacheStorage> result = new LinkedHashSet<PVSCacheStorage>();
+        for(Object item: items) {
+            PVSCacheStorage typed = toPVSCacheStorage(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<PVSProxy> toSetOfPVSProxy(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<PVSProxy> result = new LinkedHashSet<PVSProxy>();
+        for(Object item: items) {
+            PVSProxy typed = toPVSProxy(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<PVSServer> toSetOfPVSServer(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<PVSServer> result = new LinkedHashSet<PVSServer>();
+        for(Object item: items) {
+            PVSServer typed = toPVSServer(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<PVSSite> toSetOfPVSSite(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<PVSSite> result = new LinkedHashSet<PVSSite>();
+        for(Object item: items) {
+            PVSSite typed = toPVSSite(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<SDNController> toSetOfSDNController(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<SDNController> result = new LinkedHashSet<SDNController>();
+        for(Object item: items) {
+            SDNController typed = toSDNController(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
     public static Set<SM> toSetOfSM(Object object) {
         if (object == null) {
             return null;
@@ -11773,6 +14938,19 @@ public class Types
         Set<SR> result = new LinkedHashSet<SR>();
         for(Object item: items) {
             SR typed = toSR(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<USBGroup> toSetOfUSBGroup(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<USBGroup> result = new LinkedHashSet<USBGroup>();
+        for(Object item: items) {
+            USBGroup typed = toUSBGroup(item);
             result.add(typed);
         }
         return result;
@@ -11908,6 +15086,19 @@ public class Types
         return result;
     }
 
+    public static Set<VMSS> toSetOfVMSS(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<VMSS> result = new LinkedHashSet<VMSS>();
+        for(Object item: items) {
+            VMSS typed = toVMSS(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
     public static Set<VMAppliance> toSetOfVMAppliance(Object object) {
         if (object == null) {
             return null;
@@ -11955,6 +15146,19 @@ public class Types
         Set<VTPM> result = new LinkedHashSet<VTPM>();
         for(Object item: items) {
             VTPM typed = toVTPM(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<VUSB> toSetOfVUSB(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<VUSB> result = new LinkedHashSet<VUSB>();
+        for(Object item: items) {
+            VUSB typed = toVUSB(item);
             result.add(typed);
         }
         return result;
@@ -12090,6 +15294,19 @@ public class Types
         return result;
     }
 
+    public static Set<NetworkSriov> toSetOfNetworkSriov(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<NetworkSriov> result = new LinkedHashSet<NetworkSriov>();
+        for(Object item: items) {
+            NetworkSriov typed = toNetworkSriov(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
     public static Set<Pool> toSetOfPool(Object object) {
         if (object == null) {
             return null;
@@ -12111,6 +15328,19 @@ public class Types
         Set<PoolPatch> result = new LinkedHashSet<PoolPatch>();
         for(Object item: items) {
             PoolPatch typed = toPoolPatch(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<PoolUpdate> toSetOfPoolUpdate(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<PoolUpdate> result = new LinkedHashSet<PoolUpdate>();
+        for(Object item: items) {
+            PoolUpdate typed = toPoolUpdate(item);
             result.add(typed);
         }
         return result;
@@ -12207,6 +15437,32 @@ public class Types
         return result;
     }
 
+    public static Set<ProbeResult.Record> toSetOfProbeResultRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<ProbeResult.Record> result = new LinkedHashSet<ProbeResult.Record>();
+        for(Object item: items) {
+            ProbeResult.Record typed = toProbeResultRecord(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
+    public static Set<VdiNbdServerInfo.Record> toSetOfVdiNbdServerInfoRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Object[] items = (Object[]) object;
+        Set<VdiNbdServerInfo.Record> result = new LinkedHashSet<VdiNbdServerInfo.Record>();
+        for(Object item: items) {
+            VdiNbdServerInfo.Record typed = toVdiNbdServerInfoRecord(item);
+            result.add(typed);
+        }
+        return result;
+    }
+
     public static Map<String, String> toMapOfStringString(Object object) {
         if (object == null) {
             return null;
@@ -12232,6 +15488,36 @@ public class Types
         for(Map.Entry entry: entries) {
             String key = toString(entry.getKey());
             Long value = toLong(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<String, Types.ClusterHostOperation> toMapOfStringClusterHostOperation(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<String,Types.ClusterHostOperation> result = new HashMap<String,Types.ClusterHostOperation>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            String key = toString(entry.getKey());
+            Types.ClusterHostOperation value = toClusterHostOperation(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<String, Types.ClusterOperation> toMapOfStringClusterOperation(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<String,Types.ClusterOperation> result = new HashMap<String,Types.ClusterOperation>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            String key = toString(entry.getKey());
+            Types.ClusterOperation value = toClusterOperation(entry.getValue());
             result.put(key, value);
         }
         return result;
@@ -12387,6 +15673,21 @@ public class Types
         return result;
     }
 
+    public static Map<String, Types.VusbOperations> toMapOfStringVusbOperations(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<String,Types.VusbOperations> result = new HashMap<String,Types.VusbOperations>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            String key = toString(entry.getKey());
+            Types.VusbOperations value = toVusbOperations(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
     public static Map<String, Blob> toMapOfStringBlob(Object object) {
         if (object == null) {
             return null;
@@ -12477,6 +15778,36 @@ public class Types
         return result;
     }
 
+    public static Map<Cluster, Cluster.Record> toMapOfClusterClusterRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<Cluster,Cluster.Record> result = new HashMap<Cluster,Cluster.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            Cluster key = toCluster(entry.getKey());
+            Cluster.Record value = toClusterRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<ClusterHost, ClusterHost.Record> toMapOfClusterHostClusterHostRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<ClusterHost,ClusterHost.Record> result = new HashMap<ClusterHost,ClusterHost.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            ClusterHost key = toClusterHost(entry.getKey());
+            ClusterHost.Record value = toClusterHostRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
     public static Map<DRTask, DRTask.Record> toMapOfDRTaskDRTaskRecord(Object object) {
         if (object == null) {
             return null;
@@ -12487,6 +15818,21 @@ public class Types
         for(Map.Entry entry: entries) {
             DRTask key = toDRTask(entry.getKey());
             DRTask.Record value = toDRTaskRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<Feature, Feature.Record> toMapOfFeatureFeatureRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<Feature,Feature.Record> result = new HashMap<Feature,Feature.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            Feature key = toFeature(entry.getKey());
+            Feature.Record value = toFeatureRecord(entry.getValue());
             result.put(key, value);
         }
         return result;
@@ -12582,6 +15928,96 @@ public class Types
         return result;
     }
 
+    public static Map<PUSB, PUSB.Record> toMapOfPUSBPUSBRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<PUSB,PUSB.Record> result = new HashMap<PUSB,PUSB.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            PUSB key = toPUSB(entry.getKey());
+            PUSB.Record value = toPUSBRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<PVSCacheStorage, PVSCacheStorage.Record> toMapOfPVSCacheStoragePVSCacheStorageRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<PVSCacheStorage,PVSCacheStorage.Record> result = new HashMap<PVSCacheStorage,PVSCacheStorage.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            PVSCacheStorage key = toPVSCacheStorage(entry.getKey());
+            PVSCacheStorage.Record value = toPVSCacheStorageRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<PVSProxy, PVSProxy.Record> toMapOfPVSProxyPVSProxyRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<PVSProxy,PVSProxy.Record> result = new HashMap<PVSProxy,PVSProxy.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            PVSProxy key = toPVSProxy(entry.getKey());
+            PVSProxy.Record value = toPVSProxyRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<PVSServer, PVSServer.Record> toMapOfPVSServerPVSServerRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<PVSServer,PVSServer.Record> result = new HashMap<PVSServer,PVSServer.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            PVSServer key = toPVSServer(entry.getKey());
+            PVSServer.Record value = toPVSServerRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<PVSSite, PVSSite.Record> toMapOfPVSSitePVSSiteRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<PVSSite,PVSSite.Record> result = new HashMap<PVSSite,PVSSite.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            PVSSite key = toPVSSite(entry.getKey());
+            PVSSite.Record value = toPVSSiteRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<SDNController, SDNController.Record> toMapOfSDNControllerSDNControllerRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<SDNController,SDNController.Record> result = new HashMap<SDNController,SDNController.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            SDNController key = toSDNController(entry.getKey());
+            SDNController.Record value = toSDNControllerRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
     public static Map<SM, SM.Record> toMapOfSMSMRecord(Object object) {
         if (object == null) {
             return null;
@@ -12607,6 +16043,21 @@ public class Types
         for(Map.Entry entry: entries) {
             SR key = toSR(entry.getKey());
             SR.Record value = toSRRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<USBGroup, USBGroup.Record> toMapOfUSBGroupUSBGroupRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<USBGroup,USBGroup.Record> result = new HashMap<USBGroup,USBGroup.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            USBGroup key = toUSBGroup(entry.getKey());
+            USBGroup.Record value = toUSBGroupRecord(entry.getValue());
             result.put(key, value);
         }
         return result;
@@ -12667,6 +16118,21 @@ public class Types
         for(Map.Entry entry: entries) {
             VDI key = toVDI(entry.getKey());
             VDI.Record value = toVDIRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<VGPU, GPUGroup> toMapOfVGPUGPUGroup(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<VGPU,GPUGroup> result = new HashMap<VGPU,GPUGroup>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            VGPU key = toVGPU(entry.getKey());
+            GPUGroup value = toGPUGroup(entry.getValue());
             result.put(key, value);
         }
         return result;
@@ -12867,6 +16333,21 @@ public class Types
         return result;
     }
 
+    public static Map<VMSS, VMSS.Record> toMapOfVMSSVMSSRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<VMSS,VMSS.Record> result = new HashMap<VMSS,VMSS.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            VMSS key = toVMSS(entry.getKey());
+            VMSS.Record value = toVMSSRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
     public static Map<VMAppliance, VMAppliance.Record> toMapOfVMApplianceVMApplianceRecord(Object object) {
         if (object == null) {
             return null;
@@ -12907,6 +16388,21 @@ public class Types
         for(Map.Entry entry: entries) {
             VMMetrics key = toVMMetrics(entry.getKey());
             VMMetrics.Record value = toVMMetricsRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<VUSB, VUSB.Record> toMapOfVUSBVUSBRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<VUSB,VUSB.Record> result = new HashMap<VUSB,VUSB.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            VUSB key = toVUSB(entry.getKey());
+            VUSB.Record value = toVUSBRecord(entry.getValue());
             result.put(key, value);
         }
         return result;
@@ -13077,6 +16573,21 @@ public class Types
         return result;
     }
 
+    public static Map<NetworkSriov, NetworkSriov.Record> toMapOfNetworkSriovNetworkSriovRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<NetworkSriov,NetworkSriov.Record> result = new HashMap<NetworkSriov,NetworkSriov.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            NetworkSriov key = toNetworkSriov(entry.getKey());
+            NetworkSriov.Record value = toNetworkSriovRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
     public static Map<Pool, Pool.Record> toMapOfPoolPoolRecord(Object object) {
         if (object == null) {
             return null;
@@ -13102,6 +16613,21 @@ public class Types
         for(Map.Entry entry: entries) {
             PoolPatch key = toPoolPatch(entry.getKey());
             PoolPatch.Record value = toPoolPatchRecord(entry.getValue());
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    public static Map<PoolUpdate, PoolUpdate.Record> toMapOfPoolUpdatePoolUpdateRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map map = (Map) object;
+        Map<PoolUpdate,PoolUpdate.Record> result = new HashMap<PoolUpdate,PoolUpdate.Record>();
+        Set<Map.Entry> entries = map.entrySet();
+        for(Map.Entry entry: entries) {
+            PoolUpdate key = toPoolUpdate(entry.getKey());
+            PoolUpdate.Record value = toPoolUpdateRecord(entry.getValue());
             result.put(key, value);
         }
         return result;
@@ -13189,11 +16715,32 @@ public class Types
         return new Bond((String) object);
     }
 
+    public static Cluster toCluster(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new Cluster((String) object);
+    }
+
+    public static ClusterHost toClusterHost(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new ClusterHost((String) object);
+    }
+
     public static DRTask toDRTask(Object object) {
         if (object == null) {
             return null;
         }
         return new DRTask((String) object);
+    }
+
+    public static Feature toFeature(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new Feature((String) object);
     }
 
     public static GPUGroup toGPUGroup(Object object) {
@@ -13245,6 +16792,48 @@ public class Types
         return new PIFMetrics((String) object);
     }
 
+    public static PUSB toPUSB(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new PUSB((String) object);
+    }
+
+    public static PVSCacheStorage toPVSCacheStorage(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new PVSCacheStorage((String) object);
+    }
+
+    public static PVSProxy toPVSProxy(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new PVSProxy((String) object);
+    }
+
+    public static PVSServer toPVSServer(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new PVSServer((String) object);
+    }
+
+    public static PVSSite toPVSSite(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new PVSSite((String) object);
+    }
+
+    public static SDNController toSDNController(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new SDNController((String) object);
+    }
+
     public static SM toSM(Object object) {
         if (object == null) {
             return null;
@@ -13257,6 +16846,13 @@ public class Types
             return null;
         }
         return new SR((String) object);
+    }
+
+    public static USBGroup toUSBGroup(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new USBGroup((String) object);
     }
 
     public static VBD toVBD(Object object) {
@@ -13329,6 +16925,13 @@ public class Types
         return new VMPP((String) object);
     }
 
+    public static VMSS toVMSS(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new VMSS((String) object);
+    }
+
     public static VMAppliance toVMAppliance(Object object) {
         if (object == null) {
             return null;
@@ -13355,6 +16958,13 @@ public class Types
             return null;
         }
         return new VTPM((String) object);
+    }
+
+    public static VUSB toVUSB(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new VUSB((String) object);
     }
 
     public static Blob toBlob(Object object) {
@@ -13427,6 +17037,13 @@ public class Types
         return new Network((String) object);
     }
 
+    public static NetworkSriov toNetworkSriov(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new NetworkSriov((String) object);
+    }
+
     public static Pool toPool(Object object) {
         if (object == null) {
             return null;
@@ -13439,6 +17056,13 @@ public class Types
             return null;
         }
         return new PoolPatch((String) object);
+    }
+
+    public static PoolUpdate toPoolUpdate(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return new PoolUpdate((String) object);
     }
 
     public static Role toRole(Object object) {
@@ -13507,6 +17131,43 @@ public class Types
         return record;
     }
 
+    public static Cluster.Record toClusterRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        Cluster.Record record = new Cluster.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.clusterHosts = toSetOfClusterHost(map.get("cluster_hosts"));
+            record.network = toNetwork(map.get("network"));
+            record.clusterToken = toString(map.get("cluster_token"));
+            record.clusterStack = toString(map.get("cluster_stack"));
+            record.allowedOperations = toSetOfClusterOperation(map.get("allowed_operations"));
+            record.currentOperations = toMapOfStringClusterOperation(map.get("current_operations"));
+            record.poolAutoJoin = toBoolean(map.get("pool_auto_join"));
+            record.tokenTimeout = toLong(map.get("token_timeout"));
+            record.tokenTimeoutCoefficient = toLong(map.get("token_timeout_coefficient"));
+            record.clusterConfig = toMapOfStringString(map.get("cluster_config"));
+            record.otherConfig = toMapOfStringString(map.get("other_config"));
+        return record;
+    }
+
+    public static ClusterHost.Record toClusterHostRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        ClusterHost.Record record = new ClusterHost.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.cluster = toCluster(map.get("cluster"));
+            record.host = toHost(map.get("host"));
+            record.enabled = toBoolean(map.get("enabled"));
+            record.allowedOperations = toSetOfClusterHostOperation(map.get("allowed_operations"));
+            record.currentOperations = toMapOfStringClusterHostOperation(map.get("current_operations"));
+            record.otherConfig = toMapOfStringString(map.get("other_config"));
+        return record;
+    }
+
     public static DRTask.Record toDRTaskRecord(Object object) {
         if (object == null) {
             return null;
@@ -13515,6 +17176,22 @@ public class Types
         DRTask.Record record = new DRTask.Record();
             record.uuid = toString(map.get("uuid"));
             record.introducedSRs = toSetOfSR(map.get("introduced_SRs"));
+        return record;
+    }
+
+    public static Feature.Record toFeatureRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        Feature.Record record = new Feature.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.nameLabel = toString(map.get("name_label"));
+            record.nameDescription = toString(map.get("name_description"));
+            record.enabled = toBoolean(map.get("enabled"));
+            record.experimental = toBoolean(map.get("experimental"));
+            record.version = toString(map.get("version"));
+            record.host = toHost(map.get("host"));
         return record;
     }
 
@@ -13578,6 +17255,7 @@ public class Types
             record.otherConfig = toMapOfStringString(map.get("other_config"));
             record.subsystemVendorName = toString(map.get("subsystem_vendor_name"));
             record.subsystemDeviceName = toString(map.get("subsystem_device_name"));
+            record.driverName = toString(map.get("driver_name"));
         return record;
     }
 
@@ -13598,6 +17276,7 @@ public class Types
             record.supportedVGPUMaxCapacities = toMapOfVGPUTypeLong(map.get("supported_VGPU_max_capacities"));
             record.dom0Access = toPgpuDom0Access(map.get("dom0_access"));
             record.isSystemDisplayDevice = toBoolean(map.get("is_system_display_device"));
+            record.compatibilityMetadata = toMapOfStringString(map.get("compatibility_metadata"));
         return record;
     }
 
@@ -13638,6 +17317,10 @@ public class Types
             record.managed = toBoolean(map.get("managed"));
             record.properties = toMapOfStringString(map.get("properties"));
             record.capabilities = toSetOfString(map.get("capabilities"));
+            record.igmpSnoopingStatus = toPifIgmpStatus(map.get("igmp_snooping_status"));
+            record.sriovPhysicalPIFOf = toSetOfNetworkSriov(map.get("sriov_physical_PIF_of"));
+            record.sriovLogicalPIFOf = toSetOfNetworkSriov(map.get("sriov_logical_PIF_of"));
+            record.PCI = toPCI(map.get("PCI"));
         return record;
     }
 
@@ -13660,6 +17343,100 @@ public class Types
             record.pciBusPath = toString(map.get("pci_bus_path"));
             record.lastUpdated = toDate(map.get("last_updated"));
             record.otherConfig = toMapOfStringString(map.get("other_config"));
+        return record;
+    }
+
+    public static PUSB.Record toPUSBRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        PUSB.Record record = new PUSB.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.USBGroup = toUSBGroup(map.get("USB_group"));
+            record.host = toHost(map.get("host"));
+            record.path = toString(map.get("path"));
+            record.vendorId = toString(map.get("vendor_id"));
+            record.vendorDesc = toString(map.get("vendor_desc"));
+            record.productId = toString(map.get("product_id"));
+            record.productDesc = toString(map.get("product_desc"));
+            record.serial = toString(map.get("serial"));
+            record.version = toString(map.get("version"));
+            record.description = toString(map.get("description"));
+            record.passthroughEnabled = toBoolean(map.get("passthrough_enabled"));
+            record.otherConfig = toMapOfStringString(map.get("other_config"));
+        return record;
+    }
+
+    public static PVSCacheStorage.Record toPVSCacheStorageRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        PVSCacheStorage.Record record = new PVSCacheStorage.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.host = toHost(map.get("host"));
+            record.SR = toSR(map.get("SR"));
+            record.site = toPVSSite(map.get("site"));
+            record.size = toLong(map.get("size"));
+            record.VDI = toVDI(map.get("VDI"));
+        return record;
+    }
+
+    public static PVSProxy.Record toPVSProxyRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        PVSProxy.Record record = new PVSProxy.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.site = toPVSSite(map.get("site"));
+            record.VIF = toVIF(map.get("VIF"));
+            record.currentlyAttached = toBoolean(map.get("currently_attached"));
+            record.status = toPvsProxyStatus(map.get("status"));
+        return record;
+    }
+
+    public static PVSServer.Record toPVSServerRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        PVSServer.Record record = new PVSServer.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.addresses = toSetOfString(map.get("addresses"));
+            record.firstPort = toLong(map.get("first_port"));
+            record.lastPort = toLong(map.get("last_port"));
+            record.site = toPVSSite(map.get("site"));
+        return record;
+    }
+
+    public static PVSSite.Record toPVSSiteRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        PVSSite.Record record = new PVSSite.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.nameLabel = toString(map.get("name_label"));
+            record.nameDescription = toString(map.get("name_description"));
+            record.PVSUuid = toString(map.get("PVS_uuid"));
+            record.cacheStorage = toSetOfPVSCacheStorage(map.get("cache_storage"));
+            record.servers = toSetOfPVSServer(map.get("servers"));
+            record.proxies = toSetOfPVSProxy(map.get("proxies"));
+        return record;
+    }
+
+    public static SDNController.Record toSDNControllerRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        SDNController.Record record = new SDNController.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.protocol = toSdnControllerProtocol(map.get("protocol"));
+            record.address = toString(map.get("address"));
+            record.port = toLong(map.get("port"));
         return record;
     }
 
@@ -13713,6 +17490,21 @@ public class Types
             record.introducedBy = toDRTask(map.get("introduced_by"));
             record.clustered = toBoolean(map.get("clustered"));
             record.isToolsSr = toBoolean(map.get("is_tools_sr"));
+        return record;
+    }
+
+    public static USBGroup.Record toUSBGroupRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        USBGroup.Record record = new USBGroup.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.nameLabel = toString(map.get("name_label"));
+            record.nameDescription = toString(map.get("name_description"));
+            record.PUSBs = toSetOfPUSB(map.get("PUSBs"));
+            record.VUSBs = toSetOfVUSB(map.get("VUSBs"));
+            record.otherConfig = toMapOfStringString(map.get("other_config"));
         return record;
     }
 
@@ -13798,6 +17590,7 @@ public class Types
             record.metadataOfPool = toPool(map.get("metadata_of_pool"));
             record.metadataLatest = toBoolean(map.get("metadata_latest"));
             record.isToolsIso = toBoolean(map.get("is_tools_iso"));
+            record.cbtEnabled = toBoolean(map.get("cbt_enabled"));
         return record;
     }
 
@@ -13815,6 +17608,8 @@ public class Types
             record.otherConfig = toMapOfStringString(map.get("other_config"));
             record.type = toVGPUType(map.get("type"));
             record.residentOn = toPGPU(map.get("resident_on"));
+            record.scheduledToBeResidentOn = toPGPU(map.get("scheduled_to_be_resident_on"));
+            record.compatibilityMetadata = toMapOfStringString(map.get("compatibility_metadata"));
         return record;
     }
 
@@ -13920,6 +17715,7 @@ public class Types
             record.nameDescription = toString(map.get("name_description"));
             record.userVersion = toLong(map.get("user_version"));
             record.isATemplate = toBoolean(map.get("is_a_template"));
+            record.isDefaultTemplate = toBoolean(map.get("is_default_template"));
             record.suspendVDI = toVDI(map.get("suspend_VDI"));
             record.residentOn = toHost(map.get("resident_on"));
             record.affinity = toHost(map.get("affinity"));
@@ -13938,6 +17734,7 @@ public class Types
             record.consoles = toSetOfConsole(map.get("consoles"));
             record.VIFs = toSetOfVIF(map.get("VIFs"));
             record.VBDs = toSetOfVBD(map.get("VBDs"));
+            record.VUSBs = toSetOfVUSB(map.get("VUSBs"));
             record.crashDumps = toSetOfCrashdump(map.get("crash_dumps"));
             record.VTPMs = toSetOfVTPM(map.get("VTPMs"));
             record.PVBootloader = toString(map.get("PV_bootloader"));
@@ -13978,6 +17775,8 @@ public class Types
             record.biosStrings = toMapOfStringString(map.get("bios_strings"));
             record.protectionPolicy = toVMPP(map.get("protection_policy"));
             record.isSnapshotFromVmpp = toBoolean(map.get("is_snapshot_from_vmpp"));
+            record.snapshotSchedule = toVMSS(map.get("snapshot_schedule"));
+            record.isVmssSnapshot = toBoolean(map.get("is_vmss_snapshot"));
             record.appliance = toVMAppliance(map.get("appliance"));
             record.startDelay = toLong(map.get("start_delay"));
             record.shutdownDelay = toLong(map.get("shutdown_delay"));
@@ -13989,6 +17788,9 @@ public class Types
             record.generationId = toString(map.get("generation_id"));
             record.hardwarePlatformVersion = toLong(map.get("hardware_platform_version"));
             record.hasVendorDevice = toBoolean(map.get("has_vendor_device"));
+            record.requiresReboot = toBoolean(map.get("requires_reboot"));
+            record.referenceLabel = toString(map.get("reference_label"));
+            record.domainType = toDomainType(map.get("domain_type"));
         return record;
     }
 
@@ -14018,6 +17820,25 @@ public class Types
             record.isAlarmEnabled = toBoolean(map.get("is_alarm_enabled"));
             record.alarmConfig = toMapOfStringString(map.get("alarm_config"));
             record.recentAlerts = toSetOfString(map.get("recent_alerts"));
+        return record;
+    }
+
+    public static VMSS.Record toVMSSRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        VMSS.Record record = new VMSS.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.nameLabel = toString(map.get("name_label"));
+            record.nameDescription = toString(map.get("name_description"));
+            record.enabled = toBoolean(map.get("enabled"));
+            record.type = toVmssType(map.get("type"));
+            record.retainedSnapshots = toLong(map.get("retained_snapshots"));
+            record.frequency = toVmssFrequency(map.get("frequency"));
+            record.schedule = toMapOfStringString(map.get("schedule"));
+            record.lastRunTime = toDate(map.get("last_run_time"));
+            record.VMs = toSetOfVM(map.get("VMs"));
         return record;
     }
 
@@ -14077,6 +17898,10 @@ public class Types
             record.installTime = toDate(map.get("install_time"));
             record.lastUpdated = toDate(map.get("last_updated"));
             record.otherConfig = toMapOfStringString(map.get("other_config"));
+            record.hvm = toBoolean(map.get("hvm"));
+            record.nestedVirt = toBoolean(map.get("nested_virt"));
+            record.nomigrate = toBoolean(map.get("nomigrate"));
+            record.currentDomainType = toDomainType(map.get("current_domain_type"));
         return record;
     }
 
@@ -14089,6 +17914,22 @@ public class Types
             record.uuid = toString(map.get("uuid"));
             record.VM = toVM(map.get("VM"));
             record.backend = toVM(map.get("backend"));
+        return record;
+    }
+
+    public static VUSB.Record toVUSBRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        VUSB.Record record = new VUSB.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.allowedOperations = toSetOfVusbOperations(map.get("allowed_operations"));
+            record.currentOperations = toMapOfStringVusbOperations(map.get("current_operations"));
+            record.VM = toVM(map.get("VM"));
+            record.USBGroup = toUSBGroup(map.get("USB_group"));
+            record.otherConfig = toMapOfStringString(map.get("other_config"));
+            record.currentlyAttached = toBoolean(map.get("currently_attached"));
         return record;
     }
 
@@ -14177,10 +18018,12 @@ public class Types
                 case             EVENT: b =             toEventRecord(a); break;
                 case              POOL: b =              toPoolRecord(a); break;
                 case        POOL_PATCH: b =         toPoolPatchRecord(a); break;
+                case       POOL_UPDATE: b =        toPoolUpdateRecord(a); break;
                 case                VM: b =                toVMRecord(a); break;
                 case        VM_METRICS: b =         toVMMetricsRecord(a); break;
                 case  VM_GUEST_METRICS: b =    toVMGuestMetricsRecord(a); break;
                 case              VMPP: b =              toVMPPRecord(a); break;
+                case              VMSS: b =              toVMSSRecord(a); break;
                 case      VM_APPLIANCE: b =       toVMApplianceRecord(a); break;
                 case           DR_TASK: b =            toDRTaskRecord(a); break;
                 case              HOST: b =              toHostRecord(a); break;
@@ -14197,6 +18040,8 @@ public class Types
                 case              VLAN: b =              toVLANRecord(a); break;
                 case                SM: b =                toSMRecord(a); break;
                 case                SR: b =                toSRRecord(a); break;
+                case           SR_STAT: b =            toSrStatRecord(a); break;
+                case      PROBE_RESULT: b =       toProbeResultRecord(a); break;
                 case              LVHD: b =              toLVHDRecord(a); break;
                 case               VDI: b =               toVDIRecord(a); break;
                 case               VBD: b =               toVBDRecord(a); break;
@@ -14211,11 +18056,24 @@ public class Types
                 case           MESSAGE: b =           toMessageRecord(a); break;
                 case            SECRET: b =            toSecretRecord(a); break;
                 case            TUNNEL: b =            toTunnelRecord(a); break;
+                case     NETWORK_SRIOV: b =      toNetworkSriovRecord(a); break;
                 case               PCI: b =               toPCIRecord(a); break;
                 case              PGPU: b =              toPGPURecord(a); break;
                 case         GPU_GROUP: b =          toGPUGroupRecord(a); break;
                 case              VGPU: b =              toVGPURecord(a); break;
                 case         VGPU_TYPE: b =          toVGPUTypeRecord(a); break;
+                case          PVS_SITE: b =           toPVSSiteRecord(a); break;
+                case        PVS_SERVER: b =         toPVSServerRecord(a); break;
+                case         PVS_PROXY: b =          toPVSProxyRecord(a); break;
+                case PVS_CACHE_STORAGE: b =   toPVSCacheStorageRecord(a); break;
+                case           FEATURE: b =           toFeatureRecord(a); break;
+                case    SDN_CONTROLLER: b =     toSDNControllerRecord(a); break;
+                case VDI_NBD_SERVER_INFO: b =  toVdiNbdServerInfoRecord(a); break;
+                case              PUSB: b =              toPUSBRecord(a); break;
+                case         USB_GROUP: b =          toUSBGroupRecord(a); break;
+                case              VUSB: b =              toVUSBRecord(a); break;
+                case           CLUSTER: b =           toClusterRecord(a); break;
+                case      CLUSTER_HOST: b =       toClusterHostRecord(a); break;
                 default: throw new RuntimeException("Internal error in auto-generated code whilst unmarshalling event snapshot");
         }
         record.snapshot = b;
@@ -14252,6 +18110,7 @@ public class Types
             record.crashDumpSr = toSR(map.get("crash_dump_sr"));
             record.crashdumps = toSetOfHostCrashdump(map.get("crashdumps"));
             record.patches = toSetOfHostPatch(map.get("patches"));
+            record.updates = toSetOfPoolUpdate(map.get("updates"));
             record.PBDs = toSetOfPBD(map.get("PBDs"));
             record.hostCPUs = toSetOfHostCpu(map.get("host_CPUs"));
             record.cpuInfo = toMapOfStringString(map.get("cpu_info"));
@@ -14275,10 +18134,16 @@ public class Types
             record.chipsetInfo = toMapOfStringString(map.get("chipset_info"));
             record.PCIs = toSetOfPCI(map.get("PCIs"));
             record.PGPUs = toSetOfPGPU(map.get("PGPUs"));
+            record.PUSBs = toSetOfPUSB(map.get("PUSBs"));
             record.sslLegacy = toBoolean(map.get("ssl_legacy"));
             record.guestVCPUsParams = toMapOfStringString(map.get("guest_VCPUs_params"));
             record.display = toHostDisplay(map.get("display"));
             record.virtualHardwarePlatformVersions = toSetOfLong(map.get("virtual_hardware_platform_versions"));
+            record.controlDomain = toVM(map.get("control_domain"));
+            record.updatesRequiringReboot = toSetOfPoolUpdate(map.get("updates_requiring_reboot"));
+            record.features = toSetOfFeature(map.get("features"));
+            record.iscsiIqn = toString(map.get("iscsi_iqn"));
+            record.multipathing = toBoolean(map.get("multipathing"));
         return record;
     }
 
@@ -14384,10 +18249,26 @@ public class Types
             record.MTU = toLong(map.get("MTU"));
             record.otherConfig = toMapOfStringString(map.get("other_config"));
             record.bridge = toString(map.get("bridge"));
+            record.managed = toBoolean(map.get("managed"));
             record.blobs = toMapOfStringBlob(map.get("blobs"));
             record.tags = toSetOfString(map.get("tags"));
             record.defaultLockingMode = toNetworkDefaultLockingMode(map.get("default_locking_mode"));
             record.assignedIps = toMapOfVIFString(map.get("assigned_ips"));
+            record.purpose = toSetOfNetworkPurpose(map.get("purpose"));
+        return record;
+    }
+
+    public static NetworkSriov.Record toNetworkSriovRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        NetworkSriov.Record record = new NetworkSriov.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.physicalPIF = toPIF(map.get("physical_PIF"));
+            record.logicalPIF = toPIF(map.get("logical_PIF"));
+            record.requiresReboot = toBoolean(map.get("requires_reboot"));
+            record.configurationMode = toSriovConfigurationMode(map.get("configuration_mode"));
         return record;
     }
 
@@ -14431,6 +18312,8 @@ public class Types
             record.guestAgentConfig = toMapOfStringString(map.get("guest_agent_config"));
             record.cpuInfo = toMapOfStringString(map.get("cpu_info"));
             record.policyNoVendorDevice = toBoolean(map.get("policy_no_vendor_device"));
+            record.livePatchingDisabled = toBoolean(map.get("live_patching_disabled"));
+            record.igmpSnoopingEnabled = toBoolean(map.get("igmp_snooping_enabled"));
         return record;
     }
 
@@ -14448,7 +18331,41 @@ public class Types
             record.poolApplied = toBoolean(map.get("pool_applied"));
             record.hostPatches = toSetOfHostPatch(map.get("host_patches"));
             record.afterApplyGuidance = toSetOfAfterApplyGuidance(map.get("after_apply_guidance"));
+            record.poolUpdate = toPoolUpdate(map.get("pool_update"));
             record.otherConfig = toMapOfStringString(map.get("other_config"));
+        return record;
+    }
+
+    public static PoolUpdate.Record toPoolUpdateRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        PoolUpdate.Record record = new PoolUpdate.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.nameLabel = toString(map.get("name_label"));
+            record.nameDescription = toString(map.get("name_description"));
+            record.version = toString(map.get("version"));
+            record.installationSize = toLong(map.get("installation_size"));
+            record.key = toString(map.get("key"));
+            record.afterApplyGuidance = toSetOfUpdateAfterApplyGuidance(map.get("after_apply_guidance"));
+            record.vdi = toVDI(map.get("vdi"));
+            record.hosts = toSetOfHost(map.get("hosts"));
+            record.otherConfig = toMapOfStringString(map.get("other_config"));
+            record.enforceHomogeneity = toBoolean(map.get("enforce_homogeneity"));
+        return record;
+    }
+
+    public static ProbeResult.Record toProbeResultRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        ProbeResult.Record record = new ProbeResult.Record();
+            record.configuration = toMapOfStringString(map.get("configuration"));
+            record.complete = toBoolean(map.get("complete"));
+            record.sr = toSrStatRecord(map.get("sr"));
+            record.extraInfo = toMapOfStringString(map.get("extra_info"));
         return record;
     }
 
@@ -14498,6 +18415,22 @@ public class Types
             record.tasks = toSetOfTask(map.get("tasks"));
             record.parent = toSession(map.get("parent"));
             record.originator = toString(map.get("originator"));
+        return record;
+    }
+
+    public static SrStat.Record toSrStatRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        SrStat.Record record = new SrStat.Record();
+            record.uuid = toString(map.get("uuid"));
+            record.nameLabel = toString(map.get("name_label"));
+            record.nameDescription = toString(map.get("name_description"));
+            record.freeSpace = toLong(map.get("free_space"));
+            record.totalSpace = toLong(map.get("total_space"));
+            record.clustered = toBoolean(map.get("clustered"));
+            record.health = toSrHealth(map.get("health"));
         return record;
     }
 
@@ -14567,181 +18500,251 @@ public class Types
         return record;
     }
 
-
-   public static Bond toBond(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toBond(parseResult(task.getResult(connection)));
+    public static VdiNbdServerInfo.Record toVdiNbdServerInfoRecord(Object object) {
+        if (object == null) {
+            return null;
+        }
+        Map<String,Object> map = (Map<String,Object>) object;
+        VdiNbdServerInfo.Record record = new VdiNbdServerInfo.Record();
+            record.exportname = toString(map.get("exportname"));
+            record.address = toString(map.get("address"));
+            record.port = toLong(map.get("port"));
+            record.cert = toString(map.get("cert"));
+            record.subject = toString(map.get("subject"));
+        return record;
     }
 
-   public static DRTask toDRTask(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toDRTask(parseResult(task.getResult(connection)));
+
+    public static Bond toBond(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toBond(parseResult(task.getResult(connection)));
     }
 
-   public static GPUGroup toGPUGroup(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toGPUGroup(parseResult(task.getResult(connection)));
+    public static Cluster toCluster(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toCluster(parseResult(task.getResult(connection)));
     }
 
-   public static LVHD toLVHD(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toLVHD(parseResult(task.getResult(connection)));
+    public static ClusterHost toClusterHost(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toClusterHost(parseResult(task.getResult(connection)));
     }
 
-   public static PBD toPBD(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toPBD(parseResult(task.getResult(connection)));
+    public static DRTask toDRTask(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toDRTask(parseResult(task.getResult(connection)));
     }
 
-   public static PCI toPCI(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toPCI(parseResult(task.getResult(connection)));
+    public static Feature toFeature(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toFeature(parseResult(task.getResult(connection)));
     }
 
-   public static PGPU toPGPU(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toPGPU(parseResult(task.getResult(connection)));
+    public static GPUGroup toGPUGroup(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toGPUGroup(parseResult(task.getResult(connection)));
     }
 
-   public static PIF toPIF(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toPIF(parseResult(task.getResult(connection)));
+    public static LVHD toLVHD(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toLVHD(parseResult(task.getResult(connection)));
     }
 
-   public static PIFMetrics toPIFMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toPIFMetrics(parseResult(task.getResult(connection)));
+    public static PBD toPBD(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPBD(parseResult(task.getResult(connection)));
     }
 
-   public static SM toSM(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toSM(parseResult(task.getResult(connection)));
+    public static PCI toPCI(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPCI(parseResult(task.getResult(connection)));
     }
 
-   public static SR toSR(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toSR(parseResult(task.getResult(connection)));
+    public static PGPU toPGPU(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPGPU(parseResult(task.getResult(connection)));
     }
 
-   public static VBD toVBD(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVBD(parseResult(task.getResult(connection)));
+    public static PIF toPIF(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPIF(parseResult(task.getResult(connection)));
     }
 
-   public static VBDMetrics toVBDMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVBDMetrics(parseResult(task.getResult(connection)));
+    public static PIFMetrics toPIFMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPIFMetrics(parseResult(task.getResult(connection)));
     }
 
-   public static VDI toVDI(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVDI(parseResult(task.getResult(connection)));
+    public static PUSB toPUSB(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPUSB(parseResult(task.getResult(connection)));
     }
 
-   public static VGPU toVGPU(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVGPU(parseResult(task.getResult(connection)));
+    public static PVSCacheStorage toPVSCacheStorage(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPVSCacheStorage(parseResult(task.getResult(connection)));
     }
 
-   public static VGPUType toVGPUType(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVGPUType(parseResult(task.getResult(connection)));
+    public static PVSProxy toPVSProxy(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPVSProxy(parseResult(task.getResult(connection)));
     }
 
-   public static VIF toVIF(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVIF(parseResult(task.getResult(connection)));
+    public static PVSServer toPVSServer(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPVSServer(parseResult(task.getResult(connection)));
     }
 
-   public static VIFMetrics toVIFMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVIFMetrics(parseResult(task.getResult(connection)));
+    public static PVSSite toPVSSite(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPVSSite(parseResult(task.getResult(connection)));
     }
 
-   public static VLAN toVLAN(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVLAN(parseResult(task.getResult(connection)));
+    public static SDNController toSDNController(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toSDNController(parseResult(task.getResult(connection)));
     }
 
-   public static VM toVM(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVM(parseResult(task.getResult(connection)));
+    public static SM toSM(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toSM(parseResult(task.getResult(connection)));
     }
 
-   public static VMPP toVMPP(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVMPP(parseResult(task.getResult(connection)));
+    public static SR toSR(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toSR(parseResult(task.getResult(connection)));
     }
 
-   public static VMAppliance toVMAppliance(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVMAppliance(parseResult(task.getResult(connection)));
+    public static USBGroup toUSBGroup(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toUSBGroup(parseResult(task.getResult(connection)));
     }
 
-   public static VMGuestMetrics toVMGuestMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVMGuestMetrics(parseResult(task.getResult(connection)));
+    public static VBD toVBD(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVBD(parseResult(task.getResult(connection)));
     }
 
-   public static VMMetrics toVMMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVMMetrics(parseResult(task.getResult(connection)));
+    public static VBDMetrics toVBDMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVBDMetrics(parseResult(task.getResult(connection)));
     }
 
-   public static VTPM toVTPM(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toVTPM(parseResult(task.getResult(connection)));
+    public static VDI toVDI(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVDI(parseResult(task.getResult(connection)));
     }
 
-   public static Blob toBlob(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toBlob(parseResult(task.getResult(connection)));
+    public static VGPU toVGPU(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVGPU(parseResult(task.getResult(connection)));
     }
 
-   public static Console toConsole(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toConsole(parseResult(task.getResult(connection)));
+    public static VGPUType toVGPUType(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVGPUType(parseResult(task.getResult(connection)));
     }
 
-   public static Crashdump toCrashdump(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toCrashdump(parseResult(task.getResult(connection)));
+    public static VIF toVIF(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVIF(parseResult(task.getResult(connection)));
     }
 
-   public static Host toHost(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toHost(parseResult(task.getResult(connection)));
+    public static VIFMetrics toVIFMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVIFMetrics(parseResult(task.getResult(connection)));
     }
 
-   public static HostCpu toHostCpu(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toHostCpu(parseResult(task.getResult(connection)));
+    public static VLAN toVLAN(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVLAN(parseResult(task.getResult(connection)));
     }
 
-   public static HostCrashdump toHostCrashdump(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toHostCrashdump(parseResult(task.getResult(connection)));
+    public static VM toVM(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVM(parseResult(task.getResult(connection)));
     }
 
-   public static HostMetrics toHostMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toHostMetrics(parseResult(task.getResult(connection)));
+    public static VMPP toVMPP(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVMPP(parseResult(task.getResult(connection)));
     }
 
-   public static HostPatch toHostPatch(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toHostPatch(parseResult(task.getResult(connection)));
+    public static VMSS toVMSS(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVMSS(parseResult(task.getResult(connection)));
     }
 
-   public static Message toMessage(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toMessage(parseResult(task.getResult(connection)));
+    public static VMAppliance toVMAppliance(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVMAppliance(parseResult(task.getResult(connection)));
     }
 
-   public static Network toNetwork(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toNetwork(parseResult(task.getResult(connection)));
+    public static VMGuestMetrics toVMGuestMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVMGuestMetrics(parseResult(task.getResult(connection)));
     }
 
-   public static Pool toPool(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toPool(parseResult(task.getResult(connection)));
+    public static VMMetrics toVMMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVMMetrics(parseResult(task.getResult(connection)));
     }
 
-   public static PoolPatch toPoolPatch(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toPoolPatch(parseResult(task.getResult(connection)));
+    public static VTPM toVTPM(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVTPM(parseResult(task.getResult(connection)));
     }
 
-   public static Role toRole(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toRole(parseResult(task.getResult(connection)));
+    public static VUSB toVUSB(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toVUSB(parseResult(task.getResult(connection)));
     }
 
-   public static Secret toSecret(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toSecret(parseResult(task.getResult(connection)));
+    public static Blob toBlob(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toBlob(parseResult(task.getResult(connection)));
     }
 
-   public static Session toSession(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toSession(parseResult(task.getResult(connection)));
+    public static Console toConsole(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toConsole(parseResult(task.getResult(connection)));
     }
 
-   public static Subject toSubject(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toSubject(parseResult(task.getResult(connection)));
+    public static Crashdump toCrashdump(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toCrashdump(parseResult(task.getResult(connection)));
     }
 
-   public static Task toTask(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toTask(parseResult(task.getResult(connection)));
+    public static Host toHost(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toHost(parseResult(task.getResult(connection)));
     }
 
-   public static Tunnel toTunnel(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toTunnel(parseResult(task.getResult(connection)));
+    public static HostCpu toHostCpu(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toHostCpu(parseResult(task.getResult(connection)));
     }
 
-   public static User toUser(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
-               return Types.toUser(parseResult(task.getResult(connection)));
+    public static HostCrashdump toHostCrashdump(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toHostCrashdump(parseResult(task.getResult(connection)));
+    }
+
+    public static HostMetrics toHostMetrics(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toHostMetrics(parseResult(task.getResult(connection)));
+    }
+
+    public static HostPatch toHostPatch(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toHostPatch(parseResult(task.getResult(connection)));
+    }
+
+    public static Message toMessage(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toMessage(parseResult(task.getResult(connection)));
+    }
+
+    public static Network toNetwork(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toNetwork(parseResult(task.getResult(connection)));
+    }
+
+    public static NetworkSriov toNetworkSriov(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toNetworkSriov(parseResult(task.getResult(connection)));
+    }
+
+    public static Pool toPool(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPool(parseResult(task.getResult(connection)));
+    }
+
+    public static PoolPatch toPoolPatch(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPoolPatch(parseResult(task.getResult(connection)));
+    }
+
+    public static PoolUpdate toPoolUpdate(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toPoolUpdate(parseResult(task.getResult(connection)));
+    }
+
+    public static Role toRole(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toRole(parseResult(task.getResult(connection)));
+    }
+
+    public static Secret toSecret(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toSecret(parseResult(task.getResult(connection)));
+    }
+
+    public static Session toSession(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toSession(parseResult(task.getResult(connection)));
+    }
+
+    public static Subject toSubject(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toSubject(parseResult(task.getResult(connection)));
+    }
+
+    public static Task toTask(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toTask(parseResult(task.getResult(connection)));
+    }
+
+    public static Tunnel toTunnel(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toTunnel(parseResult(task.getResult(connection)));
+    }
+
+    public static User toUser(Task task, Connection connection) throws XenAPIException, BadServerResponse, XmlRpcException, BadAsyncResult{
+        return Types.toUser(parseResult(task.getResult(connection)));
     }
 
 

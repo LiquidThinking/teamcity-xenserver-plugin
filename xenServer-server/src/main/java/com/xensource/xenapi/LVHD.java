@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -47,7 +47,7 @@ import org.apache.xmlrpc.XmlRpcException;
 
 /**
  * LVHD SR specific operations
- * First published in XenServer Dundee.
+ * First published in XenServer 7.0.
  *
  * @author Citrix Systems, Inc.
  */
@@ -122,7 +122,7 @@ public class LVHD extends XenAPIObject {
 
     /**
      * Get a record containing the current state of the given LVHD.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return all fields from the object
      */
@@ -140,7 +140,7 @@ public class LVHD extends XenAPIObject {
 
     /**
      * Get a reference to the LVHD instance with the specified UUID.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param uuid UUID of object to return
      * @return reference to the object
@@ -159,7 +159,7 @@ public class LVHD extends XenAPIObject {
 
     /**
      * Get the uuid field of the given LVHD.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -177,20 +177,21 @@ public class LVHD extends XenAPIObject {
 
     /**
      * Upgrades an LVHD SR to enable thin-provisioning. Future VDIs created in this SR will be thinly-provisioned, although existing VDIs will be left alone. Note that the SR must be attached to the SRmaster for upgrade to work.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
+     * @param host The LVHD Host to upgrade to being thin-provisioned.
      * @param SR The LVHD SR to upgrade to being thin-provisioned.
      * @param initialAllocation The initial amount of space to allocate to a newly-created VDI in bytes
      * @param allocationQuantum The amount of space to allocate to a VDI when it needs to be enlarged in bytes
      * @return Task
      */
-    public static Task enableThinProvisioningAsync(Connection c, SR SR, Long initialAllocation, Long allocationQuantum) throws
+    public static Task enableThinProvisioningAsync(Connection c, Host host, SR SR, Long initialAllocation, Long allocationQuantum) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
         String method_call = "Async.LVHD.enable_thin_provisioning";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(SR), Marshalling.toXMLRPC(initialAllocation), Marshalling.toXMLRPC(allocationQuantum)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(host), Marshalling.toXMLRPC(SR), Marshalling.toXMLRPC(initialAllocation), Marshalling.toXMLRPC(allocationQuantum)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
         return Types.toTask(result);
@@ -198,21 +199,24 @@ public class LVHD extends XenAPIObject {
 
     /**
      * Upgrades an LVHD SR to enable thin-provisioning. Future VDIs created in this SR will be thinly-provisioned, although existing VDIs will be left alone. Note that the SR must be attached to the SRmaster for upgrade to work.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
+     * @param host The LVHD Host to upgrade to being thin-provisioned.
      * @param SR The LVHD SR to upgrade to being thin-provisioned.
      * @param initialAllocation The initial amount of space to allocate to a newly-created VDI in bytes
      * @param allocationQuantum The amount of space to allocate to a VDI when it needs to be enlarged in bytes
+     * @return Message from LVHD.enable_thin_provisioning extension
      */
-    public static void enableThinProvisioning(Connection c, SR SR, Long initialAllocation, Long allocationQuantum) throws
+    public static String enableThinProvisioning(Connection c, Host host, SR SR, Long initialAllocation, Long allocationQuantum) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
         String method_call = "LVHD.enable_thin_provisioning";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(SR), Marshalling.toXMLRPC(initialAllocation), Marshalling.toXMLRPC(allocationQuantum)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(host), Marshalling.toXMLRPC(SR), Marshalling.toXMLRPC(initialAllocation), Marshalling.toXMLRPC(allocationQuantum)};
         Map response = c.dispatch(method_call, method_params);
-        return;
+        Object result = response.get("Value");
+            return Types.toString(result);
     }
 
 }

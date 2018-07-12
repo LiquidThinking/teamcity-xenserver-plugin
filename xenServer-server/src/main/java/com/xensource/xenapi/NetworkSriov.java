@@ -46,12 +46,12 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * A set of permissions associated with a subject
- * First published in XenServer 5.6.
+ * network-sriov which connects logical pif and physical pif
+ * First published in Unreleased.
  *
  * @author Citrix Systems, Inc.
  */
-public class Role extends XenAPIObject {
+public class NetworkSriov extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +61,7 @@ public class Role extends XenAPIObject {
     /**
      * For internal use only.
      */
-    Role(String ref) {
+    NetworkSriov(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +73,14 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * If obj is a Role, compares XenAPI references for equality.
+     * If obj is a NetworkSriov, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof Role)
+        if (obj != null && obj instanceof NetworkSriov)
         {
-            Role other = (Role) obj;
+            NetworkSriov other = (NetworkSriov) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,28 +95,30 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a Role
+     * Represents all the fields in a NetworkSriov
      */
     public static class Record implements Types.Record {
         public String toString() {
             StringWriter writer = new StringWriter();
             PrintWriter print = new PrintWriter(writer);
             print.printf("%1$20s: %2$s\n", "uuid", this.uuid);
-            print.printf("%1$20s: %2$s\n", "nameLabel", this.nameLabel);
-            print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
-            print.printf("%1$20s: %2$s\n", "subroles", this.subroles);
+            print.printf("%1$20s: %2$s\n", "physicalPIF", this.physicalPIF);
+            print.printf("%1$20s: %2$s\n", "logicalPIF", this.logicalPIF);
+            print.printf("%1$20s: %2$s\n", "requiresReboot", this.requiresReboot);
+            print.printf("%1$20s: %2$s\n", "configurationMode", this.configurationMode);
             return writer.toString();
         }
 
         /**
-         * Convert a role.Record to a Map
+         * Convert a network_sriov.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("uuid", this.uuid == null ? "" : this.uuid);
-            map.put("name_label", this.nameLabel == null ? "" : this.nameLabel);
-            map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
-            map.put("subroles", this.subroles == null ? new LinkedHashSet<Role>() : this.subroles);
+            map.put("physical_PIF", this.physicalPIF == null ? new PIF("OpaqueRef:NULL") : this.physicalPIF);
+            map.put("logical_PIF", this.logicalPIF == null ? new PIF("OpaqueRef:NULL") : this.logicalPIF);
+            map.put("requires_reboot", this.requiresReboot == null ? false : this.requiresReboot);
+            map.put("configuration_mode", this.configurationMode == null ? Types.SriovConfigurationMode.UNRECOGNIZED : this.configurationMode);
             return map;
         }
 
@@ -125,78 +127,63 @@ public class Role extends XenAPIObject {
          */
         public String uuid;
         /**
-         * a short user-friendly name for the role
+         * The PIF that has SR-IOV enabled
          */
-        public String nameLabel;
+        public PIF physicalPIF;
         /**
-         * what this role is for
+         * The logical PIF to connect to the SR-IOV network after enable SR-IOV on the physical PIF
          */
-        public String nameDescription;
+        public PIF logicalPIF;
         /**
-         * a list of pointers to other roles or permissions
+         * Indicates whether the host need to be rebooted before SR-IOV is enabled on the physical PIF
          */
-        public Set<Role> subroles;
+        public Boolean requiresReboot;
+        /**
+         * The mode for configure network sriov
+         */
+        public Types.SriovConfigurationMode configurationMode;
     }
 
     /**
-     * Get a record containing the current state of the given role.
-     * First published in XenServer 5.6.
+     * Get a record containing the current state of the given network_sriov.
+     * First published in Unreleased.
      *
      * @return all fields from the object
      */
-    public Role.Record getRecord(Connection c) throws
+    public NetworkSriov.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_record";
+        String method_call = "network_sriov.get_record";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toRoleRecord(result);
+            return Types.toNetworkSriovRecord(result);
     }
 
     /**
-     * Get a reference to the role instance with the specified UUID.
-     * First published in XenServer 5.6.
+     * Get a reference to the network_sriov instance with the specified UUID.
+     * First published in Unreleased.
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-    public static Role getByUuid(Connection c, String uuid) throws
+    public static NetworkSriov getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_by_uuid";
+        String method_call = "network_sriov.get_by_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toRole(result);
+            return Types.toNetworkSriov(result);
     }
 
     /**
-     * Get all the role instances with the given label.
-     * First published in XenServer 5.6.
-     *
-     * @param label label of object to return
-     * @return references to objects with matching names
-     */
-    public static Set<Role> getByNameLabel(Connection c, String label) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "role.get_by_name_label";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfRole(result);
-    }
-
-    /**
-     * Get the uuid field of the given role.
-     * First published in XenServer 5.6.
+     * Get the uuid field of the given network_sriov.
+     * First published in Unreleased.
      *
      * @return value of the field
      */
@@ -204,7 +191,7 @@ public class Role extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_uuid";
+        String method_call = "network_sriov.get_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -213,166 +200,221 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * Get the name/label field of the given role.
-     * First published in XenServer 5.6.
+     * Get the physical_PIF field of the given network_sriov.
+     * First published in Unreleased.
      *
      * @return value of the field
      */
-    public String getNameLabel(Connection c) throws
+    public PIF getPhysicalPIF(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_name_label";
+        String method_call = "network_sriov.get_physical_PIF";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toString(result);
+            return Types.toPIF(result);
     }
 
     /**
-     * Get the name/description field of the given role.
-     * First published in XenServer 5.6.
+     * Get the logical_PIF field of the given network_sriov.
+     * First published in Unreleased.
      *
      * @return value of the field
      */
-    public String getNameDescription(Connection c) throws
+    public PIF getLogicalPIF(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_name_description";
+        String method_call = "network_sriov.get_logical_PIF";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toString(result);
+            return Types.toPIF(result);
     }
 
     /**
-     * Get the subroles field of the given role.
-     * First published in XenServer 5.6.
+     * Get the requires_reboot field of the given network_sriov.
+     * First published in Unreleased.
      *
      * @return value of the field
      */
-    public Set<Role> getSubroles(Connection c) throws
+    public Boolean getRequiresReboot(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_subroles";
+        String method_call = "network_sriov.get_requires_reboot";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+            return Types.toBoolean(result);
     }
 
     /**
-     * This call returns a list of permissions given a role
-     * First published in XenServer 5.6.
+     * Get the configuration_mode field of the given network_sriov.
+     * First published in Unreleased.
      *
-     * @return a list of permissions
+     * @return value of the field
      */
-    public Set<Role> getPermissions(Connection c) throws
+    public Types.SriovConfigurationMode getConfigurationMode(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_permissions";
+        String method_call = "network_sriov.get_configuration_mode";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+            return Types.toSriovConfigurationMode(result);
     }
 
     /**
-     * This call returns a list of permission names given a role
-     * First published in XenServer 5.6.
+     * Enable SR-IOV on the specific PIF. It will create a network-sriov based on the specific PIF and automatically create a logical PIF to connect the specific network.
+     * First published in Unreleased.
      *
-     * @return a list of permission names
+     * @param pif PIF on which to enable SR-IOV
+     * @param network Network to connect SR-IOV virtual functions with VM VIFs
+     * @return Task
      */
-    public Set<String> getPermissionsNameLabel(Connection c) throws
+    public static Task createAsync(Connection c, PIF pif, Network network) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_permissions_name_label";
+        String method_call = "Async.network_sriov.create";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(pif), Marshalling.toXMLRPC(network)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Enable SR-IOV on the specific PIF. It will create a network-sriov based on the specific PIF and automatically create a logical PIF to connect the specific network.
+     * First published in Unreleased.
+     *
+     * @param pif PIF on which to enable SR-IOV
+     * @param network Network to connect SR-IOV virtual functions with VM VIFs
+     * @return The reference of the created network_sriov object
+     */
+    public static NetworkSriov create(Connection c, PIF pif, Network network) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "network_sriov.create";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(pif), Marshalling.toXMLRPC(network)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toNetworkSriov(result);
+    }
+
+    /**
+     * Disable SR-IOV on the specific PIF. It will destroy the network-sriov and the logical PIF accordingly.
+     * First published in Unreleased.
+     *
+     * @return Task
+     */
+    public Task destroyAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.network_sriov.destroy";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfString(result);
+        return Types.toTask(result);
     }
 
     /**
-     * This call returns a list of roles given a permission
-     * First published in XenServer 5.6.
+     * Disable SR-IOV on the specific PIF. It will destroy the network-sriov and the logical PIF accordingly.
+     * First published in Unreleased.
      *
-     * @return a list of references to roles
      */
-    public Set<Role> getByPermission(Connection c) throws
+    public void destroy(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_by_permission";
+        String method_call = "network_sriov.destroy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Get the number of free SR-IOV VFs on the associated PIF
+     * First published in Unreleased.
+     *
+     * @return Task
+     */
+    public Task getRemainingCapacityAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.network_sriov.get_remaining_capacity";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+        return Types.toTask(result);
     }
 
     /**
-     * This call returns a list of roles given a permission name
-     * First published in XenServer 5.6.
+     * Get the number of free SR-IOV VFs on the associated PIF
+     * First published in Unreleased.
      *
-     * @param label The short friendly name of the role
-     * @return a list of references to roles
+     * @return The number of free SR-IOV VFs on the associated PIF
      */
-    public static Set<Role> getByPermissionNameLabel(Connection c, String label) throws
+    public Long getRemainingCapacity(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_by_permission_name_label";
+        String method_call = "network_sriov.get_remaining_capacity";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+            return Types.toLong(result);
     }
 
     /**
-     * Return a list of all the roles known to the system.
-     * First published in XenServer 5.6.
+     * Return a list of all the network_sriovs known to the system.
+     * First published in Unreleased.
      *
      * @return references to all objects
      */
-    public static Set<Role> getAll(Connection c) throws
+    public static Set<NetworkSriov> getAll(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_all";
+        String method_call = "network_sriov.get_all";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+            return Types.toSetOfNetworkSriov(result);
     }
 
     /**
-     * Return a map of role references to role records for all roles known to the system.
-     * First published in XenServer 5.6.
+     * Return a map of network_sriov references to network_sriov records for all network_sriovs known to the system.
+     * First published in Unreleased.
      *
      * @return records of all objects
      */
-    public static Map<Role, Role.Record> getAllRecords(Connection c) throws
+    public static Map<NetworkSriov, NetworkSriov.Record> getAllRecords(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_all_records";
+        String method_call = "network_sriov.get_all_records";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toMapOfRoleRoleRecord(result);
+            return Types.toMapOfNetworkSriovNetworkSriovRecord(result);
     }
 
 }

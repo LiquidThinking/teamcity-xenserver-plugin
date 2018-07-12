@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -113,6 +113,10 @@ public class VMMetrics extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "installTime", this.installTime);
             print.printf("%1$20s: %2$s\n", "lastUpdated", this.lastUpdated);
             print.printf("%1$20s: %2$s\n", "otherConfig", this.otherConfig);
+            print.printf("%1$20s: %2$s\n", "hvm", this.hvm);
+            print.printf("%1$20s: %2$s\n", "nestedVirt", this.nestedVirt);
+            print.printf("%1$20s: %2$s\n", "nomigrate", this.nomigrate);
+            print.printf("%1$20s: %2$s\n", "currentDomainType", this.currentDomainType);
             return writer.toString();
         }
 
@@ -133,6 +137,10 @@ public class VMMetrics extends XenAPIObject {
             map.put("install_time", this.installTime == null ? new Date(0) : this.installTime);
             map.put("last_updated", this.lastUpdated == null ? new Date(0) : this.lastUpdated);
             map.put("other_config", this.otherConfig == null ? new HashMap<String, String>() : this.otherConfig);
+            map.put("hvm", this.hvm == null ? false : this.hvm);
+            map.put("nested_virt", this.nestedVirt == null ? false : this.nestedVirt);
+            map.put("nomigrate", this.nomigrate == null ? false : this.nomigrate);
+            map.put("current_domain_type", this.currentDomainType == null ? Types.DomainType.UNRECOGNIZED : this.currentDomainType);
             return map;
         }
 
@@ -185,6 +193,26 @@ public class VMMetrics extends XenAPIObject {
          * First published in XenServer 5.0.
          */
         public Map<String, String> otherConfig;
+        /**
+         * hardware virtual machine
+         * First published in XenServer 7.1.
+         */
+        public Boolean hvm;
+        /**
+         * VM supports nested virtualisation
+         * First published in XenServer 7.1.
+         */
+        public Boolean nestedVirt;
+        /**
+         * VM is immobile and can't migrate between hosts
+         * First published in XenServer 7.1.
+         */
+        public Boolean nomigrate;
+        /**
+         * The current domain type of the VM (for running,suspended, or paused VMs). The last-known domain type for halted VMs.
+         * First published in Unreleased.
+         */
+        public Types.DomainType currentDomainType;
     }
 
     /**
@@ -438,6 +466,78 @@ public class VMMetrics extends XenAPIObject {
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
             return Types.toMapOfStringString(result);
+    }
+
+    /**
+     * Get the hvm field of the given VM_metrics.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Boolean getHvm(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM_metrics.get_hvm";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
+     * Get the nested_virt field of the given VM_metrics.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Boolean getNestedVirt(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM_metrics.get_nested_virt";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
+     * Get the nomigrate field of the given VM_metrics.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Boolean getNomigrate(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM_metrics.get_nomigrate";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
+     * Get the current_domain_type field of the given VM_metrics.
+     * First published in Unreleased.
+     *
+     * @return value of the field
+     */
+    public Types.DomainType getCurrentDomainType(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM_metrics.get_current_domain_type";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toDomainType(result);
     }
 
     /**

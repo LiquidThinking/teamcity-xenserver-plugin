@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -125,6 +125,7 @@ public class Host extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "crashDumpSr", this.crashDumpSr);
             print.printf("%1$20s: %2$s\n", "crashdumps", this.crashdumps);
             print.printf("%1$20s: %2$s\n", "patches", this.patches);
+            print.printf("%1$20s: %2$s\n", "updates", this.updates);
             print.printf("%1$20s: %2$s\n", "PBDs", this.PBDs);
             print.printf("%1$20s: %2$s\n", "hostCPUs", this.hostCPUs);
             print.printf("%1$20s: %2$s\n", "cpuInfo", this.cpuInfo);
@@ -148,10 +149,16 @@ public class Host extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "chipsetInfo", this.chipsetInfo);
             print.printf("%1$20s: %2$s\n", "PCIs", this.PCIs);
             print.printf("%1$20s: %2$s\n", "PGPUs", this.PGPUs);
+            print.printf("%1$20s: %2$s\n", "PUSBs", this.PUSBs);
             print.printf("%1$20s: %2$s\n", "sslLegacy", this.sslLegacy);
             print.printf("%1$20s: %2$s\n", "guestVCPUsParams", this.guestVCPUsParams);
             print.printf("%1$20s: %2$s\n", "display", this.display);
             print.printf("%1$20s: %2$s\n", "virtualHardwarePlatformVersions", this.virtualHardwarePlatformVersions);
+            print.printf("%1$20s: %2$s\n", "controlDomain", this.controlDomain);
+            print.printf("%1$20s: %2$s\n", "updatesRequiringReboot", this.updatesRequiringReboot);
+            print.printf("%1$20s: %2$s\n", "features", this.features);
+            print.printf("%1$20s: %2$s\n", "iscsiIqn", this.iscsiIqn);
+            print.printf("%1$20s: %2$s\n", "multipathing", this.multipathing);
             return writer.toString();
         }
 
@@ -184,6 +191,7 @@ public class Host extends XenAPIObject {
             map.put("crash_dump_sr", this.crashDumpSr == null ? new SR("OpaqueRef:NULL") : this.crashDumpSr);
             map.put("crashdumps", this.crashdumps == null ? new LinkedHashSet<HostCrashdump>() : this.crashdumps);
             map.put("patches", this.patches == null ? new LinkedHashSet<HostPatch>() : this.patches);
+            map.put("updates", this.updates == null ? new LinkedHashSet<PoolUpdate>() : this.updates);
             map.put("PBDs", this.PBDs == null ? new LinkedHashSet<PBD>() : this.PBDs);
             map.put("host_CPUs", this.hostCPUs == null ? new LinkedHashSet<HostCpu>() : this.hostCPUs);
             map.put("cpu_info", this.cpuInfo == null ? new HashMap<String, String>() : this.cpuInfo);
@@ -207,10 +215,16 @@ public class Host extends XenAPIObject {
             map.put("chipset_info", this.chipsetInfo == null ? new HashMap<String, String>() : this.chipsetInfo);
             map.put("PCIs", this.PCIs == null ? new LinkedHashSet<PCI>() : this.PCIs);
             map.put("PGPUs", this.PGPUs == null ? new LinkedHashSet<PGPU>() : this.PGPUs);
+            map.put("PUSBs", this.PUSBs == null ? new LinkedHashSet<PUSB>() : this.PUSBs);
             map.put("ssl_legacy", this.sslLegacy == null ? false : this.sslLegacy);
             map.put("guest_VCPUs_params", this.guestVCPUsParams == null ? new HashMap<String, String>() : this.guestVCPUsParams);
             map.put("display", this.display == null ? Types.HostDisplay.UNRECOGNIZED : this.display);
             map.put("virtual_hardware_platform_versions", this.virtualHardwarePlatformVersions == null ? new LinkedHashSet<Long>() : this.virtualHardwarePlatformVersions);
+            map.put("control_domain", this.controlDomain == null ? new VM("OpaqueRef:NULL") : this.controlDomain);
+            map.put("updates_requiring_reboot", this.updatesRequiringReboot == null ? new LinkedHashSet<PoolUpdate>() : this.updatesRequiringReboot);
+            map.put("features", this.features == null ? new LinkedHashSet<Feature>() : this.features);
+            map.put("iscsi_iqn", this.iscsiIqn == null ? "" : this.iscsiIqn);
+            map.put("multipathing", this.multipathing == null ? false : this.multipathing);
             return map;
         }
 
@@ -310,6 +324,11 @@ public class Host extends XenAPIObject {
          * Set of host patches
          */
         public Set<HostPatch> patches;
+        /**
+         * Set of updates
+         * First published in XenServer 7.1.
+         */
+        public Set<PoolUpdate> updates;
         /**
          * physical blockdevices
          */
@@ -420,8 +439,13 @@ public class Host extends XenAPIObject {
          */
         public Set<PGPU> PGPUs;
         /**
+         * List of physical USBs in the host
+         * First published in XenServer 7.3.
+         */
+        public Set<PUSB> PUSBs;
+        /**
          * Allow SSLv3 protocol and ciphersuites as used by older XenServers. This controls both incoming and outgoing connections. When this is set to a different value, the host immediately restarts its SSL/TLS listening service; typically this takes less than a second but existing connections to it will be broken. XenAPI login sessions will remain valid.
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Boolean sslLegacy;
         /**
@@ -439,6 +463,31 @@ public class Host extends XenAPIObject {
          * First published in XenServer 6.5 SP1.
          */
         public Set<Long> virtualHardwarePlatformVersions;
+        /**
+         * The control domain (domain 0)
+         * First published in XenServer 7.1.
+         */
+        public VM controlDomain;
+        /**
+         * List of updates which require reboot
+         * First published in XenServer 7.1.
+         */
+        public Set<PoolUpdate> updatesRequiringReboot;
+        /**
+         * List of features available on this host
+         * First published in XenServer 7.2.
+         */
+        public Set<Feature> features;
+        /**
+         * The initiator IQN for the host
+         * First published in Unreleased.
+         */
+        public String iscsiIqn;
+        /**
+         * Specifies whether multipathing is enabled
+         * First published in Unreleased.
+         */
+        public Boolean multipathing;
     }
 
     /**
@@ -914,10 +963,11 @@ public class Host extends XenAPIObject {
     /**
      * Get the patches field of the given host.
      * First published in XenServer 4.0.
+     * @deprecated
      *
      * @return value of the field
      */
-    public Set<HostPatch> getPatches(Connection c) throws
+   @Deprecated public Set<HostPatch> getPatches(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -927,6 +977,24 @@ public class Host extends XenAPIObject {
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
             return Types.toSetOfHostPatch(result);
+    }
+
+    /**
+     * Get the updates field of the given host.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Set<PoolUpdate> getUpdates(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "host.get_updates";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfPoolUpdate(result);
     }
 
     /**
@@ -1344,8 +1412,26 @@ public class Host extends XenAPIObject {
     }
 
     /**
+     * Get the PUSBs field of the given host.
+     * First published in XenServer 7.3.
+     *
+     * @return value of the field
+     */
+    public Set<PUSB> getPUSBs(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "host.get_PUSBs";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfPUSB(result);
+    }
+
+    /**
      * Get the ssl_legacy field of the given host.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -1413,6 +1499,96 @@ public class Host extends XenAPIObject {
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
             return Types.toSetOfLong(result);
+    }
+
+    /**
+     * Get the control_domain field of the given host.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public VM getControlDomain(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "host.get_control_domain";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toVM(result);
+    }
+
+    /**
+     * Get the updates_requiring_reboot field of the given host.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Set<PoolUpdate> getUpdatesRequiringReboot(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "host.get_updates_requiring_reboot";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfPoolUpdate(result);
+    }
+
+    /**
+     * Get the features field of the given host.
+     * First published in XenServer 7.2.
+     *
+     * @return value of the field
+     */
+    public Set<Feature> getFeatures(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "host.get_features";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfFeature(result);
+    }
+
+    /**
+     * Get the iscsi_iqn field of the given host.
+     * First published in Unreleased.
+     *
+     * @return value of the field
+     */
+    public String getIscsiIqn(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "host.get_iscsi_iqn";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toString(result);
+    }
+
+    /**
+     * Get the multipathing field of the given host.
+     * First published in Unreleased.
+     *
+     * @return value of the field
+     */
+    public Boolean getMultipathing(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "host.get_multipathing";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
     }
 
     /**
@@ -2169,7 +2345,7 @@ public class Host extends XenAPIObject {
 
     /**
      * Apply a new license to a host
-     * First published in .
+     * First published in XenServer 6.5 SP1 Hotfix 31.
      *
      * @param contents The contents of the license file, base64 encoded
      * @return Task
@@ -2189,7 +2365,7 @@ public class Host extends XenAPIObject {
 
     /**
      * Apply a new license to a host
-     * First published in .
+     * First published in XenServer 6.5 SP1 Hotfix 31.
      *
      * @param contents The contents of the license file, base64 encoded
      */
@@ -2207,7 +2383,7 @@ public class Host extends XenAPIObject {
 
     /**
      * Remove any license file from the specified host, and switch that host to the unlicensed edition
-     * First published in .
+     * First published in XenServer 6.5 SP1 Hotfix 31.
      *
      * @return Task
      */
@@ -2225,7 +2401,7 @@ public class Host extends XenAPIObject {
 
     /**
      * Remove any license file from the specified host, and switch that host to the unlicensed edition
-     * First published in .
+     * First published in XenServer 6.5 SP1 Hotfix 31.
      *
      */
     public void licenseRemove(Connection c) throws
@@ -2311,14 +2487,15 @@ public class Host extends XenAPIObject {
      * This call disables HA on the local host. This should only be used with extreme care.
      * First published in XenServer 5.0.
      *
+     * @param soft Disable HA temporarily, revert upon host reboot or further changes, idempotent First published in XenServer 7.1.
      */
-    public static void emergencyHaDisable(Connection c) throws
+    public static void emergencyHaDisable(Connection c, Boolean soft) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
         String method_call = "host.emergency_ha_disable";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(soft)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }
@@ -2991,6 +3168,63 @@ public class Host extends XenAPIObject {
     }
 
     /**
+     * Return true if the extension is available on the host
+     * First published in XenServer 7.1.
+     *
+     * @param name The name of the API call
+     * @return Task
+     */
+    public Task hasExtensionAsync(Connection c, String name) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.host.has_extension";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(name)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Return true if the extension is available on the host
+     * First published in XenServer 7.1.
+     *
+     * @param name The name of the API call
+     * @return True if the extension exists, false otherwise
+     */
+    public Boolean hasExtension(Connection c, String name) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "host.has_extension";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(name)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
+     * Call a XenAPI extension on this host
+     * First published in XenServer 7.1.
+     *
+     * @param call Rpc call for the extension
+     * @return Result from the extension
+     */
+    public String callExtension(Connection c, String call) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "host.call_extension";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(call)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toString(result);
+    }
+
+    /**
      * This call queries the host's clock for the current time
      * First published in XenServer 5.0.
      *
@@ -3099,7 +3333,7 @@ public class Host extends XenAPIObject {
     }
 
     /**
-     * Get the installed server SSL certificate.
+     * Get the installed server public TLS certificate.
      * First published in XenServer 5.5.
      *
      * @return Task
@@ -3117,10 +3351,10 @@ public class Host extends XenAPIObject {
     }
 
     /**
-     * Get the installed server SSL certificate.
+     * Get the installed server public TLS certificate.
      * First published in XenServer 5.5.
      *
-     * @return The installed server SSL certificate, in PEM form.
+     * @return The installed server public TLS certificate, in PEM form.
      */
     public String getServerCertificate(Connection c) throws
        BadServerResponse,
@@ -3172,10 +3406,11 @@ public class Host extends XenAPIObject {
     /**
      * Refresh the list of installed Supplemental Packs.
      * First published in XenServer 5.6.
+     * @deprecated
      *
      * @return Task
      */
-    public Task refreshPackInfoAsync(Connection c) throws
+   @Deprecated public Task refreshPackInfoAsync(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -3190,9 +3425,10 @@ public class Host extends XenAPIObject {
     /**
      * Refresh the list of installed Supplemental Packs.
      * First published in XenServer 5.6.
+     * @deprecated
      *
      */
-    public void refreshPackInfo(Connection c) throws
+   @Deprecated public void refreshPackInfo(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -3455,7 +3691,7 @@ public class Host extends XenAPIObject {
 
     /**
      * Enable/disable SSLv3 for interoperability with older versions of XenServer. When this is set to a different value, the host immediately restarts its SSL/TLS listening service; typically this takes less than a second but existing connections to it will be broken. XenAPI login sessions will remain valid.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param value True to allow SSLv3 and ciphersuites as used in old XenServer versions
      * @return Task
@@ -3474,7 +3710,7 @@ public class Host extends XenAPIObject {
 
     /**
      * Enable/disable SSLv3 for interoperability with older versions of XenServer. When this is set to a different value, the host immediately restarts its SSL/TLS listening service; typically this takes less than a second but existing connections to it will be broken. XenAPI login sessions will remain valid.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param value True to allow SSLv3 and ciphersuites as used in old XenServer versions
      */
@@ -3483,6 +3719,78 @@ public class Host extends XenAPIObject {
        XenAPIException,
        XmlRpcException {
         String method_call = "host.set_ssl_legacy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Sets the initiator IQN for the host
+     * First published in Unreleased.
+     *
+     * @param value The value to which the IQN should be set
+     * @return Task
+     */
+    public Task setIscsiIqnAsync(Connection c, String value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.host.set_iscsi_iqn";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Sets the initiator IQN for the host
+     * First published in Unreleased.
+     *
+     * @param value The value to which the IQN should be set
+     */
+    public void setIscsiIqn(Connection c, String value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "host.set_iscsi_iqn";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Specifies whether multipathing is enabled
+     * First published in Unreleased.
+     *
+     * @param value Whether multipathing should be enabled
+     * @return Task
+     */
+    public Task setMultipathingAsync(Connection c, Boolean value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.host.set_multipathing";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Specifies whether multipathing is enabled
+     * First published in Unreleased.
+     *
+     * @param value Whether multipathing should be enabled
+     */
+    public void setMultipathing(Connection c, Boolean value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "host.set_multipathing";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
         Map response = c.dispatch(method_call, method_params);

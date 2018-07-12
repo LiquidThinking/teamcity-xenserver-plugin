@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -132,6 +132,10 @@ public class PIF extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "managed", this.managed);
             print.printf("%1$20s: %2$s\n", "properties", this.properties);
             print.printf("%1$20s: %2$s\n", "capabilities", this.capabilities);
+            print.printf("%1$20s: %2$s\n", "igmpSnoopingStatus", this.igmpSnoopingStatus);
+            print.printf("%1$20s: %2$s\n", "sriovPhysicalPIFOf", this.sriovPhysicalPIFOf);
+            print.printf("%1$20s: %2$s\n", "sriovLogicalPIFOf", this.sriovLogicalPIFOf);
+            print.printf("%1$20s: %2$s\n", "PCI", this.PCI);
             return writer.toString();
         }
 
@@ -171,6 +175,10 @@ public class PIF extends XenAPIObject {
             map.put("managed", this.managed == null ? false : this.managed);
             map.put("properties", this.properties == null ? new HashMap<String, String>() : this.properties);
             map.put("capabilities", this.capabilities == null ? new LinkedHashSet<String>() : this.capabilities);
+            map.put("igmp_snooping_status", this.igmpSnoopingStatus == null ? Types.PifIgmpStatus.UNRECOGNIZED : this.igmpSnoopingStatus);
+            map.put("sriov_physical_PIF_of", this.sriovPhysicalPIFOf == null ? new LinkedHashSet<NetworkSriov>() : this.sriovPhysicalPIFOf);
+            map.put("sriov_logical_PIF_of", this.sriovLogicalPIFOf == null ? new LinkedHashSet<NetworkSriov>() : this.sriovLogicalPIFOf);
+            map.put("PCI", this.PCI == null ? new PCI("OpaqueRef:NULL") : this.PCI);
             return map;
         }
 
@@ -318,9 +326,29 @@ public class PIF extends XenAPIObject {
         public Map<String, String> properties;
         /**
          * Additional capabilities on the interface.
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Set<String> capabilities;
+        /**
+         * The IGMP snooping status of the corresponding network bridge
+         * First published in XenServer 7.3.
+         */
+        public Types.PifIgmpStatus igmpSnoopingStatus;
+        /**
+         * Indicates which network_sriov this interface is physical of
+         * First published in Unreleased.
+         */
+        public Set<NetworkSriov> sriovPhysicalPIFOf;
+        /**
+         * Indicates which network_sriov this interface is logical of
+         * First published in Unreleased.
+         */
+        public Set<NetworkSriov> sriovLogicalPIFOf;
+        /**
+         * Link to underlying PCI device
+         * First published in Unreleased.
+         */
+        public PCI PCI;
     }
 
     /**
@@ -902,7 +930,7 @@ public class PIF extends XenAPIObject {
 
     /**
      * Get the capabilities field of the given PIF.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -916,6 +944,78 @@ public class PIF extends XenAPIObject {
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
             return Types.toSetOfString(result);
+    }
+
+    /**
+     * Get the igmp_snooping_status field of the given PIF.
+     * First published in XenServer 7.3.
+     *
+     * @return value of the field
+     */
+    public Types.PifIgmpStatus getIgmpSnoopingStatus(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PIF.get_igmp_snooping_status";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toPifIgmpStatus(result);
+    }
+
+    /**
+     * Get the sriov_physical_PIF_of field of the given PIF.
+     * First published in Unreleased.
+     *
+     * @return value of the field
+     */
+    public Set<NetworkSriov> getSriovPhysicalPIFOf(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PIF.get_sriov_physical_PIF_of";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfNetworkSriov(result);
+    }
+
+    /**
+     * Get the sriov_logical_PIF_of field of the given PIF.
+     * First published in Unreleased.
+     *
+     * @return value of the field
+     */
+    public Set<NetworkSriov> getSriovLogicalPIFOf(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PIF.get_sriov_logical_PIF_of";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfNetworkSriov(result);
+    }
+
+    /**
+     * Get the PCI field of the given PIF.
+     * First published in Unreleased.
+     *
+     * @return value of the field
+     */
+    public PCI getPCI(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PIF.get_PCI";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toPCI(result);
     }
 
     /**
@@ -966,23 +1066,6 @@ public class PIF extends XenAPIObject {
         String method_call = "PIF.remove_from_other_config";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(key)};
-        Map response = c.dispatch(method_call, method_params);
-        return;
-    }
-
-    /**
-     * Set the disallow_unplug field of the given PIF.
-     * First published in XenServer 5.0.
-     *
-     * @param disallowUnplug New value to set
-     */
-    public void setDisallowUnplug(Connection c, Boolean disallowUnplug) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "PIF.set_disallow_unplug";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(disallowUnplug)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }
@@ -1087,7 +1170,8 @@ public class PIF extends XenAPIObject {
     public Task reconfigureIpAsync(Connection c, Types.IpConfigurationMode mode, String IP, String netmask, String gateway, String DNS) throws
        BadServerResponse,
        XenAPIException,
-       XmlRpcException {
+       XmlRpcException,
+       Types.ClusteringEnabledOnNetwork {
         String method_call = "Async.PIF.reconfigure_ip";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(mode), Marshalling.toXMLRPC(IP), Marshalling.toXMLRPC(netmask), Marshalling.toXMLRPC(gateway), Marshalling.toXMLRPC(DNS)};
@@ -1109,7 +1193,8 @@ public class PIF extends XenAPIObject {
     public void reconfigureIp(Connection c, Types.IpConfigurationMode mode, String IP, String netmask, String gateway, String DNS) throws
        BadServerResponse,
        XenAPIException,
-       XmlRpcException {
+       XmlRpcException,
+       Types.ClusteringEnabledOnNetwork {
         String method_call = "PIF.reconfigure_ip";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(mode), Marshalling.toXMLRPC(IP), Marshalling.toXMLRPC(netmask), Marshalling.toXMLRPC(gateway), Marshalling.toXMLRPC(DNS)};
@@ -1130,7 +1215,8 @@ public class PIF extends XenAPIObject {
     public Task reconfigureIpv6Async(Connection c, Types.Ipv6ConfigurationMode mode, String IPv6, String gateway, String DNS) throws
        BadServerResponse,
        XenAPIException,
-       XmlRpcException {
+       XmlRpcException,
+       Types.ClusteringEnabledOnNetwork {
         String method_call = "Async.PIF.reconfigure_ipv6";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(mode), Marshalling.toXMLRPC(IPv6), Marshalling.toXMLRPC(gateway), Marshalling.toXMLRPC(DNS)};
@@ -1151,7 +1237,8 @@ public class PIF extends XenAPIObject {
     public void reconfigureIpv6(Connection c, Types.Ipv6ConfigurationMode mode, String IPv6, String gateway, String DNS) throws
        BadServerResponse,
        XenAPIException,
-       XmlRpcException {
+       XmlRpcException,
+       Types.ClusteringEnabledOnNetwork {
         String method_call = "PIF.reconfigure_ipv6";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(mode), Marshalling.toXMLRPC(IPv6), Marshalling.toXMLRPC(gateway), Marshalling.toXMLRPC(DNS)};
@@ -1327,7 +1414,8 @@ public class PIF extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException,
-       Types.PifTunnelStillExists {
+       Types.PifTunnelStillExists,
+       Types.ClusteringEnabledOnNetwork {
         String method_call = "Async.PIF.forget";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
@@ -1345,7 +1433,8 @@ public class PIF extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException,
-       Types.PifTunnelStillExists {
+       Types.PifTunnelStillExists,
+       Types.ClusteringEnabledOnNetwork {
         String method_call = "PIF.forget";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
@@ -1362,7 +1451,11 @@ public class PIF extends XenAPIObject {
     public Task unplugAsync(Connection c) throws
        BadServerResponse,
        XenAPIException,
-       XmlRpcException {
+       XmlRpcException,
+       Types.HaOperationWouldBreakFailoverPlan,
+       Types.VifInUse,
+       Types.PifDoesNotAllowUnplug,
+       Types.PifHasFcoeSrInUse {
         String method_call = "Async.PIF.unplug";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
@@ -1379,10 +1472,52 @@ public class PIF extends XenAPIObject {
     public void unplug(Connection c) throws
        BadServerResponse,
        XenAPIException,
-       XmlRpcException {
+       XmlRpcException,
+       Types.HaOperationWouldBreakFailoverPlan,
+       Types.VifInUse,
+       Types.PifDoesNotAllowUnplug,
+       Types.PifHasFcoeSrInUse {
         String method_call = "PIF.unplug";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Set whether unplugging the PIF is allowed
+     * First published in XenServer 5.0.
+     *
+     * @param value New value to set
+     * @return Task
+     */
+    public Task setDisallowUnplugAsync(Connection c, Boolean value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.ClusteringEnabledOnNetwork {
+        String method_call = "Async.PIF.set_disallow_unplug";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Set whether unplugging the PIF is allowed
+     * First published in XenServer 5.0.
+     *
+     * @param value New value to set
+     */
+    public void setDisallowUnplug(Connection c, Boolean value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.ClusteringEnabledOnNetwork {
+        String method_call = "PIF.set_disallow_unplug";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }

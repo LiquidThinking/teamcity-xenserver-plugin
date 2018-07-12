@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -196,17 +196,17 @@ public class VGPUType extends XenAPIObject {
         public Set<GPUGroup> enabledOnGPUGroups;
         /**
          * The internal implementation of this VGPU type
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Types.VgpuTypeImplementation implementation;
         /**
          * Key used to identify VGPU types and avoid creating duplicates - this field is used internally and not intended for interpretation by API clients
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public String identifier;
         /**
          * Indicates whether VGPUs of this type should be considered experimental
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Boolean experimental;
     }
@@ -466,7 +466,7 @@ public class VGPUType extends XenAPIObject {
 
     /**
      * Get the implementation field of the given VGPU_type.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -484,7 +484,7 @@ public class VGPUType extends XenAPIObject {
 
     /**
      * Get the identifier field of the given VGPU_type.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -502,7 +502,7 @@ public class VGPUType extends XenAPIObject {
 
     /**
      * Get the experimental field of the given VGPU_type.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */

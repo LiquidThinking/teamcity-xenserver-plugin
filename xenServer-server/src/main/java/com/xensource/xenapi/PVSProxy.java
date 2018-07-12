@@ -46,12 +46,12 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * A set of permissions associated with a subject
- * First published in XenServer 5.6.
+ * a proxy connects a VM/VIF with a PVS site
+ * First published in XenServer 7.1.
  *
  * @author Citrix Systems, Inc.
  */
-public class Role extends XenAPIObject {
+public class PVSProxy extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +61,7 @@ public class Role extends XenAPIObject {
     /**
      * For internal use only.
      */
-    Role(String ref) {
+    PVSProxy(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +73,14 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * If obj is a Role, compares XenAPI references for equality.
+     * If obj is a PVSProxy, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof Role)
+        if (obj != null && obj instanceof PVSProxy)
         {
-            Role other = (Role) obj;
+            PVSProxy other = (PVSProxy) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,28 +95,30 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a Role
+     * Represents all the fields in a PVSProxy
      */
     public static class Record implements Types.Record {
         public String toString() {
             StringWriter writer = new StringWriter();
             PrintWriter print = new PrintWriter(writer);
             print.printf("%1$20s: %2$s\n", "uuid", this.uuid);
-            print.printf("%1$20s: %2$s\n", "nameLabel", this.nameLabel);
-            print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
-            print.printf("%1$20s: %2$s\n", "subroles", this.subroles);
+            print.printf("%1$20s: %2$s\n", "site", this.site);
+            print.printf("%1$20s: %2$s\n", "VIF", this.VIF);
+            print.printf("%1$20s: %2$s\n", "currentlyAttached", this.currentlyAttached);
+            print.printf("%1$20s: %2$s\n", "status", this.status);
             return writer.toString();
         }
 
         /**
-         * Convert a role.Record to a Map
+         * Convert a PVS_proxy.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("uuid", this.uuid == null ? "" : this.uuid);
-            map.put("name_label", this.nameLabel == null ? "" : this.nameLabel);
-            map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
-            map.put("subroles", this.subroles == null ? new LinkedHashSet<Role>() : this.subroles);
+            map.put("site", this.site == null ? new PVSSite("OpaqueRef:NULL") : this.site);
+            map.put("VIF", this.VIF == null ? new VIF("OpaqueRef:NULL") : this.VIF);
+            map.put("currently_attached", this.currentlyAttached == null ? false : this.currentlyAttached);
+            map.put("status", this.status == null ? Types.PvsProxyStatus.UNRECOGNIZED : this.status);
             return map;
         }
 
@@ -125,78 +127,63 @@ public class Role extends XenAPIObject {
          */
         public String uuid;
         /**
-         * a short user-friendly name for the role
+         * PVS site this proxy is part of
          */
-        public String nameLabel;
+        public PVSSite site;
         /**
-         * what this role is for
+         * VIF of the VM using the proxy
          */
-        public String nameDescription;
+        public VIF VIF;
         /**
-         * a list of pointers to other roles or permissions
+         * true = VM is currently proxied
          */
-        public Set<Role> subroles;
+        public Boolean currentlyAttached;
+        /**
+         * The run-time status of the proxy
+         */
+        public Types.PvsProxyStatus status;
     }
 
     /**
-     * Get a record containing the current state of the given role.
-     * First published in XenServer 5.6.
+     * Get a record containing the current state of the given PVS_proxy.
+     * First published in XenServer 7.1.
      *
      * @return all fields from the object
      */
-    public Role.Record getRecord(Connection c) throws
+    public PVSProxy.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_record";
+        String method_call = "PVS_proxy.get_record";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toRoleRecord(result);
+            return Types.toPVSProxyRecord(result);
     }
 
     /**
-     * Get a reference to the role instance with the specified UUID.
-     * First published in XenServer 5.6.
+     * Get a reference to the PVS_proxy instance with the specified UUID.
+     * First published in XenServer 7.1.
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-    public static Role getByUuid(Connection c, String uuid) throws
+    public static PVSProxy getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_by_uuid";
+        String method_call = "PVS_proxy.get_by_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toRole(result);
+            return Types.toPVSProxy(result);
     }
 
     /**
-     * Get all the role instances with the given label.
-     * First published in XenServer 5.6.
-     *
-     * @param label label of object to return
-     * @return references to objects with matching names
-     */
-    public static Set<Role> getByNameLabel(Connection c, String label) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "role.get_by_name_label";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfRole(result);
-    }
-
-    /**
-     * Get the uuid field of the given role.
-     * First published in XenServer 5.6.
+     * Get the uuid field of the given PVS_proxy.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
@@ -204,7 +191,7 @@ public class Role extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_uuid";
+        String method_call = "PVS_proxy.get_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -213,166 +200,185 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * Get the name/label field of the given role.
-     * First published in XenServer 5.6.
+     * Get the site field of the given PVS_proxy.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
-    public String getNameLabel(Connection c) throws
+    public PVSSite getSite(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_name_label";
+        String method_call = "PVS_proxy.get_site";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toString(result);
+            return Types.toPVSSite(result);
     }
 
     /**
-     * Get the name/description field of the given role.
-     * First published in XenServer 5.6.
+     * Get the VIF field of the given PVS_proxy.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
-    public String getNameDescription(Connection c) throws
+    public VIF getVIF(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_name_description";
+        String method_call = "PVS_proxy.get_VIF";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toString(result);
+            return Types.toVIF(result);
     }
 
     /**
-     * Get the subroles field of the given role.
-     * First published in XenServer 5.6.
+     * Get the currently_attached field of the given PVS_proxy.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
-    public Set<Role> getSubroles(Connection c) throws
+    public Boolean getCurrentlyAttached(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_subroles";
+        String method_call = "PVS_proxy.get_currently_attached";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+            return Types.toBoolean(result);
     }
 
     /**
-     * This call returns a list of permissions given a role
-     * First published in XenServer 5.6.
+     * Get the status field of the given PVS_proxy.
+     * First published in XenServer 7.1.
      *
-     * @return a list of permissions
+     * @return value of the field
      */
-    public Set<Role> getPermissions(Connection c) throws
+    public Types.PvsProxyStatus getStatus(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_permissions";
+        String method_call = "PVS_proxy.get_status";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+            return Types.toPvsProxyStatus(result);
     }
 
     /**
-     * This call returns a list of permission names given a role
-     * First published in XenServer 5.6.
+     * Configure a VM/VIF to use a PVS proxy
+     * First published in XenServer 7.1.
      *
-     * @return a list of permission names
+     * @param site PVS site that we proxy for
+     * @param VIF VIF for the VM that needs to be proxied
+     * @return Task
      */
-    public Set<String> getPermissionsNameLabel(Connection c) throws
+    public static Task createAsync(Connection c, PVSSite site, VIF VIF) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_permissions_name_label";
+        String method_call = "Async.PVS_proxy.create";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(site), Marshalling.toXMLRPC(VIF)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Configure a VM/VIF to use a PVS proxy
+     * First published in XenServer 7.1.
+     *
+     * @param site PVS site that we proxy for
+     * @param VIF VIF for the VM that needs to be proxied
+     * @return the new PVS proxy
+     */
+    public static PVSProxy create(Connection c, PVSSite site, VIF VIF) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PVS_proxy.create";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(site), Marshalling.toXMLRPC(VIF)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toPVSProxy(result);
+    }
+
+    /**
+     * remove (or switch off) a PVS proxy for this VM
+     * First published in XenServer 7.1.
+     *
+     * @return Task
+     */
+    public Task destroyAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.PVS_proxy.destroy";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfString(result);
+        return Types.toTask(result);
     }
 
     /**
-     * This call returns a list of roles given a permission
-     * First published in XenServer 5.6.
+     * remove (or switch off) a PVS proxy for this VM
+     * First published in XenServer 7.1.
      *
-     * @return a list of references to roles
      */
-    public Set<Role> getByPermission(Connection c) throws
+    public void destroy(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_by_permission";
+        String method_call = "PVS_proxy.destroy";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+        return;
     }
 
     /**
-     * This call returns a list of roles given a permission name
-     * First published in XenServer 5.6.
-     *
-     * @param label The short friendly name of the role
-     * @return a list of references to roles
-     */
-    public static Set<Role> getByPermissionNameLabel(Connection c, String label) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "role.get_by_permission_name_label";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfRole(result);
-    }
-
-    /**
-     * Return a list of all the roles known to the system.
-     * First published in XenServer 5.6.
+     * Return a list of all the PVS_proxys known to the system.
+     * First published in XenServer 7.1.
      *
      * @return references to all objects
      */
-    public static Set<Role> getAll(Connection c) throws
+    public static Set<PVSProxy> getAll(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_all";
+        String method_call = "PVS_proxy.get_all";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+            return Types.toSetOfPVSProxy(result);
     }
 
     /**
-     * Return a map of role references to role records for all roles known to the system.
-     * First published in XenServer 5.6.
+     * Return a map of PVS_proxy references to PVS_proxy records for all PVS_proxys known to the system.
+     * First published in XenServer 7.1.
      *
      * @return records of all objects
      */
-    public static Map<Role, Role.Record> getAllRecords(Connection c) throws
+    public static Map<PVSProxy, PVSProxy.Record> getAllRecords(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_all_records";
+        String method_call = "PVS_proxy.get_all_records";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toMapOfRoleRoleRecord(result);
+            return Types.toMapOfPVSProxyPVSProxyRecord(result);
     }
 
 }

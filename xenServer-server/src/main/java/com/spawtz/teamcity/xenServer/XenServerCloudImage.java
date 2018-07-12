@@ -54,7 +54,8 @@ public class XenServerCloudImage implements CloudImage {
             LinkedList<XenServerCloudInstance> result = new LinkedList<XenServerCloudInstance>();
             Set<VM> children = VM.getAll(_connection);
             final String templateId = _vm.getUuid(_connection);
-            for (VM child : children) {
+            for (VM child : children)
+            {
                 for (String tag : child.getTags(_connection)) {
                     if (tag.equals(templateId)) {
                         result.add(new XenServerCloudInstance(_connection, child));
@@ -74,7 +75,7 @@ public class XenServerCloudImage implements CloudImage {
             VM vm = VM.getByUuid(_connection, s);
             return new XenServerCloudInstance(_connection, vm);
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            return null;
         }
     }
 

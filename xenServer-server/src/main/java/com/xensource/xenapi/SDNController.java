@@ -46,12 +46,12 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * A set of permissions associated with a subject
- * First published in XenServer 5.6.
+ * Describes the SDN controller that is to connect with the pool
+ * First published in XenServer 7.2.
  *
  * @author Citrix Systems, Inc.
  */
-public class Role extends XenAPIObject {
+public class SDNController extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +61,7 @@ public class Role extends XenAPIObject {
     /**
      * For internal use only.
      */
-    Role(String ref) {
+    SDNController(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +73,14 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * If obj is a Role, compares XenAPI references for equality.
+     * If obj is a SDNController, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof Role)
+        if (obj != null && obj instanceof SDNController)
         {
-            Role other = (Role) obj;
+            SDNController other = (SDNController) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,28 +95,28 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a Role
+     * Represents all the fields in a SDNController
      */
     public static class Record implements Types.Record {
         public String toString() {
             StringWriter writer = new StringWriter();
             PrintWriter print = new PrintWriter(writer);
             print.printf("%1$20s: %2$s\n", "uuid", this.uuid);
-            print.printf("%1$20s: %2$s\n", "nameLabel", this.nameLabel);
-            print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
-            print.printf("%1$20s: %2$s\n", "subroles", this.subroles);
+            print.printf("%1$20s: %2$s\n", "protocol", this.protocol);
+            print.printf("%1$20s: %2$s\n", "address", this.address);
+            print.printf("%1$20s: %2$s\n", "port", this.port);
             return writer.toString();
         }
 
         /**
-         * Convert a role.Record to a Map
+         * Convert a SDN_controller.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("uuid", this.uuid == null ? "" : this.uuid);
-            map.put("name_label", this.nameLabel == null ? "" : this.nameLabel);
-            map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
-            map.put("subroles", this.subroles == null ? new LinkedHashSet<Role>() : this.subroles);
+            map.put("protocol", this.protocol == null ? Types.SdnControllerProtocol.UNRECOGNIZED : this.protocol);
+            map.put("address", this.address == null ? "" : this.address);
+            map.put("port", this.port == null ? 0 : this.port);
             return map;
         }
 
@@ -125,78 +125,59 @@ public class Role extends XenAPIObject {
          */
         public String uuid;
         /**
-         * a short user-friendly name for the role
+         * Protocol to connect with SDN controller
          */
-        public String nameLabel;
+        public Types.SdnControllerProtocol protocol;
         /**
-         * what this role is for
+         * IP address of the controller
          */
-        public String nameDescription;
+        public String address;
         /**
-         * a list of pointers to other roles or permissions
+         * TCP port of the controller
          */
-        public Set<Role> subroles;
+        public Long port;
     }
 
     /**
-     * Get a record containing the current state of the given role.
-     * First published in XenServer 5.6.
+     * Get a record containing the current state of the given SDN_controller.
+     * First published in XenServer 7.2.
      *
      * @return all fields from the object
      */
-    public Role.Record getRecord(Connection c) throws
+    public SDNController.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_record";
+        String method_call = "SDN_controller.get_record";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toRoleRecord(result);
+            return Types.toSDNControllerRecord(result);
     }
 
     /**
-     * Get a reference to the role instance with the specified UUID.
-     * First published in XenServer 5.6.
+     * Get a reference to the SDN_controller instance with the specified UUID.
+     * First published in XenServer 7.2.
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-    public static Role getByUuid(Connection c, String uuid) throws
+    public static SDNController getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_by_uuid";
+        String method_call = "SDN_controller.get_by_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toRole(result);
+            return Types.toSDNController(result);
     }
 
     /**
-     * Get all the role instances with the given label.
-     * First published in XenServer 5.6.
-     *
-     * @param label label of object to return
-     * @return references to objects with matching names
-     */
-    public static Set<Role> getByNameLabel(Connection c, String label) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "role.get_by_name_label";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfRole(result);
-    }
-
-    /**
-     * Get the uuid field of the given role.
-     * First published in XenServer 5.6.
+     * Get the uuid field of the given SDN_controller.
+     * First published in XenServer 7.2.
      *
      * @return value of the field
      */
@@ -204,7 +185,7 @@ public class Role extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_uuid";
+        String method_call = "SDN_controller.get_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -213,16 +194,34 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * Get the name/label field of the given role.
-     * First published in XenServer 5.6.
+     * Get the protocol field of the given SDN_controller.
+     * First published in XenServer 7.2.
      *
      * @return value of the field
      */
-    public String getNameLabel(Connection c) throws
+    public Types.SdnControllerProtocol getProtocol(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_name_label";
+        String method_call = "SDN_controller.get_protocol";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSdnControllerProtocol(result);
+    }
+
+    /**
+     * Get the address field of the given SDN_controller.
+     * First published in XenServer 7.2.
+     *
+     * @return value of the field
+     */
+    public String getAddress(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "SDN_controller.get_address";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -231,148 +230,133 @@ public class Role extends XenAPIObject {
     }
 
     /**
-     * Get the name/description field of the given role.
-     * First published in XenServer 5.6.
+     * Get the port field of the given SDN_controller.
+     * First published in XenServer 7.2.
      *
      * @return value of the field
      */
-    public String getNameDescription(Connection c) throws
+    public Long getPort(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_name_description";
+        String method_call = "SDN_controller.get_port";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toString(result);
+            return Types.toLong(result);
     }
 
     /**
-     * Get the subroles field of the given role.
-     * First published in XenServer 5.6.
+     * Introduce an SDN controller to the pool.
+     * First published in XenServer 7.2.
      *
-     * @return value of the field
+     * @param protocol Protocol to connect with the controller.
+     * @param address IP address of the controller.
+     * @param port TCP port of the controller.
+     * @return Task
      */
-    public Set<Role> getSubroles(Connection c) throws
+    public static Task introduceAsync(Connection c, Types.SdnControllerProtocol protocol, String address, Long port) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_subroles";
+        String method_call = "Async.SDN_controller.introduce";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(protocol), Marshalling.toXMLRPC(address), Marshalling.toXMLRPC(port)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Introduce an SDN controller to the pool.
+     * First published in XenServer 7.2.
+     *
+     * @param protocol Protocol to connect with the controller.
+     * @param address IP address of the controller.
+     * @param port TCP port of the controller.
+     * @return the introduced SDN controller
+     */
+    public static SDNController introduce(Connection c, Types.SdnControllerProtocol protocol, String address, Long port) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "SDN_controller.introduce";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(protocol), Marshalling.toXMLRPC(address), Marshalling.toXMLRPC(port)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSDNController(result);
+    }
+
+    /**
+     * Remove the OVS manager of the pool and destroy the db record.
+     * First published in XenServer 7.2.
+     *
+     * @return Task
+     */
+    public Task forgetAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.SDN_controller.forget";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+        return Types.toTask(result);
     }
 
     /**
-     * This call returns a list of permissions given a role
-     * First published in XenServer 5.6.
+     * Remove the OVS manager of the pool and destroy the db record.
+     * First published in XenServer 7.2.
      *
-     * @return a list of permissions
      */
-    public Set<Role> getPermissions(Connection c) throws
+    public void forget(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_permissions";
+        String method_call = "SDN_controller.forget";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+        return;
     }
 
     /**
-     * This call returns a list of permission names given a role
-     * First published in XenServer 5.6.
-     *
-     * @return a list of permission names
-     */
-    public Set<String> getPermissionsNameLabel(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "role.get_permissions_name_label";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfString(result);
-    }
-
-    /**
-     * This call returns a list of roles given a permission
-     * First published in XenServer 5.6.
-     *
-     * @return a list of references to roles
-     */
-    public Set<Role> getByPermission(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "role.get_by_permission";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfRole(result);
-    }
-
-    /**
-     * This call returns a list of roles given a permission name
-     * First published in XenServer 5.6.
-     *
-     * @param label The short friendly name of the role
-     * @return a list of references to roles
-     */
-    public static Set<Role> getByPermissionNameLabel(Connection c, String label) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "role.get_by_permission_name_label";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toSetOfRole(result);
-    }
-
-    /**
-     * Return a list of all the roles known to the system.
-     * First published in XenServer 5.6.
+     * Return a list of all the SDN_controllers known to the system.
+     * First published in XenServer 7.2.
      *
      * @return references to all objects
      */
-    public static Set<Role> getAll(Connection c) throws
+    public static Set<SDNController> getAll(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_all";
+        String method_call = "SDN_controller.get_all";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfRole(result);
+            return Types.toSetOfSDNController(result);
     }
 
     /**
-     * Return a map of role references to role records for all roles known to the system.
-     * First published in XenServer 5.6.
+     * Return a map of SDN_controller references to SDN_controller records for all SDN_controllers known to the system.
+     * First published in XenServer 7.2.
      *
      * @return records of all objects
      */
-    public static Map<Role, Role.Record> getAllRecords(Connection c) throws
+    public static Map<SDNController, SDNController.Record> getAllRecords(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "role.get_all_records";
+        String method_call = "SDN_controller.get_all_records";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toMapOfRoleRoleRecord(result);
+            return Types.toMapOfSDNControllerSDNControllerRecord(result);
     }
 
 }

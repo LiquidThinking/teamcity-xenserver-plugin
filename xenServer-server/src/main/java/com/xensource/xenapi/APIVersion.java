@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -32,52 +32,79 @@ package com.xensource.xenapi;
 
 public enum APIVersion
 {
-    API_1_1, API_1_2, API_1_3, API_1_4, API_1_5, API_1_6, API_1_7, API_1_8, API_1_9, API_1_10,
-    API_2_0, API_2_1, API_2_2, API_2_3, API_2_4, API_2_5, UNKNOWN;
+    API_1_1,
+    API_1_2,
+    API_1_3,
+    API_1_4,
+    API_1_5,
+    API_1_6,
+    API_1_7,
+    API_1_8,
+    API_1_9,
+    API_1_10,
+    API_2_0,
+    API_2_1,
+    API_2_2,
+    API_2_3,
+    API_2_4,
+    API_2_5,
+    API_2_6,
+    API_2_7,
+    API_2_8,
+    API_2_9,
+    API_2_10,
+    UNKNOWN;
 
     public static APIVersion latest()
     {
-        return API_2_5;
+        return API_2_10;
     }
 
     public static APIVersion fromMajorMinor(long major, long minor)
     {
-        if (major == 2 && minor == 5) {
-            return API_2_5;
-        } else if (major == 2 && minor == 4) {
-            return API_2_4;
-        } else if (major == 2 && minor == 3) {
-            return API_2_3;
-        } else if (major == 2 && minor == 2) {
-            return API_2_2;
-        } else if (major == 2 && minor == 1) {
-            return API_2_1;
-        } else if (major == 2 && minor == 0) {
-            return API_2_0;
-        } else if (major == 1 && minor == 10) {
-            return API_1_10;
-        } else if (major == 1 && minor == 9) {
-            return API_1_9;
-        } else if (major == 1 && minor == 8) {
-            return API_1_8;
-        } else if (major == 1 && minor == 7) {
-            return API_1_7;
-        } else if (major == 1 && minor == 6) {
-            return API_1_6;
-        } else if (major == 1 && minor == 5) {
-            return API_1_5;
-        } else if (major == 1 && minor == 4) {
-            return API_1_4;
-        } else if (major == 1 && minor == 3) {
-            return API_1_3;
-        } else if (major == 1 && minor == 2) {
-            return API_1_2;
-        } else if (major == 1 && minor == 1) {
+        if (major == 1 && minor == 1)
             return API_1_1;
-        } else {
-            return UNKNOWN;
-        }
-
+        if (major == 1 && minor == 2)
+            return API_1_2;
+        if (major == 1 && minor == 3)
+            return API_1_3;
+        if (major == 1 && minor == 4)
+            return API_1_4;
+        if (major == 1 && minor == 5)
+            return API_1_5;
+        if (major == 1 && minor == 6)
+            return API_1_6;
+        if (major == 1 && minor == 7)
+            return API_1_7;
+        if (major == 1 && minor == 8)
+            return API_1_8;
+        if (major == 1 && minor == 9)
+            return API_1_9;
+        if (major == 1 && minor == 10)
+            return API_1_10;
+        if (major == 2 && minor == 0)
+            return API_2_0;
+        if (major == 2 && minor == 1)
+            return API_2_1;
+        if (major == 2 && minor == 2)
+            return API_2_2;
+        if (major == 2 && minor == 3)
+            return API_2_3;
+        if (major == 2 && minor == 4)
+            return API_2_4;
+        if (major == 2 && minor == 5)
+            return API_2_5;
+        if (major == 2 && minor == 6)
+            return API_2_6;
+        if (major == 2 && minor == 7)
+            return API_2_7;
+        if (major == 2 && minor == 8)
+            return API_2_8;
+        if (major == 2 && minor == 9)
+            return API_2_9;
+        if (major == 2 && minor == 10)
+            return API_2_10;
+        return UNKNOWN;
     }
 
     @Override
@@ -116,6 +143,16 @@ public enum APIVersion
                 return "2.4";
             case API_2_5:
                 return "2.5";
+            case API_2_6:
+                return "2.6";
+            case API_2_7:
+                return "2.7";
+            case API_2_8:
+                return "2.8";
+            case API_2_9:
+                return "2.9";
+            case API_2_10:
+                return "2.10";
             default:
                 return "Unknown";
         }

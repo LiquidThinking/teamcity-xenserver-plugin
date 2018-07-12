@@ -46,12 +46,12 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * Data sources for logging in RRDs
- * First published in XenServer 5.0.
+ * Details for connecting to a VDI using the Network Block Device protocol
+ * First published in XenServer 7.3.
  *
  * @author Citrix Systems, Inc.
  */
-public class DataSource extends XenAPIObject {
+public class VdiNbdServerInfo extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +61,7 @@ public class DataSource extends XenAPIObject {
     /**
      * For internal use only.
      */
-    DataSource(String ref) {
+    VdiNbdServerInfo(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +73,14 @@ public class DataSource extends XenAPIObject {
     }
 
     /**
-     * If obj is a DataSource, compares XenAPI references for equality.
+     * If obj is a VdiNbdServerInfo, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof DataSource)
+        if (obj != null && obj instanceof VdiNbdServerInfo)
         {
-            DataSource other = (DataSource) obj;
+            VdiNbdServerInfo other = (VdiNbdServerInfo) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,71 +95,53 @@ public class DataSource extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a DataSource
+     * Represents all the fields in a VdiNbdServerInfo
      */
     public static class Record implements Types.Record {
         public String toString() {
             StringWriter writer = new StringWriter();
             PrintWriter print = new PrintWriter(writer);
-            print.printf("%1$20s: %2$s\n", "nameLabel", this.nameLabel);
-            print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
-            print.printf("%1$20s: %2$s\n", "enabled", this.enabled);
-            print.printf("%1$20s: %2$s\n", "standard", this.standard);
-            print.printf("%1$20s: %2$s\n", "units", this.units);
-            print.printf("%1$20s: %2$s\n", "min", this.min);
-            print.printf("%1$20s: %2$s\n", "max", this.max);
-            print.printf("%1$20s: %2$s\n", "value", this.value);
+            print.printf("%1$20s: %2$s\n", "exportname", this.exportname);
+            print.printf("%1$20s: %2$s\n", "address", this.address);
+            print.printf("%1$20s: %2$s\n", "port", this.port);
+            print.printf("%1$20s: %2$s\n", "cert", this.cert);
+            print.printf("%1$20s: %2$s\n", "subject", this.subject);
             return writer.toString();
         }
 
         /**
-         * Convert a data_source.Record to a Map
+         * Convert a vdi_nbd_server_info.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
-            map.put("name_label", this.nameLabel == null ? "" : this.nameLabel);
-            map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
-            map.put("enabled", this.enabled == null ? false : this.enabled);
-            map.put("standard", this.standard == null ? false : this.standard);
-            map.put("units", this.units == null ? "" : this.units);
-            map.put("min", this.min == null ? 0.0 : this.min);
-            map.put("max", this.max == null ? 0.0 : this.max);
-            map.put("value", this.value == null ? 0.0 : this.value);
+            map.put("exportname", this.exportname == null ? "" : this.exportname);
+            map.put("address", this.address == null ? "" : this.address);
+            map.put("port", this.port == null ? 0 : this.port);
+            map.put("cert", this.cert == null ? "" : this.cert);
+            map.put("subject", this.subject == null ? "" : this.subject);
             return map;
         }
 
         /**
-         * a human-readable name
+         * The exportname to request over NBD. This holds details including an authentication token, so it must be protected appropriately. Clients should regard the exportname as an opaque string or token.
          */
-        public String nameLabel;
+        public String exportname;
         /**
-         * a notes field containing human-readable description
+         * An address on which the server can be reached; this can be IPv4, IPv6, or a DNS name.
          */
-        public String nameDescription;
+        public String address;
         /**
-         * true if the data source is being logged
+         * The TCP port
          */
-        public Boolean enabled;
+        public Long port;
         /**
-         * true if the data source is enabled by default. Non-default data sources cannot be disabled
+         * The TLS certificate of the server
          */
-        public Boolean standard;
+        public String cert;
         /**
-         * the units of the value
+         * For convenience, this redundant field holds a DNS (hostname) subject of the certificate. This can be a wildcard, but only for a certificate that has a wildcard subject and no concrete hostname subjects.
          */
-        public String units;
-        /**
-         * the minimum value of the data source
-         */
-        public Double min;
-        /**
-         * the maximum value of the data source
-         */
-        public Double max;
-        /**
-         * current value of the data source
-         */
-        public Double value;
+        public String subject;
     }
 
 }

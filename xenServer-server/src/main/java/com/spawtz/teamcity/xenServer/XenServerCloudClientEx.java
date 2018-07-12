@@ -147,12 +147,17 @@ public class XenServerCloudClientEx implements CloudClientEx {
     @Nullable
     @Override
     public CloudInstance findInstanceByAgent(@NotNull AgentDescription agentDescription) {
-        CloudImage cloudImage = (CloudImage) getImages().toArray()[0];
-        for (CloudInstance cloudInstance : cloudImage.getInstances()) {
-            if(cloudInstance.containsAgent(agentDescription))
-                return cloudInstance;
+        try {
+            CloudImage cloudImage = (CloudImage) getImages().toArray()[0];
+            for (CloudInstance cloudInstance : cloudImage.getInstances()) {
+                if (cloudInstance.containsAgent(agentDescription))
+                    return cloudInstance;
+            }
+            return null;
         }
-        return null;
+        catch(Exception ignored){
+            return null;
+        }
     }
 
     @NotNull
@@ -196,11 +201,6 @@ public class XenServerCloudClientEx implements CloudClientEx {
     @Override
     public CloudErrorInfo getErrorInfo() {
         return null;
-    }
-
-    @Override
-    public boolean canStartNewInstance(@NotNull CloudImage cloudImage) {
-        return true;
     }
 
     @Nullable

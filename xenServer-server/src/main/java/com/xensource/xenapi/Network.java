@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -111,10 +111,12 @@ public class Network extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "MTU", this.MTU);
             print.printf("%1$20s: %2$s\n", "otherConfig", this.otherConfig);
             print.printf("%1$20s: %2$s\n", "bridge", this.bridge);
+            print.printf("%1$20s: %2$s\n", "managed", this.managed);
             print.printf("%1$20s: %2$s\n", "blobs", this.blobs);
             print.printf("%1$20s: %2$s\n", "tags", this.tags);
             print.printf("%1$20s: %2$s\n", "defaultLockingMode", this.defaultLockingMode);
             print.printf("%1$20s: %2$s\n", "assignedIps", this.assignedIps);
+            print.printf("%1$20s: %2$s\n", "purpose", this.purpose);
             return writer.toString();
         }
 
@@ -133,10 +135,12 @@ public class Network extends XenAPIObject {
             map.put("MTU", this.MTU == null ? 0 : this.MTU);
             map.put("other_config", this.otherConfig == null ? new HashMap<String, String>() : this.otherConfig);
             map.put("bridge", this.bridge == null ? "" : this.bridge);
+            map.put("managed", this.managed == null ? false : this.managed);
             map.put("blobs", this.blobs == null ? new HashMap<String, Blob>() : this.blobs);
             map.put("tags", this.tags == null ? new LinkedHashSet<String>() : this.tags);
             map.put("default_locking_mode", this.defaultLockingMode == null ? Types.NetworkDefaultLockingMode.UNRECOGNIZED : this.defaultLockingMode);
             map.put("assigned_ips", this.assignedIps == null ? new HashMap<VIF, String>() : this.assignedIps);
+            map.put("purpose", this.purpose == null ? new LinkedHashSet<Types.NetworkPurpose>() : this.purpose);
             return map;
         }
 
@@ -182,6 +186,11 @@ public class Network extends XenAPIObject {
          */
         public String bridge;
         /**
+         * true if the bridge is managed by xapi
+         * First published in XenServer 7.2.
+         */
+        public Boolean managed;
+        /**
          * Binary blobs associated with this network
          * First published in XenServer 5.0.
          */
@@ -201,6 +210,11 @@ public class Network extends XenAPIObject {
          * First published in XenServer 6.5.
          */
         public Map<VIF, String> assignedIps;
+        /**
+         * Set of purposes for which the server will use this network
+         * First published in XenServer 7.3.
+         */
+        public Set<Types.NetworkPurpose> purpose;
     }
 
     /**
@@ -514,6 +528,24 @@ public class Network extends XenAPIObject {
     }
 
     /**
+     * Get the managed field of the given network.
+     * First published in XenServer 7.2.
+     *
+     * @return value of the field
+     */
+    public Boolean getManaged(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "network.get_managed";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
      * Get the blobs field of the given network.
      * First published in XenServer 5.0.
      *
@@ -583,6 +615,24 @@ public class Network extends XenAPIObject {
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
             return Types.toMapOfVIFString(result);
+    }
+
+    /**
+     * Get the purpose field of the given network.
+     * First published in XenServer 7.3.
+     *
+     * @return value of the field
+     */
+    public Set<Types.NetworkPurpose> getPurpose(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "network.get_purpose";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfNetworkPurpose(result);
     }
 
     /**
@@ -851,6 +901,80 @@ public class Network extends XenAPIObject {
        XenAPIException,
        XmlRpcException {
         String method_call = "network.set_default_locking_mode";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Give a network a new purpose (if not present already)
+     * First published in XenServer 7.3.
+     *
+     * @param value The purpose to add
+     * @return Task
+     */
+    public Task addPurposeAsync(Connection c, Types.NetworkPurpose value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.NetworkIncompatiblePurposes {
+        String method_call = "Async.network.add_purpose";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Give a network a new purpose (if not present already)
+     * First published in XenServer 7.3.
+     *
+     * @param value The purpose to add
+     */
+    public void addPurpose(Connection c, Types.NetworkPurpose value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.NetworkIncompatiblePurposes {
+        String method_call = "network.add_purpose";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Remove a purpose from a network (if present)
+     * First published in XenServer 7.3.
+     *
+     * @param value The purpose to remove
+     * @return Task
+     */
+    public Task removePurposeAsync(Connection c, Types.NetworkPurpose value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.network.remove_purpose";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Remove a purpose from a network (if present)
+     * First published in XenServer 7.3.
+     *
+     * @param value The purpose to remove
+     */
+    public void removePurpose(Connection c, Types.NetworkPurpose value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "network.remove_purpose";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
         Map response = c.dispatch(method_call, method_params);

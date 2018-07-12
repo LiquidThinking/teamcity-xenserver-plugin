@@ -159,9 +159,14 @@ public class XenServerCloudInstance implements CloudInstance {
 
     @Override
     public boolean containsAgent(@NotNull AgentDescription agentDescription) {
-        String currentAgentName = "buildagent_" + getNetworkIdentity();
-        String agentName = agentDescription.toString().split(" ")[0];
+        try {
+            String currentAgentName = "buildagent_" + getNetworkIdentity();
+            String agentName = agentDescription.toString().split(" ")[0];
 
-        return currentAgentName.equals(agentName);
+            return currentAgentName.equals(agentName);
+        }
+        catch(Exception ignored){
+            return false;
+        }
     }
 }

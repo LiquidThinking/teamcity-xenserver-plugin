@@ -46,12 +46,12 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * A placeholder for a binary blob
- * First published in XenServer 5.0.
+ * machines serving blocks of data for provisioning VMs
+ * First published in XenServer 7.1.
  *
  * @author Citrix Systems, Inc.
  */
-public class Blob extends XenAPIObject {
+public class PVSSite extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +61,7 @@ public class Blob extends XenAPIObject {
     /**
      * For internal use only.
      */
-    Blob(String ref) {
+    PVSSite(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +73,14 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * If obj is a Blob, compares XenAPI references for equality.
+     * If obj is a PVSSite, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof Blob)
+        if (obj != null && obj instanceof PVSSite)
         {
-            Blob other = (Blob) obj;
+            PVSSite other = (PVSSite) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,7 +95,7 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a Blob
+     * Represents all the fields in a PVSSite
      */
     public static class Record implements Types.Record {
         public String toString() {
@@ -104,25 +104,25 @@ public class Blob extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "uuid", this.uuid);
             print.printf("%1$20s: %2$s\n", "nameLabel", this.nameLabel);
             print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
-            print.printf("%1$20s: %2$s\n", "size", this.size);
-            print.printf("%1$20s: %2$s\n", "_public", this._public);
-            print.printf("%1$20s: %2$s\n", "lastUpdated", this.lastUpdated);
-            print.printf("%1$20s: %2$s\n", "mimeType", this.mimeType);
+            print.printf("%1$20s: %2$s\n", "PVSUuid", this.PVSUuid);
+            print.printf("%1$20s: %2$s\n", "cacheStorage", this.cacheStorage);
+            print.printf("%1$20s: %2$s\n", "servers", this.servers);
+            print.printf("%1$20s: %2$s\n", "proxies", this.proxies);
             return writer.toString();
         }
 
         /**
-         * Convert a blob.Record to a Map
+         * Convert a PVS_site.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("uuid", this.uuid == null ? "" : this.uuid);
             map.put("name_label", this.nameLabel == null ? "" : this.nameLabel);
             map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
-            map.put("size", this.size == null ? 0 : this.size);
-            map.put("public", this._public == null ? false : this._public);
-            map.put("last_updated", this.lastUpdated == null ? new Date(0) : this.lastUpdated);
-            map.put("mime_type", this.mimeType == null ? "" : this.mimeType);
+            map.put("PVS_uuid", this.PVSUuid == null ? "" : this.PVSUuid);
+            map.put("cache_storage", this.cacheStorage == null ? new LinkedHashSet<PVSCacheStorage>() : this.cacheStorage);
+            map.put("servers", this.servers == null ? new LinkedHashSet<PVSServer>() : this.servers);
+            map.put("proxies", this.proxies == null ? new LinkedHashSet<PVSProxy>() : this.proxies);
             return map;
         }
 
@@ -139,83 +139,82 @@ public class Blob extends XenAPIObject {
          */
         public String nameDescription;
         /**
-         * Size of the binary data, in bytes
+         * Unique identifier of the PVS site, as configured in PVS
          */
-        public Long size;
+        public String PVSUuid;
         /**
-         * True if the blob is publicly accessible
-         * First published in XenServer 6.1.
+         * The SR used by PVS proxy for the cache
          */
-        public Boolean _public;
+        public Set<PVSCacheStorage> cacheStorage;
         /**
-         * Time at which the data in the blob was last updated
+         * The set of PVS servers in the site
          */
-        public Date lastUpdated;
+        public Set<PVSServer> servers;
         /**
-         * The mime type associated with this object. Defaults to 'application/octet-stream' if the empty string is supplied
+         * The set of proxies associated with the site
          */
-        public String mimeType;
+        public Set<PVSProxy> proxies;
     }
 
     /**
-     * Get a record containing the current state of the given blob.
-     * First published in XenServer 5.0.
+     * Get a record containing the current state of the given PVS_site.
+     * First published in XenServer 7.1.
      *
      * @return all fields from the object
      */
-    public Blob.Record getRecord(Connection c) throws
+    public PVSSite.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_record";
+        String method_call = "PVS_site.get_record";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toBlobRecord(result);
+            return Types.toPVSSiteRecord(result);
     }
 
     /**
-     * Get a reference to the blob instance with the specified UUID.
-     * First published in XenServer 5.0.
+     * Get a reference to the PVS_site instance with the specified UUID.
+     * First published in XenServer 7.1.
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-    public static Blob getByUuid(Connection c, String uuid) throws
+    public static PVSSite getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_by_uuid";
+        String method_call = "PVS_site.get_by_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toBlob(result);
+            return Types.toPVSSite(result);
     }
 
     /**
-     * Get all the blob instances with the given label.
-     * First published in XenServer 5.0.
+     * Get all the PVS_site instances with the given label.
+     * First published in XenServer 7.1.
      *
      * @param label label of object to return
      * @return references to objects with matching names
      */
-    public static Set<Blob> getByNameLabel(Connection c, String label) throws
+    public static Set<PVSSite> getByNameLabel(Connection c, String label) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_by_name_label";
+        String method_call = "PVS_site.get_by_name_label";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfBlob(result);
+            return Types.toSetOfPVSSite(result);
     }
 
     /**
-     * Get the uuid field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the uuid field of the given PVS_site.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
@@ -223,7 +222,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_uuid";
+        String method_call = "PVS_site.get_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -232,8 +231,8 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Get the name/label field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the name/label field of the given PVS_site.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
@@ -241,7 +240,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_name_label";
+        String method_call = "PVS_site.get_name_label";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -250,8 +249,8 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Get the name/description field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the name/description field of the given PVS_site.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
@@ -259,7 +258,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_name_description";
+        String method_call = "PVS_site.get_name_description";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -268,70 +267,16 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Get the size field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the PVS_uuid field of the given PVS_site.
+     * First published in XenServer 7.1.
      *
      * @return value of the field
      */
-    public Long getSize(Connection c) throws
+    public String getPVSUuid(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_size";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toLong(result);
-    }
-
-    /**
-     * Get the public field of the given blob.
-     * First published in XenServer 6.1.
-     *
-     * @return value of the field
-     */
-    public Boolean getPublic(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.get_public";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toBoolean(result);
-    }
-
-    /**
-     * Get the last_updated field of the given blob.
-     * First published in XenServer 5.0.
-     *
-     * @return value of the field
-     */
-    public Date getLastUpdated(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.get_last_updated";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toDate(result);
-    }
-
-    /**
-     * Get the mime_type field of the given blob.
-     * First published in XenServer 5.0.
-     *
-     * @return value of the field
-     */
-    public String getMimeType(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.get_mime_type";
+        String method_call = "PVS_site.get_PVS_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -340,8 +285,62 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Set the name/label field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the cache_storage field of the given PVS_site.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Set<PVSCacheStorage> getCacheStorage(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PVS_site.get_cache_storage";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfPVSCacheStorage(result);
+    }
+
+    /**
+     * Get the servers field of the given PVS_site.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Set<PVSServer> getServers(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PVS_site.get_servers";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfPVSServer(result);
+    }
+
+    /**
+     * Get the proxies field of the given PVS_site.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Set<PVSProxy> getProxies(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PVS_site.get_proxies";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfPVSProxy(result);
+    }
+
+    /**
+     * Set the name/label field of the given PVS_site.
+     * First published in XenServer 7.1.
      *
      * @param label New value to set
      */
@@ -349,7 +348,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.set_name_label";
+        String method_call = "PVS_site.set_name_label";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(label)};
         Map response = c.dispatch(method_call, method_params);
@@ -357,8 +356,8 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Set the name/description field of the given blob.
-     * First published in XenServer 5.0.
+     * Set the name/description field of the given PVS_site.
+     * First published in XenServer 7.1.
      *
      * @param description New value to set
      */
@@ -366,7 +365,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.set_name_description";
+        String method_call = "PVS_site.set_name_description";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(description)};
         Map response = c.dispatch(method_call, method_params);
@@ -374,71 +373,79 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Set the public field of the given blob.
-     * First published in XenServer 6.1.
+     * Introduce new PVS site
+     * First published in XenServer 7.1.
      *
-     * @param _public New value to set
+     * @param nameLabel name of the PVS site
+     * @param nameDescription description of the PVS site
+     * @param PVSUuid unique identifier of the PVS site
+     * @return Task
      */
-    public void setPublic(Connection c, Boolean _public) throws
+    public static Task introduceAsync(Connection c, String nameLabel, String nameDescription, String PVSUuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.set_public";
+        String method_call = "Async.PVS_site.introduce";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(_public)};
-        Map response = c.dispatch(method_call, method_params);
-        return;
-    }
-
-    /**
-     * Create a placeholder for a binary blob
-     * First published in XenServer 5.0.
-     *
-     * @param mimeType The mime-type of the blob. Defaults to 'application/octet-stream' if the empty string is supplied
-     * @return The reference to the created blob
-     */
-    public static Blob create(Connection c, String mimeType) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.create";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(mimeType)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(nameLabel), Marshalling.toXMLRPC(nameDescription), Marshalling.toXMLRPC(PVSUuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toBlob(result);
+        return Types.toTask(result);
     }
 
     /**
-     * Create a placeholder for a binary blob
-     * First published in XenServer 5.0.
+     * Introduce new PVS site
+     * First published in XenServer 7.1.
      *
-     * @param mimeType The mime-type of the blob. Defaults to 'application/octet-stream' if the empty string is supplied
-     * @param _public True if the blob should be publicly available First published in XenServer 6.1.
-     * @return The reference to the created blob
+     * @param nameLabel name of the PVS site
+     * @param nameDescription description of the PVS site
+     * @param PVSUuid unique identifier of the PVS site
+     * @return the new PVS site
      */
-    public static Blob create(Connection c, String mimeType, Boolean _public) throws
+    public static PVSSite introduce(Connection c, String nameLabel, String nameDescription, String PVSUuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.create";
+        String method_call = "PVS_site.introduce";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(mimeType), Marshalling.toXMLRPC(_public)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(nameLabel), Marshalling.toXMLRPC(nameDescription), Marshalling.toXMLRPC(PVSUuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toBlob(result);
+            return Types.toPVSSite(result);
     }
 
     /**
-     * 
-     * First published in XenServer 5.0.
+     * Remove a site's meta data
+     * First published in XenServer 7.1.
      *
+     * @return Task
      */
-    public void destroy(Connection c) throws
+    public Task forgetAsync(Connection c) throws
        BadServerResponse,
        XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.destroy";
+       XmlRpcException,
+       Types.PvsSiteContainsRunningProxies,
+       Types.PvsSiteContainsServers {
+        String method_call = "Async.PVS_site.forget";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Remove a site's meta data
+     * First published in XenServer 7.1.
+     *
+     */
+    public void forget(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.PvsSiteContainsRunningProxies,
+       Types.PvsSiteContainsServers {
+        String method_call = "PVS_site.forget";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -446,39 +453,75 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Return a list of all the blobs known to the system.
-     * First published in XenServer 5.0.
+     * Update the PVS UUID of the PVS site
+     * First published in XenServer 7.1.
      *
-     * @return references to all objects
+     * @param value PVS UUID to be used
+     * @return Task
      */
-    public static Set<Blob> getAll(Connection c) throws
+    public Task setPVSUuidAsync(Connection c, String value) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_all";
+        String method_call = "Async.PVS_site.set_PVS_uuid";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfBlob(result);
+        return Types.toTask(result);
     }
 
     /**
-     * Return a map of blob references to blob records for all blobs known to the system.
-     * First published in XenServer 5.0.
+     * Update the PVS UUID of the PVS site
+     * First published in XenServer 7.1.
      *
-     * @return records of all objects
+     * @param value PVS UUID to be used
      */
-    public static Map<Blob, Blob.Record> getAllRecords(Connection c) throws
+    public void setPVSUuid(Connection c, String value) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_all_records";
+        String method_call = "PVS_site.set_PVS_uuid";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Return a list of all the PVS_sites known to the system.
+     * First published in XenServer 7.1.
+     *
+     * @return references to all objects
+     */
+    public static Set<PVSSite> getAll(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PVS_site.get_all";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toMapOfBlobBlobRecord(result);
+            return Types.toSetOfPVSSite(result);
+    }
+
+    /**
+     * Return a map of PVS_site references to PVS_site records for all PVS_sites known to the system.
+     * First published in XenServer 7.1.
+     *
+     * @return records of all objects
+     */
+    public static Map<PVSSite, PVSSite.Record> getAllRecords(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PVS_site.get_all_records";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toMapOfPVSSitePVSSiteRecord(result);
     }
 
 }

@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -109,6 +109,7 @@ public class PoolPatch extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "poolApplied", this.poolApplied);
             print.printf("%1$20s: %2$s\n", "hostPatches", this.hostPatches);
             print.printf("%1$20s: %2$s\n", "afterApplyGuidance", this.afterApplyGuidance);
+            print.printf("%1$20s: %2$s\n", "poolUpdate", this.poolUpdate);
             print.printf("%1$20s: %2$s\n", "otherConfig", this.otherConfig);
             return writer.toString();
         }
@@ -126,6 +127,7 @@ public class PoolPatch extends XenAPIObject {
             map.put("pool_applied", this.poolApplied == null ? false : this.poolApplied);
             map.put("host_patches", this.hostPatches == null ? new LinkedHashSet<HostPatch>() : this.hostPatches);
             map.put("after_apply_guidance", this.afterApplyGuidance == null ? new LinkedHashSet<Types.AfterApplyGuidance>() : this.afterApplyGuidance);
+            map.put("pool_update", this.poolUpdate == null ? new PoolUpdate("OpaqueRef:NULL") : this.poolUpdate);
             map.put("other_config", this.otherConfig == null ? new HashMap<String, String>() : this.otherConfig);
             return map;
         }
@@ -163,6 +165,11 @@ public class PoolPatch extends XenAPIObject {
          */
         public Set<Types.AfterApplyGuidance> afterApplyGuidance;
         /**
+         * A reference to the associated pool_update object
+         * First published in XenServer 7.1.
+         */
+        public PoolUpdate poolUpdate;
+        /**
          * additional configuration
          */
         public Map<String, String> otherConfig;
@@ -171,10 +178,11 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Get a record containing the current state of the given pool_patch.
      * First published in XenServer 4.1.
+     * @deprecated
      *
      * @return all fields from the object
      */
-    public PoolPatch.Record getRecord(Connection c) throws
+   @Deprecated public PoolPatch.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -189,11 +197,12 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Get a reference to the pool_patch instance with the specified UUID.
      * First published in XenServer 4.1.
+     * @deprecated
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-    public static PoolPatch getByUuid(Connection c, String uuid) throws
+   @Deprecated public static PoolPatch getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -208,11 +217,12 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Get all the pool_patch instances with the given label.
      * First published in XenServer 4.1.
+     * @deprecated
      *
      * @param label label of object to return
      * @return references to objects with matching names
      */
-    public static Set<PoolPatch> getByNameLabel(Connection c, String label) throws
+   @Deprecated public static Set<PoolPatch> getByNameLabel(Connection c, String label) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -369,6 +379,24 @@ public class PoolPatch extends XenAPIObject {
     }
 
     /**
+     * Get the pool_update field of the given pool_patch.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public PoolUpdate getPoolUpdate(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "pool_patch.get_pool_update";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toPoolUpdate(result);
+    }
+
+    /**
      * Get the other_config field of the given pool_patch.
      * First published in XenServer 4.1.
      *
@@ -441,11 +469,12 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Apply the selected patch to a host and return its output
      * First published in XenServer 4.1.
+     * @deprecated
      *
      * @param host The host to apply the patch too
      * @return Task
      */
-    public Task applyAsync(Connection c, Host host) throws
+   @Deprecated public Task applyAsync(Connection c, Host host) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -460,11 +489,12 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Apply the selected patch to a host and return its output
      * First published in XenServer 4.1.
+     * @deprecated
      *
      * @param host The host to apply the patch too
      * @return the output of the patch application process
      */
-    public String apply(Connection c, Host host) throws
+   @Deprecated public String apply(Connection c, Host host) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -479,10 +509,11 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Apply the selected patch to all hosts in the pool and return a map of host_ref -> patch output
      * First published in XenServer 4.1.
+     * @deprecated
      *
      * @return Task
      */
-    public Task poolApplyAsync(Connection c) throws
+   @Deprecated public Task poolApplyAsync(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -497,9 +528,10 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Apply the selected patch to all hosts in the pool and return a map of host_ref -> patch output
      * First published in XenServer 4.1.
+     * @deprecated
      *
      */
-    public void poolApply(Connection c) throws
+   @Deprecated public void poolApply(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -513,11 +545,12 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Execute the precheck stage of the selected patch on a host and return its output
      * First published in XenServer 4.1.
+     * @deprecated
      *
      * @param host The host to run the prechecks on
      * @return Task
      */
-    public Task precheckAsync(Connection c, Host host) throws
+   @Deprecated public Task precheckAsync(Connection c, Host host) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -532,11 +565,12 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Execute the precheck stage of the selected patch on a host and return its output
      * First published in XenServer 4.1.
+     * @deprecated
      *
      * @param host The host to run the prechecks on
      * @return the output of the patch prechecks
      */
-    public String precheck(Connection c, Host host) throws
+   @Deprecated public String precheck(Connection c, Host host) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -551,10 +585,11 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Removes the patch's files from the server
      * First published in XenServer 4.1.
+     * @deprecated
      *
      * @return Task
      */
-    public Task cleanAsync(Connection c) throws
+   @Deprecated public Task cleanAsync(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -569,9 +604,10 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Removes the patch's files from the server
      * First published in XenServer 4.1.
+     * @deprecated
      *
      */
-    public void clean(Connection c) throws
+   @Deprecated public void clean(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -585,10 +621,11 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Removes the patch's files from all hosts in the pool, but does not remove the database entries
      * First published in XenServer 6.1.
+     * @deprecated
      *
      * @return Task
      */
-    public Task poolCleanAsync(Connection c) throws
+   @Deprecated public Task poolCleanAsync(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -603,9 +640,10 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Removes the patch's files from all hosts in the pool, but does not remove the database entries
      * First published in XenServer 6.1.
+     * @deprecated
      *
      */
-    public void poolClean(Connection c) throws
+   @Deprecated public void poolClean(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -619,10 +657,11 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Removes the patch's files from all hosts in the pool, and removes the database entries.  Only works on unapplied patches.
      * First published in XenServer 4.1.
+     * @deprecated
      *
      * @return Task
      */
-    public Task destroyAsync(Connection c) throws
+   @Deprecated public Task destroyAsync(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -637,9 +676,10 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Removes the patch's files from all hosts in the pool, and removes the database entries.  Only works on unapplied patches.
      * First published in XenServer 4.1.
+     * @deprecated
      *
      */
-    public void destroy(Connection c) throws
+   @Deprecated public void destroy(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -653,11 +693,12 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Removes the patch's files from the specified host
      * First published in XenServer 6.1.
+     * @deprecated
      *
      * @param host The host on which to clean the patch
      * @return Task
      */
-    public Task cleanOnHostAsync(Connection c, Host host) throws
+   @Deprecated public Task cleanOnHostAsync(Connection c, Host host) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -672,10 +713,11 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Removes the patch's files from the specified host
      * First published in XenServer 6.1.
+     * @deprecated
      *
      * @param host The host on which to clean the patch
      */
-    public void cleanOnHost(Connection c, Host host) throws
+   @Deprecated public void cleanOnHost(Connection c, Host host) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -689,10 +731,11 @@ public class PoolPatch extends XenAPIObject {
     /**
      * Return a list of all the pool_patchs known to the system.
      * First published in XenServer 4.1.
+     * @deprecated
      *
      * @return references to all objects
      */
-    public static Set<PoolPatch> getAll(Connection c) throws
+   @Deprecated public static Set<PoolPatch> getAll(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {

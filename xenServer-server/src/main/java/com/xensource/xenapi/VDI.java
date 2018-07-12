@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -132,6 +132,7 @@ public class VDI extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "metadataOfPool", this.metadataOfPool);
             print.printf("%1$20s: %2$s\n", "metadataLatest", this.metadataLatest);
             print.printf("%1$20s: %2$s\n", "isToolsIso", this.isToolsIso);
+            print.printf("%1$20s: %2$s\n", "cbtEnabled", this.cbtEnabled);
             return writer.toString();
         }
 
@@ -171,6 +172,7 @@ public class VDI extends XenAPIObject {
             map.put("metadata_of_pool", this.metadataOfPool == null ? new Pool("OpaqueRef:NULL") : this.metadataOfPool);
             map.put("metadata_latest", this.metadataLatest == null ? false : this.metadataLatest);
             map.put("is_tools_iso", this.isToolsIso == null ? false : this.isToolsIso);
+            map.put("cbt_enabled", this.cbtEnabled == null ? false : this.cbtEnabled);
             return map;
         }
 
@@ -248,7 +250,7 @@ public class VDI extends XenAPIObject {
          */
         public Boolean missing;
         /**
-         * References the parent disk, if this VDI is part of a chain
+         * This field is always null. Deprecated
          */
         public VDI parent;
         /**
@@ -308,9 +310,14 @@ public class VDI extends XenAPIObject {
         public Boolean metadataLatest;
         /**
          * Whether this VDI is a Tools ISO
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Boolean isToolsIso;
+        /**
+         * True if changed blocks are tracked for this VDI
+         * First published in XenServer 7.3.
+         */
+        public Boolean cbtEnabled;
     }
 
     /**
@@ -770,10 +777,11 @@ public class VDI extends XenAPIObject {
     /**
      * Get the parent field of the given VDI.
      * First published in XenServer 4.0.
+     * @deprecated
      *
      * @return value of the field
      */
-    public VDI getParent(Connection c) throws
+   @Deprecated public VDI getParent(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -985,7 +993,7 @@ public class VDI extends XenAPIObject {
 
     /**
      * Get the is_tools_iso field of the given VDI.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -994,6 +1002,24 @@ public class VDI extends XenAPIObject {
        XenAPIException,
        XmlRpcException {
         String method_call = "VDI.get_is_tools_iso";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
+     * Get the cbt_enabled field of the given VDI.
+     * First published in XenServer 7.3.
+     *
+     * @return value of the field
+     */
+    public Boolean getCbtEnabled(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VDI.get_cbt_enabled";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -1621,6 +1647,80 @@ public class VDI extends XenAPIObject {
     }
 
     /**
+     * Create a new VDI record in the database only
+     * First published in XenServer 4.0.
+     *
+     * @param uuid The uuid of the disk to introduce First published in XenServer 4.1.
+     * @param nameLabel The name of the disk record First published in XenServer 4.1.
+     * @param nameDescription The description of the disk record First published in XenServer 4.1.
+     * @param SR The SR that the VDI is in First published in XenServer 4.1.
+     * @param type The type of the VDI First published in XenServer 4.1.
+     * @param sharable true if this disk may be shared First published in XenServer 4.1.
+     * @param readOnly true if this disk may ONLY be mounted read-only First published in XenServer 4.1.
+     * @param otherConfig additional configuration First published in XenServer 4.1.
+     * @param location location information First published in XenServer 4.1.
+     * @param xenstoreData Data to insert into xenstore First published in XenServer 4.1.
+     * @param smConfig Storage-specific config First published in XenServer 4.1.
+     * @param managed Storage-specific config First published in XenServer 6.1.
+     * @param virtualSize Storage-specific config First published in XenServer 6.1.
+     * @param physicalUtilisation Storage-specific config First published in XenServer 6.1.
+     * @param metadataOfPool Storage-specific config First published in XenServer 6.1.
+     * @param isASnapshot Storage-specific config First published in XenServer 6.1.
+     * @param snapshotTime Storage-specific config First published in XenServer 6.1.
+     * @param snapshotOf Storage-specific config First published in XenServer 6.1.
+     * @param cbtEnabled True if changed blocks are tracked for this VDI First published in XenServer 7.3.
+     * @return Task
+     */
+    public static Task dbIntroduceAsync(Connection c, String uuid, String nameLabel, String nameDescription, SR SR, Types.VdiType type, Boolean sharable, Boolean readOnly, Map<String, String> otherConfig, String location, Map<String, String> xenstoreData, Map<String, String> smConfig, Boolean managed, Long virtualSize, Long physicalUtilisation, Pool metadataOfPool, Boolean isASnapshot, Date snapshotTime, VDI snapshotOf, Boolean cbtEnabled) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.VDI.db_introduce";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid), Marshalling.toXMLRPC(nameLabel), Marshalling.toXMLRPC(nameDescription), Marshalling.toXMLRPC(SR), Marshalling.toXMLRPC(type), Marshalling.toXMLRPC(sharable), Marshalling.toXMLRPC(readOnly), Marshalling.toXMLRPC(otherConfig), Marshalling.toXMLRPC(location), Marshalling.toXMLRPC(xenstoreData), Marshalling.toXMLRPC(smConfig), Marshalling.toXMLRPC(managed), Marshalling.toXMLRPC(virtualSize), Marshalling.toXMLRPC(physicalUtilisation), Marshalling.toXMLRPC(metadataOfPool), Marshalling.toXMLRPC(isASnapshot), Marshalling.toXMLRPC(snapshotTime), Marshalling.toXMLRPC(snapshotOf), Marshalling.toXMLRPC(cbtEnabled)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Create a new VDI record in the database only
+     * First published in XenServer 4.0.
+     *
+     * @param uuid The uuid of the disk to introduce First published in XenServer 4.1.
+     * @param nameLabel The name of the disk record First published in XenServer 4.1.
+     * @param nameDescription The description of the disk record First published in XenServer 4.1.
+     * @param SR The SR that the VDI is in First published in XenServer 4.1.
+     * @param type The type of the VDI First published in XenServer 4.1.
+     * @param sharable true if this disk may be shared First published in XenServer 4.1.
+     * @param readOnly true if this disk may ONLY be mounted read-only First published in XenServer 4.1.
+     * @param otherConfig additional configuration First published in XenServer 4.1.
+     * @param location location information First published in XenServer 4.1.
+     * @param xenstoreData Data to insert into xenstore First published in XenServer 4.1.
+     * @param smConfig Storage-specific config First published in XenServer 4.1.
+     * @param managed Storage-specific config First published in XenServer 6.1.
+     * @param virtualSize Storage-specific config First published in XenServer 6.1.
+     * @param physicalUtilisation Storage-specific config First published in XenServer 6.1.
+     * @param metadataOfPool Storage-specific config First published in XenServer 6.1.
+     * @param isASnapshot Storage-specific config First published in XenServer 6.1.
+     * @param snapshotTime Storage-specific config First published in XenServer 6.1.
+     * @param snapshotOf Storage-specific config First published in XenServer 6.1.
+     * @param cbtEnabled True if changed blocks are tracked for this VDI First published in XenServer 7.3.
+     * @return The ref of the newly created VDI record.
+     */
+    public static VDI dbIntroduce(Connection c, String uuid, String nameLabel, String nameDescription, SR SR, Types.VdiType type, Boolean sharable, Boolean readOnly, Map<String, String> otherConfig, String location, Map<String, String> xenstoreData, Map<String, String> smConfig, Boolean managed, Long virtualSize, Long physicalUtilisation, Pool metadataOfPool, Boolean isASnapshot, Date snapshotTime, VDI snapshotOf, Boolean cbtEnabled) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VDI.db_introduce";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid), Marshalling.toXMLRPC(nameLabel), Marshalling.toXMLRPC(nameDescription), Marshalling.toXMLRPC(SR), Marshalling.toXMLRPC(type), Marshalling.toXMLRPC(sharable), Marshalling.toXMLRPC(readOnly), Marshalling.toXMLRPC(otherConfig), Marshalling.toXMLRPC(location), Marshalling.toXMLRPC(xenstoreData), Marshalling.toXMLRPC(smConfig), Marshalling.toXMLRPC(managed), Marshalling.toXMLRPC(virtualSize), Marshalling.toXMLRPC(physicalUtilisation), Marshalling.toXMLRPC(metadataOfPool), Marshalling.toXMLRPC(isASnapshot), Marshalling.toXMLRPC(snapshotTime), Marshalling.toXMLRPC(snapshotOf), Marshalling.toXMLRPC(cbtEnabled)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toVDI(result);
+    }
+
+    /**
      * Removes a VDI record from the database
      * First published in XenServer 4.1.
      *
@@ -1739,8 +1839,8 @@ public class VDI extends XenAPIObject {
      * First published in XenServer 4.0.
      *
      * @param sr The destination SR (only required if the destination VDI is not specified
-     * @param baseVdi The base VDI (only required if copying only changed blocks, by default all blocks will be copied) First published in XenServer 6.2 SP1 Hotfix XS62ESP1004.
-     * @param intoVdi The destination VDI to copy blocks into (if omitted then a destination SR must be provided and a fresh VDI will be created) First published in XenServer 6.2 SP1 Hotfix XS62ESP1004.
+     * @param baseVdi The base VDI (only required if copying only changed blocks, by default all blocks will be copied) First published in XenServer 6.2 SP1 Hotfix 4.
+     * @param intoVdi The destination VDI to copy blocks into (if omitted then a destination SR must be provided and a fresh VDI will be created) First published in XenServer 6.2 SP1 Hotfix 4.
      * @return Task
      */
     public Task copyAsync(Connection c, SR sr, VDI baseVdi, VDI intoVdi) throws
@@ -1763,8 +1863,8 @@ public class VDI extends XenAPIObject {
      * First published in XenServer 4.0.
      *
      * @param sr The destination SR (only required if the destination VDI is not specified
-     * @param baseVdi The base VDI (only required if copying only changed blocks, by default all blocks will be copied) First published in XenServer 6.2 SP1 Hotfix XS62ESP1004.
-     * @param intoVdi The destination VDI to copy blocks into (if omitted then a destination SR must be provided and a fresh VDI will be created) First published in XenServer 6.2 SP1 Hotfix XS62ESP1004.
+     * @param baseVdi The base VDI (only required if copying only changed blocks, by default all blocks will be copied) First published in XenServer 6.2 SP1 Hotfix 4.
+     * @param intoVdi The destination VDI to copy blocks into (if omitted then a destination SR must be provided and a fresh VDI will be created) First published in XenServer 6.2 SP1 Hotfix 4.
      * @return The reference of the VDI where the blocks were written.
      */
     public VDI copy(Connection c, SR sr, VDI baseVdi, VDI intoVdi) throws
@@ -2240,6 +2340,221 @@ public class VDI extends XenAPIObject {
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
             return Types.toVDI(result);
+    }
+
+    /**
+     * Enable changed block tracking for the VDI. This call is idempotent - enabling CBT for a VDI for which CBT is already enabled results in a no-op, and no error will be thrown.
+     * First published in XenServer 7.3.
+     *
+     * @return Task
+     */
+    public Task enableCbtAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.SrOperationNotSupported,
+       Types.VdiMissing,
+       Types.SrNotAttached,
+       Types.SrHasNoPbds,
+       Types.OperationNotAllowed,
+       Types.VdiIncompatibleType,
+       Types.VdiOnBootModeIncompatibleWithOperation {
+        String method_call = "Async.VDI.enable_cbt";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Enable changed block tracking for the VDI. This call is idempotent - enabling CBT for a VDI for which CBT is already enabled results in a no-op, and no error will be thrown.
+     * First published in XenServer 7.3.
+     *
+     */
+    public void enableCbt(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.SrOperationNotSupported,
+       Types.VdiMissing,
+       Types.SrNotAttached,
+       Types.SrHasNoPbds,
+       Types.OperationNotAllowed,
+       Types.VdiIncompatibleType,
+       Types.VdiOnBootModeIncompatibleWithOperation {
+        String method_call = "VDI.enable_cbt";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Disable changed block tracking for the VDI. This call is only allowed on VDIs that support enabling CBT. It is an idempotent operation - disabling CBT for a VDI for which CBT is not enabled results in a no-op, and no error will be thrown.
+     * First published in XenServer 7.3.
+     *
+     * @return Task
+     */
+    public Task disableCbtAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.SrOperationNotSupported,
+       Types.VdiMissing,
+       Types.SrNotAttached,
+       Types.SrHasNoPbds,
+       Types.OperationNotAllowed,
+       Types.VdiIncompatibleType,
+       Types.VdiOnBootModeIncompatibleWithOperation {
+        String method_call = "Async.VDI.disable_cbt";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Disable changed block tracking for the VDI. This call is only allowed on VDIs that support enabling CBT. It is an idempotent operation - disabling CBT for a VDI for which CBT is not enabled results in a no-op, and no error will be thrown.
+     * First published in XenServer 7.3.
+     *
+     */
+    public void disableCbt(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.SrOperationNotSupported,
+       Types.VdiMissing,
+       Types.SrNotAttached,
+       Types.SrHasNoPbds,
+       Types.OperationNotAllowed,
+       Types.VdiIncompatibleType,
+       Types.VdiOnBootModeIncompatibleWithOperation {
+        String method_call = "VDI.disable_cbt";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Delete the data of the snapshot VDI, but keep its changed block tracking metadata. When successful, this call changes the type of the VDI to cbt_metadata. This operation is idempotent: calling it on a VDI of type cbt_metadata results in a no-op, and no error will be thrown.
+     * First published in XenServer 7.3.
+     *
+     * @return Task
+     */
+    public Task dataDestroyAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.SrOperationNotSupported,
+       Types.VdiMissing,
+       Types.SrNotAttached,
+       Types.SrHasNoPbds,
+       Types.OperationNotAllowed,
+       Types.VdiIncompatibleType,
+       Types.VdiNoCbtMetadata,
+       Types.VdiInUse,
+       Types.VdiIsAPhysicalDevice {
+        String method_call = "Async.VDI.data_destroy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Delete the data of the snapshot VDI, but keep its changed block tracking metadata. When successful, this call changes the type of the VDI to cbt_metadata. This operation is idempotent: calling it on a VDI of type cbt_metadata results in a no-op, and no error will be thrown.
+     * First published in XenServer 7.3.
+     *
+     */
+    public void dataDestroy(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.SrOperationNotSupported,
+       Types.VdiMissing,
+       Types.SrNotAttached,
+       Types.SrHasNoPbds,
+       Types.OperationNotAllowed,
+       Types.VdiIncompatibleType,
+       Types.VdiNoCbtMetadata,
+       Types.VdiInUse,
+       Types.VdiIsAPhysicalDevice {
+        String method_call = "VDI.data_destroy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Compare two VDIs in 64k block increments and report which blocks differ. This operation is not allowed when vdi_to is attached to a VM.
+     * First published in XenServer 7.3.
+     *
+     * @param vdiTo The second VDI.
+     * @return Task
+     */
+    public Task listChangedBlocksAsync(Connection c, VDI vdiTo) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.SrOperationNotSupported,
+       Types.VdiMissing,
+       Types.SrNotAttached,
+       Types.SrHasNoPbds,
+       Types.VdiInUse {
+        String method_call = "Async.VDI.list_changed_blocks";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(vdiTo)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Compare two VDIs in 64k block increments and report which blocks differ. This operation is not allowed when vdi_to is attached to a VM.
+     * First published in XenServer 7.3.
+     *
+     * @param vdiTo The second VDI.
+     * @return A base64 string-encoding of the bitmap showing which blocks differ in the two VDIs.
+     */
+    public String listChangedBlocks(Connection c, VDI vdiTo) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.SrOperationNotSupported,
+       Types.VdiMissing,
+       Types.SrNotAttached,
+       Types.SrHasNoPbds,
+       Types.VdiInUse {
+        String method_call = "VDI.list_changed_blocks";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(vdiTo)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toString(result);
+    }
+
+    /**
+     * Get details specifying how to access this VDI via a Network Block Device server. For each of a set of NBD server addresses on which the VDI is available, the return value set contains a vdi_nbd_server_info object that contains an exportname to request once the NBD connection is established, and connection details for the address. An empty list is returned if there is no network that has a PIF on a host with access to the relevant SR, or if no such network has been assigned an NBD-related purpose in its purpose field. To access the given VDI, any of the vdi_nbd_server_info objects can be used to make a connection to a server, and then the VDI will be available by requesting the exportname.
+     * First published in XenServer 7.3.
+     *
+     * @return The details necessary for connecting to the VDI over NBD. This includes an authentication token, so must be treated as sensitive material and must not be sent over insecure networks.
+     */
+    public Set<VdiNbdServerInfo.Record> getNbdInfo(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.VdiIncompatibleType {
+        String method_call = "VDI.get_nbd_info";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfVdiNbdServerInfoRecord(result);
     }
 
     /**

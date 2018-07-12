@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -109,6 +109,7 @@ public class VM extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
             print.printf("%1$20s: %2$s\n", "userVersion", this.userVersion);
             print.printf("%1$20s: %2$s\n", "isATemplate", this.isATemplate);
+            print.printf("%1$20s: %2$s\n", "isDefaultTemplate", this.isDefaultTemplate);
             print.printf("%1$20s: %2$s\n", "suspendVDI", this.suspendVDI);
             print.printf("%1$20s: %2$s\n", "residentOn", this.residentOn);
             print.printf("%1$20s: %2$s\n", "affinity", this.affinity);
@@ -127,6 +128,7 @@ public class VM extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "consoles", this.consoles);
             print.printf("%1$20s: %2$s\n", "VIFs", this.VIFs);
             print.printf("%1$20s: %2$s\n", "VBDs", this.VBDs);
+            print.printf("%1$20s: %2$s\n", "VUSBs", this.VUSBs);
             print.printf("%1$20s: %2$s\n", "crashDumps", this.crashDumps);
             print.printf("%1$20s: %2$s\n", "VTPMs", this.VTPMs);
             print.printf("%1$20s: %2$s\n", "PVBootloader", this.PVBootloader);
@@ -167,6 +169,8 @@ public class VM extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "biosStrings", this.biosStrings);
             print.printf("%1$20s: %2$s\n", "protectionPolicy", this.protectionPolicy);
             print.printf("%1$20s: %2$s\n", "isSnapshotFromVmpp", this.isSnapshotFromVmpp);
+            print.printf("%1$20s: %2$s\n", "snapshotSchedule", this.snapshotSchedule);
+            print.printf("%1$20s: %2$s\n", "isVmssSnapshot", this.isVmssSnapshot);
             print.printf("%1$20s: %2$s\n", "appliance", this.appliance);
             print.printf("%1$20s: %2$s\n", "startDelay", this.startDelay);
             print.printf("%1$20s: %2$s\n", "shutdownDelay", this.shutdownDelay);
@@ -178,6 +182,9 @@ public class VM extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "generationId", this.generationId);
             print.printf("%1$20s: %2$s\n", "hardwarePlatformVersion", this.hardwarePlatformVersion);
             print.printf("%1$20s: %2$s\n", "hasVendorDevice", this.hasVendorDevice);
+            print.printf("%1$20s: %2$s\n", "requiresReboot", this.requiresReboot);
+            print.printf("%1$20s: %2$s\n", "referenceLabel", this.referenceLabel);
+            print.printf("%1$20s: %2$s\n", "domainType", this.domainType);
             return writer.toString();
         }
 
@@ -194,6 +201,7 @@ public class VM extends XenAPIObject {
             map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
             map.put("user_version", this.userVersion == null ? 0 : this.userVersion);
             map.put("is_a_template", this.isATemplate == null ? false : this.isATemplate);
+            map.put("is_default_template", this.isDefaultTemplate == null ? false : this.isDefaultTemplate);
             map.put("suspend_VDI", this.suspendVDI == null ? new VDI("OpaqueRef:NULL") : this.suspendVDI);
             map.put("resident_on", this.residentOn == null ? new Host("OpaqueRef:NULL") : this.residentOn);
             map.put("affinity", this.affinity == null ? new Host("OpaqueRef:NULL") : this.affinity);
@@ -212,6 +220,7 @@ public class VM extends XenAPIObject {
             map.put("consoles", this.consoles == null ? new LinkedHashSet<Console>() : this.consoles);
             map.put("VIFs", this.VIFs == null ? new LinkedHashSet<VIF>() : this.VIFs);
             map.put("VBDs", this.VBDs == null ? new LinkedHashSet<VBD>() : this.VBDs);
+            map.put("VUSBs", this.VUSBs == null ? new LinkedHashSet<VUSB>() : this.VUSBs);
             map.put("crash_dumps", this.crashDumps == null ? new LinkedHashSet<Crashdump>() : this.crashDumps);
             map.put("VTPMs", this.VTPMs == null ? new LinkedHashSet<VTPM>() : this.VTPMs);
             map.put("PV_bootloader", this.PVBootloader == null ? "" : this.PVBootloader);
@@ -252,6 +261,8 @@ public class VM extends XenAPIObject {
             map.put("bios_strings", this.biosStrings == null ? new HashMap<String, String>() : this.biosStrings);
             map.put("protection_policy", this.protectionPolicy == null ? new VMPP("OpaqueRef:NULL") : this.protectionPolicy);
             map.put("is_snapshot_from_vmpp", this.isSnapshotFromVmpp == null ? false : this.isSnapshotFromVmpp);
+            map.put("snapshot_schedule", this.snapshotSchedule == null ? new VMSS("OpaqueRef:NULL") : this.snapshotSchedule);
+            map.put("is_vmss_snapshot", this.isVmssSnapshot == null ? false : this.isVmssSnapshot);
             map.put("appliance", this.appliance == null ? new VMAppliance("OpaqueRef:NULL") : this.appliance);
             map.put("start_delay", this.startDelay == null ? 0 : this.startDelay);
             map.put("shutdown_delay", this.shutdownDelay == null ? 0 : this.shutdownDelay);
@@ -263,6 +274,9 @@ public class VM extends XenAPIObject {
             map.put("generation_id", this.generationId == null ? "" : this.generationId);
             map.put("hardware_platform_version", this.hardwarePlatformVersion == null ? 0 : this.hardwarePlatformVersion);
             map.put("has_vendor_device", this.hasVendorDevice == null ? false : this.hasVendorDevice);
+            map.put("requires_reboot", this.requiresReboot == null ? false : this.requiresReboot);
+            map.put("reference_label", this.referenceLabel == null ? "" : this.referenceLabel);
+            map.put("domain_type", this.domainType == null ? Types.DomainType.UNRECOGNIZED : this.domainType);
             return map;
         }
 
@@ -299,6 +313,11 @@ public class VM extends XenAPIObject {
          */
         public Boolean isATemplate;
         /**
+         * true if this is a default template. Default template VMs can never be started or migrated, they are used only for cloning other VMs
+         * First published in XenServer 7.2.
+         */
+        public Boolean isDefaultTemplate;
+        /**
          * The VDI that a suspend image is stored on. (Only has meaning if VM is currently suspended)
          */
         public VDI suspendVDI;
@@ -307,7 +326,7 @@ public class VM extends XenAPIObject {
          */
         public Host residentOn;
         /**
-         * a host which the VM has some affinity for (or NULL). This is used as a hint to the start call when it decides where to run the VM. Implementations are free to ignore this field.
+         * A host which the VM has some affinity for (or NULL). This is used as a hint to the start call when it decides where to run the VM. Resource constraints may cause the VM to be started elsewhere.
          */
         public Host affinity;
         /**
@@ -370,6 +389,10 @@ public class VM extends XenAPIObject {
          * virtual block devices
          */
         public Set<VBD> VBDs;
+        /**
+         * vitual usb devices
+         */
+        public Set<VUSB> VUSBs;
         /**
          * crash dumps associated with this VM
          */
@@ -551,6 +574,16 @@ public class VM extends XenAPIObject {
          */
         public Boolean isSnapshotFromVmpp;
         /**
+         * Ref pointing to a snapshot schedule for this VM
+         * First published in XenServer 7.2.
+         */
+        public VMSS snapshotSchedule;
+        /**
+         * true if this snapshot was created by the snapshot schedule
+         * First published in XenServer 7.2.
+         */
+        public Boolean isVmssSnapshot;
+        /**
          * the appliance to which this VM belongs
          */
         public VMAppliance appliance;
@@ -601,9 +634,24 @@ public class VM extends XenAPIObject {
         public Long hardwarePlatformVersion;
         /**
          * When an HVM guest starts, this controls the presence of the emulated C000 PCI device which triggers Windows Update to fetch or update PV drivers.
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Boolean hasVendorDevice;
+        /**
+         * Indicates whether a VM requires a reboot in order to update its configuration, e.g. its memory allocation.
+         * First published in XenServer 7.1.
+         */
+        public Boolean requiresReboot;
+        /**
+         * Textual reference to the template used to create a VM. This can be used by clients in need of an immutable reference to the template since the latter's uuid and name_label may change, for example, after a package installation or upgrade.
+         * First published in XenServer 7.1.
+         */
+        public String referenceLabel;
+        /**
+         * The type of domain that will be created when the VM is started
+         * First published in Unreleased.
+         */
+        public Types.DomainType domainType;
     }
 
     /**
@@ -873,6 +921,24 @@ public class VM extends XenAPIObject {
        XenAPIException,
        XmlRpcException {
         String method_call = "VM.get_is_a_template";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
+     * Get the is_default_template field of the given VM.
+     * First published in XenServer 7.2.
+     *
+     * @return value of the field
+     */
+    public Boolean getIsDefaultTemplate(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.get_is_default_template";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -1206,6 +1272,24 @@ public class VM extends XenAPIObject {
     }
 
     /**
+     * Get the VUSBs field of the given VM.
+     * First published in XenServer 4.0.
+     *
+     * @return value of the field
+     */
+    public Set<VUSB> getVUSBs(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.get_VUSBs";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toSetOfVUSB(result);
+    }
+
+    /**
      * Get the crash_dumps field of the given VM.
      * First published in XenServer 4.0.
      *
@@ -1352,10 +1436,11 @@ public class VM extends XenAPIObject {
     /**
      * Get the HVM/boot_policy field of the given VM.
      * First published in XenServer 4.0.
+     * @deprecated
      *
      * @return value of the field
      */
-    public String getHVMBootPolicy(Connection c) throws
+   @Deprecated public String getHVMBootPolicy(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -1930,6 +2015,42 @@ public class VM extends XenAPIObject {
     }
 
     /**
+     * Get the snapshot_schedule field of the given VM.
+     * First published in XenServer 7.2.
+     *
+     * @return value of the field
+     */
+    public VMSS getSnapshotSchedule(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.get_snapshot_schedule";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toVMSS(result);
+    }
+
+    /**
+     * Get the is_vmss_snapshot field of the given VM.
+     * First published in XenServer 7.2.
+     *
+     * @return value of the field
+     */
+    public Boolean getIsVmssSnapshot(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.get_is_vmss_snapshot";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
      * Get the appliance field of the given VM.
      * First published in XenServer 4.0.
      *
@@ -2111,7 +2232,7 @@ public class VM extends XenAPIObject {
 
     /**
      * Get the has_vendor_device field of the given VM.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -2125,6 +2246,60 @@ public class VM extends XenAPIObject {
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
             return Types.toBoolean(result);
+    }
+
+    /**
+     * Get the requires_reboot field of the given VM.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public Boolean getRequiresReboot(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.get_requires_reboot";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
+     * Get the reference_label field of the given VM.
+     * First published in XenServer 7.1.
+     *
+     * @return value of the field
+     */
+    public String getReferenceLabel(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.get_reference_label";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toString(result);
+    }
+
+    /**
+     * Get the domain_type field of the given VM.
+     * First published in Unreleased.
+     *
+     * @return value of the field
+     */
+    public Types.DomainType getDomainType(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.get_domain_type";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toDomainType(result);
     }
 
     /**
@@ -2299,23 +2474,6 @@ public class VM extends XenAPIObject {
     }
 
     /**
-     * Set the actions/after_crash field of the given VM.
-     * First published in XenServer 4.0.
-     *
-     * @param afterCrash New value to set
-     */
-    public void setActionsAfterCrash(Connection c, Types.OnCrashBehaviour afterCrash) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "VM.set_actions_after_crash";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(afterCrash)};
-        Map response = c.dispatch(method_call, method_params);
-        return;
-    }
-
-    /**
      * Set the PV/bootloader field of the given VM.
      * First published in XenServer 4.0.
      *
@@ -2413,23 +2571,6 @@ public class VM extends XenAPIObject {
         String method_call = "VM.set_PV_legacy_args";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(legacyArgs)};
-        Map response = c.dispatch(method_call, method_params);
-        return;
-    }
-
-    /**
-     * Set the HVM/boot_policy field of the given VM.
-     * First published in XenServer 4.0.
-     *
-     * @param bootPolicy New value to set
-     */
-    public void setHVMBootPolicy(Connection c, String bootPolicy) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "VM.set_HVM_boot_policy";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(bootPolicy)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }
@@ -3760,7 +3901,9 @@ public class VM extends XenAPIObject {
     public Task setVCPUsNumberLiveAsync(Connection c, Long nvcpu) throws
        BadServerResponse,
        XenAPIException,
-       XmlRpcException {
+       XmlRpcException,
+       Types.OperationNotAllowed,
+       Types.LicenceRestriction {
         String method_call = "Async.VM.set_VCPUs_number_live";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(nvcpu)};
@@ -3778,7 +3921,9 @@ public class VM extends XenAPIObject {
     public void setVCPUsNumberLive(Connection c, Long nvcpu) throws
        BadServerResponse,
        XenAPIException,
-       XmlRpcException {
+       XmlRpcException,
+       Types.OperationNotAllowed,
+       Types.LicenceRestriction {
         String method_call = "VM.set_VCPUs_number_live";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(nvcpu)};
@@ -4078,6 +4223,42 @@ public class VM extends XenAPIObject {
         String method_call = "VM.set_memory_limits";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(staticMin), Marshalling.toXMLRPC(staticMax), Marshalling.toXMLRPC(dynamicMin), Marshalling.toXMLRPC(dynamicMax)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Set the memory allocation of this VM. Sets all of memory_static_max, memory_dynamic_min, and memory_dynamic_max to the given value, and leaves memory_static_min untouched.
+     * First published in XenServer 7.1.
+     *
+     * @param value The new memory allocation (bytes).
+     * @return Task
+     */
+    public Task setMemoryAsync(Connection c, Long value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.VM.set_memory";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Set the memory allocation of this VM. Sets all of memory_static_max, memory_dynamic_min, and memory_dynamic_max to the given value, and leaves memory_static_min untouched.
+     * First published in XenServer 7.1.
+     *
+     * @param value The new memory allocation (bytes).
+     */
+    public void setMemory(Connection c, Long value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.set_memory";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }
@@ -4448,6 +4629,58 @@ public class VM extends XenAPIObject {
     }
 
     /**
+     * Migrate the VM to another host.  This can only be called when the specified VM is in the Running state.
+     * First published in XenServer 6.1.
+     *
+     * @param dest The result of a Host.migrate_receive call.
+     * @param live Live migration
+     * @param vdiMap Map of source VDI to destination SR
+     * @param vifMap Map of source VIF to destination network
+     * @param options Other parameters
+     * @param vgpuMap Map of source vGPU to destination GPU group First published in XenServer 7.3.
+     * @return Task
+     */
+    public Task migrateSendAsync(Connection c, Map<String, String> dest, Boolean live, Map<VDI, SR> vdiMap, Map<VIF, Network> vifMap, Map<String, String> options, Map<VGPU, GPUGroup> vgpuMap) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.VmBadPowerState,
+       Types.LicenceRestriction {
+        String method_call = "Async.VM.migrate_send";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(dest), Marshalling.toXMLRPC(live), Marshalling.toXMLRPC(vdiMap), Marshalling.toXMLRPC(vifMap), Marshalling.toXMLRPC(options), Marshalling.toXMLRPC(vgpuMap)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Migrate the VM to another host.  This can only be called when the specified VM is in the Running state.
+     * First published in XenServer 6.1.
+     *
+     * @param dest The result of a Host.migrate_receive call.
+     * @param live Live migration
+     * @param vdiMap Map of source VDI to destination SR
+     * @param vifMap Map of source VIF to destination network
+     * @param options Other parameters
+     * @param vgpuMap Map of source vGPU to destination GPU group First published in XenServer 7.3.
+     * @return The reference of the newly created VM in the destination pool
+     */
+    public VM migrateSend(Connection c, Map<String, String> dest, Boolean live, Map<VDI, SR> vdiMap, Map<VIF, Network> vifMap, Map<String, String> options, Map<VGPU, GPUGroup> vgpuMap) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.VmBadPowerState,
+       Types.LicenceRestriction {
+        String method_call = "VM.migrate_send";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(dest), Marshalling.toXMLRPC(live), Marshalling.toXMLRPC(vdiMap), Marshalling.toXMLRPC(vifMap), Marshalling.toXMLRPC(options), Marshalling.toXMLRPC(vgpuMap)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toVM(result);
+    }
+
+    /**
      * Assert whether a VM can be migrated to the specified destination.
      * First published in XenServer 6.1.
      *
@@ -4494,12 +4727,61 @@ public class VM extends XenAPIObject {
     }
 
     /**
+     * Assert whether a VM can be migrated to the specified destination.
+     * First published in XenServer 6.1.
+     *
+     * @param dest The result of a VM.migrate_receive call.
+     * @param live Live migration
+     * @param vdiMap Map of source VDI to destination SR
+     * @param vifMap Map of source VIF to destination network
+     * @param options Other parameters
+     * @param vgpuMap Map of source vGPU to destination GPU group First published in XenServer 7.3.
+     * @return Task
+     */
+    public Task assertCanMigrateAsync(Connection c, Map<String, String> dest, Boolean live, Map<VDI, SR> vdiMap, Map<VIF, Network> vifMap, Map<String, String> options, Map<VGPU, GPUGroup> vgpuMap) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.LicenceRestriction {
+        String method_call = "Async.VM.assert_can_migrate";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(dest), Marshalling.toXMLRPC(live), Marshalling.toXMLRPC(vdiMap), Marshalling.toXMLRPC(vifMap), Marshalling.toXMLRPC(options), Marshalling.toXMLRPC(vgpuMap)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Assert whether a VM can be migrated to the specified destination.
+     * First published in XenServer 6.1.
+     *
+     * @param dest The result of a VM.migrate_receive call.
+     * @param live Live migration
+     * @param vdiMap Map of source VDI to destination SR
+     * @param vifMap Map of source VIF to destination network
+     * @param options Other parameters
+     * @param vgpuMap Map of source vGPU to destination GPU group First published in XenServer 7.3.
+     */
+    public void assertCanMigrate(Connection c, Map<String, String> dest, Boolean live, Map<VDI, SR> vdiMap, Map<VIF, Network> vifMap, Map<String, String> options, Map<VGPU, GPUGroup> vgpuMap) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.LicenceRestriction {
+        String method_call = "VM.assert_can_migrate";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(dest), Marshalling.toXMLRPC(live), Marshalling.toXMLRPC(vdiMap), Marshalling.toXMLRPC(vifMap), Marshalling.toXMLRPC(options), Marshalling.toXMLRPC(vgpuMap)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
      * Returns a record describing the VM's dynamic state, initialised when the VM boots and updated to reflect runtime configuration changes e.g. CPU hotplug
      * First published in XenServer 4.0.
+     * @deprecated
      *
      * @return A record describing the VM
      */
-    public VM.Record getBootRecord(Connection c) throws
+   @Deprecated public VM.Record getBootRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
@@ -4921,6 +5203,46 @@ public class VM extends XenAPIObject {
     }
 
     /**
+     * Set custom BIOS strings to this VM. VM will be given a default set of BIOS strings, only some of which can be overridden by the supplied values. Allowed keys are: 'bios-vendor', 'bios-version', 'system-manufacturer', 'system-product-name', 'system-version', 'system-serial-number', 'enclosure-asset-tag'
+     * First published in XenServer 7.3.
+     *
+     * @param value The custom BIOS strings as a list of key-value pairs
+     * @return Task
+     */
+    public Task setBiosStringsAsync(Connection c, Map<String, String> value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.VmBiosStringsAlreadySet,
+       Types.InvalidValue {
+        String method_call = "Async.VM.set_bios_strings";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Set custom BIOS strings to this VM. VM will be given a default set of BIOS strings, only some of which can be overridden by the supplied values. Allowed keys are: 'bios-vendor', 'bios-version', 'system-manufacturer', 'system-product-name', 'system-version', 'system-serial-number', 'enclosure-asset-tag'
+     * First published in XenServer 7.3.
+     *
+     * @param value The custom BIOS strings as a list of key-value pairs
+     */
+    public void setBiosStrings(Connection c, Map<String, String> value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException,
+       Types.VmBiosStringsAlreadySet,
+       Types.InvalidValue {
+        String method_call = "VM.set_bios_strings";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
      * Copy the BIOS strings from the given host to this VM
      * First published in XenServer 5.6.
      *
@@ -4967,6 +5289,23 @@ public class VM extends XenAPIObject {
        XenAPIException,
        XmlRpcException {
         String method_call = "VM.set_protection_policy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Set the value of the snapshot schedule field
+     * First published in XenServer 7.2.
+     *
+     * @param value The value
+     */
+    public void setSnapshotSchedule(Connection c, VMSS value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.set_snapshot_schedule";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
         Map response = c.dispatch(method_call, method_params);
@@ -5393,7 +5732,7 @@ public class VM extends XenAPIObject {
 
     /**
      * Controls whether, when the VM starts in HVM mode, its virtual hardware will include the emulated PCI device for which drivers may be available through Windows Update. Usually this should never be changed on a VM on which Windows has been installed: changing it on such a VM is likely to lead to a crash on next start.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param value True to provide the vendor PCI device.
      * @return Task
@@ -5412,7 +5751,7 @@ public class VM extends XenAPIObject {
 
     /**
      * Controls whether, when the VM starts in HVM mode, its virtual hardware will include the emulated PCI device for which drivers may be available through Windows Update. Usually this should never be changed on a VM on which Windows has been installed: changing it on such a VM is likely to lead to a crash on next start.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param value True to provide the vendor PCI device.
      */
@@ -5429,7 +5768,7 @@ public class VM extends XenAPIObject {
 
     /**
      * Import an XVA from a URI
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param url The URL of the XVA file
      * @param sr The destination SR for the disks
@@ -5451,7 +5790,7 @@ public class VM extends XenAPIObject {
 
     /**
      * Import an XVA from a URI
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @param url The URL of the XVA file
      * @param sr The destination SR for the disks
@@ -5469,6 +5808,77 @@ public class VM extends XenAPIObject {
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
             return Types.toSetOfVM(result);
+    }
+
+    /**
+     * Sets the actions_after_crash parameter
+     * First published in XenServer 4.0.
+     *
+     * @param value The new value to set
+     * @return Task
+     */
+    public Task setActionsAfterCrashAsync(Connection c, Types.OnCrashBehaviour value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.VM.set_actions_after_crash";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Sets the actions_after_crash parameter
+     * First published in XenServer 4.0.
+     *
+     * @param value The new value to set
+     */
+    public void setActionsAfterCrash(Connection c, Types.OnCrashBehaviour value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.set_actions_after_crash";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Set the VM.domain_type field of the given VM, which will take effect when it is next started
+     * First published in Unreleased.
+     *
+     * @param value The new domain type
+     */
+    public void setDomainType(Connection c, Types.DomainType value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.set_domain_type";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Set the VM.HVM_boot_policy field of the given VM, which will take effect when it is next started
+     * First published in XenServer 4.0.
+     * @deprecated
+     *
+     * @param value The new HVM boot policy
+     */
+   @Deprecated public void setHVMBootPolicy(Connection c, String value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VM.set_HVM_boot_policy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
     }
 
     /**

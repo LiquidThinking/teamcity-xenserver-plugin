@@ -46,12 +46,12 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * A placeholder for a binary blob
- * First published in XenServer 5.0.
+ * A group of compatible USBs across the resource pool
+ * First published in XenServer 7.3.
  *
  * @author Citrix Systems, Inc.
  */
-public class Blob extends XenAPIObject {
+public class USBGroup extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +61,7 @@ public class Blob extends XenAPIObject {
     /**
      * For internal use only.
      */
-    Blob(String ref) {
+    USBGroup(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +73,14 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * If obj is a Blob, compares XenAPI references for equality.
+     * If obj is a USBGroup, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof Blob)
+        if (obj != null && obj instanceof USBGroup)
         {
-            Blob other = (Blob) obj;
+            USBGroup other = (USBGroup) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,7 +95,7 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a Blob
+     * Represents all the fields in a USBGroup
      */
     public static class Record implements Types.Record {
         public String toString() {
@@ -104,25 +104,23 @@ public class Blob extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "uuid", this.uuid);
             print.printf("%1$20s: %2$s\n", "nameLabel", this.nameLabel);
             print.printf("%1$20s: %2$s\n", "nameDescription", this.nameDescription);
-            print.printf("%1$20s: %2$s\n", "size", this.size);
-            print.printf("%1$20s: %2$s\n", "_public", this._public);
-            print.printf("%1$20s: %2$s\n", "lastUpdated", this.lastUpdated);
-            print.printf("%1$20s: %2$s\n", "mimeType", this.mimeType);
+            print.printf("%1$20s: %2$s\n", "PUSBs", this.PUSBs);
+            print.printf("%1$20s: %2$s\n", "VUSBs", this.VUSBs);
+            print.printf("%1$20s: %2$s\n", "otherConfig", this.otherConfig);
             return writer.toString();
         }
 
         /**
-         * Convert a blob.Record to a Map
+         * Convert a USB_group.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("uuid", this.uuid == null ? "" : this.uuid);
             map.put("name_label", this.nameLabel == null ? "" : this.nameLabel);
             map.put("name_description", this.nameDescription == null ? "" : this.nameDescription);
-            map.put("size", this.size == null ? 0 : this.size);
-            map.put("public", this._public == null ? false : this._public);
-            map.put("last_updated", this.lastUpdated == null ? new Date(0) : this.lastUpdated);
-            map.put("mime_type", this.mimeType == null ? "" : this.mimeType);
+            map.put("PUSBs", this.PUSBs == null ? new LinkedHashSet<PUSB>() : this.PUSBs);
+            map.put("VUSBs", this.VUSBs == null ? new LinkedHashSet<VUSB>() : this.VUSBs);
+            map.put("other_config", this.otherConfig == null ? new HashMap<String, String>() : this.otherConfig);
             return map;
         }
 
@@ -139,83 +137,78 @@ public class Blob extends XenAPIObject {
          */
         public String nameDescription;
         /**
-         * Size of the binary data, in bytes
+         * List of PUSBs in the group
          */
-        public Long size;
+        public Set<PUSB> PUSBs;
         /**
-         * True if the blob is publicly accessible
-         * First published in XenServer 6.1.
+         * List of VUSBs using the group
          */
-        public Boolean _public;
+        public Set<VUSB> VUSBs;
         /**
-         * Time at which the data in the blob was last updated
+         * Additional configuration
          */
-        public Date lastUpdated;
-        /**
-         * The mime type associated with this object. Defaults to 'application/octet-stream' if the empty string is supplied
-         */
-        public String mimeType;
+        public Map<String, String> otherConfig;
     }
 
     /**
-     * Get a record containing the current state of the given blob.
-     * First published in XenServer 5.0.
+     * Get a record containing the current state of the given USB_group.
+     * First published in XenServer 7.3.
      *
      * @return all fields from the object
      */
-    public Blob.Record getRecord(Connection c) throws
+    public USBGroup.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_record";
+        String method_call = "USB_group.get_record";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toBlobRecord(result);
+            return Types.toUSBGroupRecord(result);
     }
 
     /**
-     * Get a reference to the blob instance with the specified UUID.
-     * First published in XenServer 5.0.
+     * Get a reference to the USB_group instance with the specified UUID.
+     * First published in XenServer 7.3.
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-    public static Blob getByUuid(Connection c, String uuid) throws
+    public static USBGroup getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_by_uuid";
+        String method_call = "USB_group.get_by_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toBlob(result);
+            return Types.toUSBGroup(result);
     }
 
     /**
-     * Get all the blob instances with the given label.
-     * First published in XenServer 5.0.
+     * Get all the USB_group instances with the given label.
+     * First published in XenServer 7.3.
      *
      * @param label label of object to return
      * @return references to objects with matching names
      */
-    public static Set<Blob> getByNameLabel(Connection c, String label) throws
+    public static Set<USBGroup> getByNameLabel(Connection c, String label) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_by_name_label";
+        String method_call = "USB_group.get_by_name_label";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(label)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfBlob(result);
+            return Types.toSetOfUSBGroup(result);
     }
 
     /**
-     * Get the uuid field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the uuid field of the given USB_group.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
@@ -223,7 +216,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_uuid";
+        String method_call = "USB_group.get_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -232,8 +225,8 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Get the name/label field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the name/label field of the given USB_group.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
@@ -241,7 +234,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_name_label";
+        String method_call = "USB_group.get_name_label";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -250,8 +243,8 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Get the name/description field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the name/description field of the given USB_group.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
@@ -259,7 +252,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_name_description";
+        String method_call = "USB_group.get_name_description";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -268,80 +261,62 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Get the size field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the PUSBs field of the given USB_group.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
-    public Long getSize(Connection c) throws
+    public Set<PUSB> getPUSBs(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_size";
+        String method_call = "USB_group.get_PUSBs";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toLong(result);
+            return Types.toSetOfPUSB(result);
     }
 
     /**
-     * Get the public field of the given blob.
-     * First published in XenServer 6.1.
+     * Get the VUSBs field of the given USB_group.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
-    public Boolean getPublic(Connection c) throws
+    public Set<VUSB> getVUSBs(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_public";
+        String method_call = "USB_group.get_VUSBs";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toBoolean(result);
+            return Types.toSetOfVUSB(result);
     }
 
     /**
-     * Get the last_updated field of the given blob.
-     * First published in XenServer 5.0.
+     * Get the other_config field of the given USB_group.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
-    public Date getLastUpdated(Connection c) throws
+    public Map<String, String> getOtherConfig(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_last_updated";
+        String method_call = "USB_group.get_other_config";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toDate(result);
+            return Types.toMapOfStringString(result);
     }
 
     /**
-     * Get the mime_type field of the given blob.
-     * First published in XenServer 5.0.
-     *
-     * @return value of the field
-     */
-    public String getMimeType(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "blob.get_mime_type";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toString(result);
-    }
-
-    /**
-     * Set the name/label field of the given blob.
-     * First published in XenServer 5.0.
+     * Set the name/label field of the given USB_group.
+     * First published in XenServer 7.3.
      *
      * @param label New value to set
      */
@@ -349,7 +324,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.set_name_label";
+        String method_call = "USB_group.set_name_label";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(label)};
         Map response = c.dispatch(method_call, method_params);
@@ -357,8 +332,8 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Set the name/description field of the given blob.
-     * First published in XenServer 5.0.
+     * Set the name/description field of the given USB_group.
+     * First published in XenServer 7.3.
      *
      * @param description New value to set
      */
@@ -366,7 +341,7 @@ public class Blob extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.set_name_description";
+        String method_call = "USB_group.set_name_description";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(description)};
         Map response = c.dispatch(method_call, method_params);
@@ -374,71 +349,127 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Set the public field of the given blob.
-     * First published in XenServer 6.1.
+     * Set the other_config field of the given USB_group.
+     * First published in XenServer 7.3.
      *
-     * @param _public New value to set
+     * @param otherConfig New value to set
      */
-    public void setPublic(Connection c, Boolean _public) throws
+    public void setOtherConfig(Connection c, Map<String, String> otherConfig) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.set_public";
+        String method_call = "USB_group.set_other_config";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(_public)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(otherConfig)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }
 
     /**
-     * Create a placeholder for a binary blob
-     * First published in XenServer 5.0.
+     * Add the given key-value pair to the other_config field of the given USB_group.
+     * First published in XenServer 7.3.
      *
-     * @param mimeType The mime-type of the blob. Defaults to 'application/octet-stream' if the empty string is supplied
-     * @return The reference to the created blob
+     * @param key Key to add
+     * @param value Value to add
      */
-    public static Blob create(Connection c, String mimeType) throws
+    public void addToOtherConfig(Connection c, String key, String value) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.create";
+        String method_call = "USB_group.add_to_other_config";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(mimeType)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(key), Marshalling.toXMLRPC(value)};
         Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toBlob(result);
+        return;
     }
 
     /**
-     * Create a placeholder for a binary blob
-     * First published in XenServer 5.0.
+     * Remove the given key and its corresponding value from the other_config field of the given USB_group.  If the key is not in that Map, then do nothing.
+     * First published in XenServer 7.3.
      *
-     * @param mimeType The mime-type of the blob. Defaults to 'application/octet-stream' if the empty string is supplied
-     * @param _public True if the blob should be publicly available First published in XenServer 6.1.
-     * @return The reference to the created blob
+     * @param key Key to remove
      */
-    public static Blob create(Connection c, String mimeType, Boolean _public) throws
+    public void removeFromOtherConfig(Connection c, String key) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.create";
+        String method_call = "USB_group.remove_from_other_config";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(mimeType), Marshalling.toXMLRPC(_public)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(key)};
         Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toBlob(result);
+        return;
     }
 
     /**
      * 
-     * First published in XenServer 5.0.
+     * First published in XenServer 7.3.
+     *
+     * @param nameLabel 
+     * @param nameDescription 
+     * @param otherConfig 
+     * @return Task
+     */
+    public static Task createAsync(Connection c, String nameLabel, String nameDescription, Map<String, String> otherConfig) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.USB_group.create";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(nameLabel), Marshalling.toXMLRPC(nameDescription), Marshalling.toXMLRPC(otherConfig)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * 
+     * First published in XenServer 7.3.
+     *
+     * @param nameLabel 
+     * @param nameDescription 
+     * @param otherConfig 
+     * @return 
+     */
+    public static USBGroup create(Connection c, String nameLabel, String nameDescription, Map<String, String> otherConfig) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "USB_group.create";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(nameLabel), Marshalling.toXMLRPC(nameDescription), Marshalling.toXMLRPC(otherConfig)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toUSBGroup(result);
+    }
+
+    /**
+     * 
+     * First published in XenServer 7.3.
+     *
+     * @return Task
+     */
+    public Task destroyAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.USB_group.destroy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * 
+     * First published in XenServer 7.3.
      *
      */
     public void destroy(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.destroy";
+        String method_call = "USB_group.destroy";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -446,39 +477,39 @@ public class Blob extends XenAPIObject {
     }
 
     /**
-     * Return a list of all the blobs known to the system.
-     * First published in XenServer 5.0.
+     * Return a list of all the USB_groups known to the system.
+     * First published in XenServer 7.3.
      *
      * @return references to all objects
      */
-    public static Set<Blob> getAll(Connection c) throws
+    public static Set<USBGroup> getAll(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_all";
+        String method_call = "USB_group.get_all";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfBlob(result);
+            return Types.toSetOfUSBGroup(result);
     }
 
     /**
-     * Return a map of blob references to blob records for all blobs known to the system.
-     * First published in XenServer 5.0.
+     * Return a map of USB_group references to USB_group records for all USB_groups known to the system.
+     * First published in XenServer 7.3.
      *
      * @return records of all objects
      */
-    public static Map<Blob, Blob.Record> getAllRecords(Connection c) throws
+    public static Map<USBGroup, USBGroup.Record> getAllRecords(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "blob.get_all_records";
+        String method_call = "USB_group.get_all_records";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toMapOfBlobBlobRecord(result);
+            return Types.toMapOfUSBGroupUSBGroupRecord(result);
     }
 
 }

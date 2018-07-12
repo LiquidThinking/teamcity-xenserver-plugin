@@ -46,12 +46,12 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * A physical CPU
- * First published in XenServer 4.0.
+ * Describes the vusb device
+ * First published in XenServer 7.3.
  *
  * @author Citrix Systems, Inc.
  */
-public class HostCpu extends XenAPIObject {
+public class VUSB extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +61,7 @@ public class HostCpu extends XenAPIObject {
     /**
      * For internal use only.
      */
-    HostCpu(String ref) {
+    VUSB(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +73,14 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * If obj is a HostCpu, compares XenAPI references for equality.
+     * If obj is a VUSB, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof HostCpu)
+        if (obj != null && obj instanceof VUSB)
         {
-            HostCpu other = (HostCpu) obj;
+            VUSB other = (VUSB) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,46 +95,34 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a HostCpu
+     * Represents all the fields in a VUSB
      */
     public static class Record implements Types.Record {
         public String toString() {
             StringWriter writer = new StringWriter();
             PrintWriter print = new PrintWriter(writer);
             print.printf("%1$20s: %2$s\n", "uuid", this.uuid);
-            print.printf("%1$20s: %2$s\n", "host", this.host);
-            print.printf("%1$20s: %2$s\n", "number", this.number);
-            print.printf("%1$20s: %2$s\n", "vendor", this.vendor);
-            print.printf("%1$20s: %2$s\n", "speed", this.speed);
-            print.printf("%1$20s: %2$s\n", "modelname", this.modelname);
-            print.printf("%1$20s: %2$s\n", "family", this.family);
-            print.printf("%1$20s: %2$s\n", "model", this.model);
-            print.printf("%1$20s: %2$s\n", "stepping", this.stepping);
-            print.printf("%1$20s: %2$s\n", "flags", this.flags);
-            print.printf("%1$20s: %2$s\n", "features", this.features);
-            print.printf("%1$20s: %2$s\n", "utilisation", this.utilisation);
+            print.printf("%1$20s: %2$s\n", "allowedOperations", this.allowedOperations);
+            print.printf("%1$20s: %2$s\n", "currentOperations", this.currentOperations);
+            print.printf("%1$20s: %2$s\n", "VM", this.VM);
+            print.printf("%1$20s: %2$s\n", "USBGroup", this.USBGroup);
             print.printf("%1$20s: %2$s\n", "otherConfig", this.otherConfig);
+            print.printf("%1$20s: %2$s\n", "currentlyAttached", this.currentlyAttached);
             return writer.toString();
         }
 
         /**
-         * Convert a host_cpu.Record to a Map
+         * Convert a VUSB.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("uuid", this.uuid == null ? "" : this.uuid);
-            map.put("host", this.host == null ? new Host("OpaqueRef:NULL") : this.host);
-            map.put("number", this.number == null ? 0 : this.number);
-            map.put("vendor", this.vendor == null ? "" : this.vendor);
-            map.put("speed", this.speed == null ? 0 : this.speed);
-            map.put("modelname", this.modelname == null ? "" : this.modelname);
-            map.put("family", this.family == null ? 0 : this.family);
-            map.put("model", this.model == null ? 0 : this.model);
-            map.put("stepping", this.stepping == null ? "" : this.stepping);
-            map.put("flags", this.flags == null ? "" : this.flags);
-            map.put("features", this.features == null ? "" : this.features);
-            map.put("utilisation", this.utilisation == null ? 0.0 : this.utilisation);
+            map.put("allowed_operations", this.allowedOperations == null ? new LinkedHashSet<Types.VusbOperations>() : this.allowedOperations);
+            map.put("current_operations", this.currentOperations == null ? new HashMap<String, Types.VusbOperations>() : this.currentOperations);
+            map.put("VM", this.VM == null ? new VM("OpaqueRef:NULL") : this.VM);
+            map.put("USB_group", this.USBGroup == null ? new USBGroup("OpaqueRef:NULL") : this.USBGroup);
             map.put("other_config", this.otherConfig == null ? new HashMap<String, String>() : this.otherConfig);
+            map.put("currently_attached", this.currentlyAttached == null ? false : this.currentlyAttached);
             return map;
         }
 
@@ -143,98 +131,71 @@ public class HostCpu extends XenAPIObject {
          */
         public String uuid;
         /**
-         * the host the CPU is in
+         * list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.
          */
-        public Host host;
+        public Set<Types.VusbOperations> allowedOperations;
         /**
-         * the number of the physical CPU within the host
+         * links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.
          */
-        public Long number;
+        public Map<String, Types.VusbOperations> currentOperations;
         /**
-         * the vendor of the physical CPU
+         * VM that owns the VUSB
          */
-        public String vendor;
+        public VM VM;
         /**
-         * the speed of the physical CPU
+         * USB group used by the VUSB
          */
-        public Long speed;
+        public USBGroup USBGroup;
         /**
-         * the model name of the physical CPU
-         */
-        public String modelname;
-        /**
-         * the family (number) of the physical CPU
-         */
-        public Long family;
-        /**
-         * the model number of the physical CPU
-         */
-        public Long model;
-        /**
-         * the stepping of the physical CPU
-         */
-        public String stepping;
-        /**
-         * the flags of the physical CPU (a decoded version of the features field)
-         */
-        public String flags;
-        /**
-         * the physical CPU feature bitmap
-         */
-        public String features;
-        /**
-         * the current CPU utilisation
-         */
-        public Double utilisation;
-        /**
-         * additional configuration
-         * First published in XenServer 5.0.
+         * Additional configuration
          */
         public Map<String, String> otherConfig;
+        /**
+         * is the device currently attached
+         */
+        public Boolean currentlyAttached;
     }
 
     /**
-     * Get a record containing the current state of the given host_cpu.
-     * First published in XenServer 4.0.
-     * @deprecated
+     * Get a record containing the current state of the given VUSB.
+     * First published in XenServer 7.3.
      *
      * @return all fields from the object
      */
-   @Deprecated public HostCpu.Record getRecord(Connection c) throws
+    public VUSB.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_record";
+        String method_call = "VUSB.get_record";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toHostCpuRecord(result);
+            return Types.toVUSBRecord(result);
     }
 
     /**
-     * Get a reference to the host_cpu instance with the specified UUID.
-     * First published in XenServer 4.0.
-     * @deprecated
+     * Get a reference to the VUSB instance with the specified UUID.
+     * First published in XenServer 7.3.
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-   @Deprecated public static HostCpu getByUuid(Connection c, String uuid) throws
+    public static VUSB getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_by_uuid";
+        String method_call = "VUSB.get_by_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toHostCpu(result);
+            return Types.toVUSB(result);
     }
 
     /**
-     * Get the uuid field of the given host_cpu.
-     * First published in XenServer 4.0.
+     * Get the uuid field of the given VUSB.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
@@ -242,7 +203,7 @@ public class HostCpu extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_uuid";
+        String method_call = "VUSB.get_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -251,206 +212,80 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * Get the host field of the given host_cpu.
-     * First published in XenServer 4.0.
+     * Get the allowed_operations field of the given VUSB.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
-    public Host getHost(Connection c) throws
+    public Set<Types.VusbOperations> getAllowedOperations(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_host";
+        String method_call = "VUSB.get_allowed_operations";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toHost(result);
+            return Types.toSetOfVusbOperations(result);
     }
 
     /**
-     * Get the number field of the given host_cpu.
-     * First published in XenServer 4.0.
+     * Get the current_operations field of the given VUSB.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
-    public Long getNumber(Connection c) throws
+    public Map<String, Types.VusbOperations> getCurrentOperations(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_number";
+        String method_call = "VUSB.get_current_operations";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toLong(result);
+            return Types.toMapOfStringVusbOperations(result);
     }
 
     /**
-     * Get the vendor field of the given host_cpu.
-     * First published in XenServer 4.0.
+     * Get the VM field of the given VUSB.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
-    public String getVendor(Connection c) throws
+    public VM getVM(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_vendor";
+        String method_call = "VUSB.get_VM";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toString(result);
+            return Types.toVM(result);
     }
 
     /**
-     * Get the speed field of the given host_cpu.
-     * First published in XenServer 4.0.
+     * Get the USB_group field of the given VUSB.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
-    public Long getSpeed(Connection c) throws
+    public USBGroup getUSBGroup(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_speed";
+        String method_call = "VUSB.get_USB_group";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toLong(result);
+            return Types.toUSBGroup(result);
     }
 
     /**
-     * Get the modelname field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public String getModelname(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_modelname";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toString(result);
-    }
-
-    /**
-     * Get the family field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public Long getFamily(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_family";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toLong(result);
-    }
-
-    /**
-     * Get the model field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public Long getModel(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_model";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toLong(result);
-    }
-
-    /**
-     * Get the stepping field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public String getStepping(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_stepping";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toString(result);
-    }
-
-    /**
-     * Get the flags field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public String getFlags(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_flags";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toString(result);
-    }
-
-    /**
-     * Get the features field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public String getFeatures(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_features";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toString(result);
-    }
-
-    /**
-     * Get the utilisation field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public Double getUtilisation(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_utilisation";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toDouble(result);
-    }
-
-    /**
-     * Get the other_config field of the given host_cpu.
-     * First published in XenServer 5.0.
+     * Get the other_config field of the given VUSB.
+     * First published in XenServer 7.3.
      *
      * @return value of the field
      */
@@ -458,7 +293,7 @@ public class HostCpu extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_other_config";
+        String method_call = "VUSB.get_other_config";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -467,8 +302,26 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * Set the other_config field of the given host_cpu.
-     * First published in XenServer 5.0.
+     * Get the currently_attached field of the given VUSB.
+     * First published in XenServer 7.3.
+     *
+     * @return value of the field
+     */
+    public Boolean getCurrentlyAttached(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VUSB.get_currently_attached";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toBoolean(result);
+    }
+
+    /**
+     * Set the other_config field of the given VUSB.
+     * First published in XenServer 7.3.
      *
      * @param otherConfig New value to set
      */
@@ -476,7 +329,7 @@ public class HostCpu extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.set_other_config";
+        String method_call = "VUSB.set_other_config";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(otherConfig)};
         Map response = c.dispatch(method_call, method_params);
@@ -484,8 +337,8 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * Add the given key-value pair to the other_config field of the given host_cpu.
-     * First published in XenServer 5.0.
+     * Add the given key-value pair to the other_config field of the given VUSB.
+     * First published in XenServer 7.3.
      *
      * @param key Key to add
      * @param value Value to add
@@ -494,7 +347,7 @@ public class HostCpu extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.add_to_other_config";
+        String method_call = "VUSB.add_to_other_config";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(key), Marshalling.toXMLRPC(value)};
         Map response = c.dispatch(method_call, method_params);
@@ -502,8 +355,8 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * Remove the given key and its corresponding value from the other_config field of the given host_cpu.  If the key is not in that Map, then do nothing.
-     * First published in XenServer 5.0.
+     * Remove the given key and its corresponding value from the other_config field of the given VUSB.  If the key is not in that Map, then do nothing.
+     * First published in XenServer 7.3.
      *
      * @param key Key to remove
      */
@@ -511,7 +364,7 @@ public class HostCpu extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.remove_from_other_config";
+        String method_call = "VUSB.remove_from_other_config";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(key)};
         Map response = c.dispatch(method_call, method_params);
@@ -519,40 +372,149 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * Return a list of all the host_cpus known to the system.
-     * First published in XenServer 4.0.
-     * @deprecated
+     * Create a new VUSB record in the database only
+     * First published in XenServer 7.3.
      *
-     * @return references to all objects
+     * @param VM The VM
+     * @param USBGroup 
+     * @param otherConfig 
+     * @return Task
      */
-   @Deprecated public static Set<HostCpu> getAll(Connection c) throws
+    public static Task createAsync(Connection c, VM VM, USBGroup USBGroup, Map<String, String> otherConfig) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_all";
+        String method_call = "Async.VUSB.create";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(VM), Marshalling.toXMLRPC(USBGroup), Marshalling.toXMLRPC(otherConfig)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfHostCpu(result);
+        return Types.toTask(result);
     }
 
     /**
-     * Return a map of host_cpu references to host_cpu records for all host_cpus known to the system.
-     * First published in XenServer 4.0.
+     * Create a new VUSB record in the database only
+     * First published in XenServer 7.3.
      *
-     * @return records of all objects
+     * @param VM The VM
+     * @param USBGroup 
+     * @param otherConfig 
+     * @return The ref of the newly created VUSB record.
      */
-    public static Map<HostCpu, HostCpu.Record> getAllRecords(Connection c) throws
+    public static VUSB create(Connection c, VM VM, USBGroup USBGroup, Map<String, String> otherConfig) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_all_records";
+        String method_call = "VUSB.create";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(VM), Marshalling.toXMLRPC(USBGroup), Marshalling.toXMLRPC(otherConfig)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toVUSB(result);
+    }
+
+    /**
+     * Unplug the vusb device from the vm.
+     * First published in XenServer 7.3.
+     *
+     * @return Task
+     */
+    public Task unplugAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.VUSB.unplug";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Unplug the vusb device from the vm.
+     * First published in XenServer 7.3.
+     *
+     */
+    public void unplug(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VUSB.unplug";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Removes a VUSB record from the database
+     * First published in XenServer 7.3.
+     *
+     * @return Task
+     */
+    public Task destroyAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.VUSB.destroy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Removes a VUSB record from the database
+     * First published in XenServer 7.3.
+     *
+     */
+    public void destroy(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VUSB.destroy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Return a list of all the VUSBs known to the system.
+     * First published in XenServer 7.3.
+     *
+     * @return references to all objects
+     */
+    public static Set<VUSB> getAll(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VUSB.get_all";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toMapOfHostCpuHostCpuRecord(result);
+            return Types.toSetOfVUSB(result);
+    }
+
+    /**
+     * Return a map of VUSB references to VUSB records for all VUSBs known to the system.
+     * First published in XenServer 7.3.
+     *
+     * @return records of all objects
+     */
+    public static Map<VUSB, VUSB.Record> getAllRecords(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VUSB.get_all_records";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toMapOfVUSBVUSBRecord(result);
     }
 
 }

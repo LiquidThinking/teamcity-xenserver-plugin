@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -112,6 +112,7 @@ public class PGPU extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "supportedVGPUMaxCapacities", this.supportedVGPUMaxCapacities);
             print.printf("%1$20s: %2$s\n", "dom0Access", this.dom0Access);
             print.printf("%1$20s: %2$s\n", "isSystemDisplayDevice", this.isSystemDisplayDevice);
+            print.printf("%1$20s: %2$s\n", "compatibilityMetadata", this.compatibilityMetadata);
             return writer.toString();
         }
 
@@ -131,6 +132,7 @@ public class PGPU extends XenAPIObject {
             map.put("supported_VGPU_max_capacities", this.supportedVGPUMaxCapacities == null ? new HashMap<VGPUType, Long>() : this.supportedVGPUMaxCapacities);
             map.put("dom0_access", this.dom0Access == null ? Types.PgpuDom0Access.UNRECOGNIZED : this.dom0Access);
             map.put("is_system_display_device", this.isSystemDisplayDevice == null ? false : this.isSystemDisplayDevice);
+            map.put("compatibility_metadata", this.compatibilityMetadata == null ? new HashMap<String, String>() : this.compatibilityMetadata);
             return map;
         }
 
@@ -147,7 +149,7 @@ public class PGPU extends XenAPIObject {
          */
         public GPUGroup GPUGroup;
         /**
-         * Host that own the GPU
+         * Host that owns the GPU
          */
         public Host host;
         /**
@@ -184,6 +186,11 @@ public class PGPU extends XenAPIObject {
          * First published in XenServer 6.5 SP1.
          */
         public Boolean isSystemDisplayDevice;
+        /**
+         * PGPU metadata to determine whether a VGPU can migrate between two PGPUs
+         * First published in XenServer 7.3.
+         */
+        public Map<String, String> compatibilityMetadata;
     }
 
     /**
@@ -419,6 +426,24 @@ public class PGPU extends XenAPIObject {
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
             return Types.toBoolean(result);
+    }
+
+    /**
+     * Get the compatibility_metadata field of the given PGPU.
+     * First published in XenServer 7.3.
+     *
+     * @return value of the field
+     */
+    public Map<String, String> getCompatibilityMetadata(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PGPU.get_compatibility_metadata";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toMapOfStringString(result);
     }
 
     /**

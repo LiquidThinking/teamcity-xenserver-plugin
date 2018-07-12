@@ -46,12 +46,11 @@ import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
- * A physical CPU
- * First published in XenServer 4.0.
+ * Cluster member metadata
  *
  * @author Citrix Systems, Inc.
  */
-public class HostCpu extends XenAPIObject {
+public class ClusterHost extends XenAPIObject {
 
     /**
      * The XenAPI reference (OpaqueRef) to this object.
@@ -61,7 +60,7 @@ public class HostCpu extends XenAPIObject {
     /**
      * For internal use only.
      */
-    HostCpu(String ref) {
+    ClusterHost(String ref) {
        this.ref = ref;
     }
 
@@ -73,14 +72,14 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * If obj is a HostCpu, compares XenAPI references for equality.
+     * If obj is a ClusterHost, compares XenAPI references for equality.
      */
     @Override
     public boolean equals(Object obj)
     {
-        if (obj != null && obj instanceof HostCpu)
+        if (obj != null && obj instanceof ClusterHost)
         {
-            HostCpu other = (HostCpu) obj;
+            ClusterHost other = (ClusterHost) obj;
             return other.ref.equals(this.ref);
         } else
         {
@@ -95,146 +94,112 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * Represents all the fields in a HostCpu
+     * Represents all the fields in a ClusterHost
      */
     public static class Record implements Types.Record {
         public String toString() {
             StringWriter writer = new StringWriter();
             PrintWriter print = new PrintWriter(writer);
             print.printf("%1$20s: %2$s\n", "uuid", this.uuid);
+            print.printf("%1$20s: %2$s\n", "cluster", this.cluster);
             print.printf("%1$20s: %2$s\n", "host", this.host);
-            print.printf("%1$20s: %2$s\n", "number", this.number);
-            print.printf("%1$20s: %2$s\n", "vendor", this.vendor);
-            print.printf("%1$20s: %2$s\n", "speed", this.speed);
-            print.printf("%1$20s: %2$s\n", "modelname", this.modelname);
-            print.printf("%1$20s: %2$s\n", "family", this.family);
-            print.printf("%1$20s: %2$s\n", "model", this.model);
-            print.printf("%1$20s: %2$s\n", "stepping", this.stepping);
-            print.printf("%1$20s: %2$s\n", "flags", this.flags);
-            print.printf("%1$20s: %2$s\n", "features", this.features);
-            print.printf("%1$20s: %2$s\n", "utilisation", this.utilisation);
+            print.printf("%1$20s: %2$s\n", "enabled", this.enabled);
+            print.printf("%1$20s: %2$s\n", "allowedOperations", this.allowedOperations);
+            print.printf("%1$20s: %2$s\n", "currentOperations", this.currentOperations);
             print.printf("%1$20s: %2$s\n", "otherConfig", this.otherConfig);
             return writer.toString();
         }
 
         /**
-         * Convert a host_cpu.Record to a Map
+         * Convert a Cluster_host.Record to a Map
          */
         public Map<String,Object> toMap() {
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("uuid", this.uuid == null ? "" : this.uuid);
+            map.put("cluster", this.cluster == null ? new Cluster("OpaqueRef:NULL") : this.cluster);
             map.put("host", this.host == null ? new Host("OpaqueRef:NULL") : this.host);
-            map.put("number", this.number == null ? 0 : this.number);
-            map.put("vendor", this.vendor == null ? "" : this.vendor);
-            map.put("speed", this.speed == null ? 0 : this.speed);
-            map.put("modelname", this.modelname == null ? "" : this.modelname);
-            map.put("family", this.family == null ? 0 : this.family);
-            map.put("model", this.model == null ? 0 : this.model);
-            map.put("stepping", this.stepping == null ? "" : this.stepping);
-            map.put("flags", this.flags == null ? "" : this.flags);
-            map.put("features", this.features == null ? "" : this.features);
-            map.put("utilisation", this.utilisation == null ? 0.0 : this.utilisation);
+            map.put("enabled", this.enabled == null ? false : this.enabled);
+            map.put("allowed_operations", this.allowedOperations == null ? new LinkedHashSet<Types.ClusterHostOperation>() : this.allowedOperations);
+            map.put("current_operations", this.currentOperations == null ? new HashMap<String, Types.ClusterHostOperation>() : this.currentOperations);
             map.put("other_config", this.otherConfig == null ? new HashMap<String, String>() : this.otherConfig);
             return map;
         }
 
         /**
          * Unique identifier/object reference
+         * Experimental. First published in Unreleased.
          */
         public String uuid;
         /**
-         * the host the CPU is in
+         * Reference to the Cluster object
+         * Experimental. First published in Unreleased.
+         */
+        public Cluster cluster;
+        /**
+         * Reference to the Host object
+         * Experimental. First published in Unreleased.
          */
         public Host host;
         /**
-         * the number of the physical CPU within the host
+         * Whether the cluster host believes that clustering should be enabled on this host
+         * Experimental. First published in Unreleased.
          */
-        public Long number;
+        public Boolean enabled;
         /**
-         * the vendor of the physical CPU
+         * list of the operations allowed in this state. This list is advisory only and the server state may have changed by the time this field is read by a client.
          */
-        public String vendor;
+        public Set<Types.ClusterHostOperation> allowedOperations;
         /**
-         * the speed of the physical CPU
+         * links each of the running tasks using this object (by reference) to a current_operation enum which describes the nature of the task.
          */
-        public Long speed;
+        public Map<String, Types.ClusterHostOperation> currentOperations;
         /**
-         * the model name of the physical CPU
-         */
-        public String modelname;
-        /**
-         * the family (number) of the physical CPU
-         */
-        public Long family;
-        /**
-         * the model number of the physical CPU
-         */
-        public Long model;
-        /**
-         * the stepping of the physical CPU
-         */
-        public String stepping;
-        /**
-         * the flags of the physical CPU (a decoded version of the features field)
-         */
-        public String flags;
-        /**
-         * the physical CPU feature bitmap
-         */
-        public String features;
-        /**
-         * the current CPU utilisation
-         */
-        public Double utilisation;
-        /**
-         * additional configuration
-         * First published in XenServer 5.0.
+         * Additional configuration
+         * Experimental. First published in Unreleased.
          */
         public Map<String, String> otherConfig;
     }
 
     /**
-     * Get a record containing the current state of the given host_cpu.
-     * First published in XenServer 4.0.
-     * @deprecated
+     * Get a record containing the current state of the given Cluster_host.
+     * Experimental. First published in Unreleased.
      *
      * @return all fields from the object
      */
-   @Deprecated public HostCpu.Record getRecord(Connection c) throws
+    public ClusterHost.Record getRecord(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_record";
+        String method_call = "Cluster_host.get_record";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toHostCpuRecord(result);
+            return Types.toClusterHostRecord(result);
     }
 
     /**
-     * Get a reference to the host_cpu instance with the specified UUID.
-     * First published in XenServer 4.0.
-     * @deprecated
+     * Get a reference to the Cluster_host instance with the specified UUID.
+     * Experimental. First published in Unreleased.
      *
      * @param uuid UUID of object to return
      * @return reference to the object
      */
-   @Deprecated public static HostCpu getByUuid(Connection c, String uuid) throws
+    public static ClusterHost getByUuid(Connection c, String uuid) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_by_uuid";
+        String method_call = "Cluster_host.get_by_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(uuid)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toHostCpu(result);
+            return Types.toClusterHost(result);
     }
 
     /**
-     * Get the uuid field of the given host_cpu.
-     * First published in XenServer 4.0.
+     * Get the uuid field of the given Cluster_host.
+     * Experimental. First published in Unreleased.
      *
      * @return value of the field
      */
@@ -242,7 +207,7 @@ public class HostCpu extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_uuid";
+        String method_call = "Cluster_host.get_uuid";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -251,8 +216,26 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * Get the host field of the given host_cpu.
-     * First published in XenServer 4.0.
+     * Get the cluster field of the given Cluster_host.
+     * Experimental. First published in Unreleased.
+     *
+     * @return value of the field
+     */
+    public Cluster getCluster(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Cluster_host.get_cluster";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toCluster(result);
+    }
+
+    /**
+     * Get the host field of the given Cluster_host.
+     * Experimental. First published in Unreleased.
      *
      * @return value of the field
      */
@@ -260,7 +243,7 @@ public class HostCpu extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_host";
+        String method_call = "Cluster_host.get_host";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -269,188 +252,60 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * Get the number field of the given host_cpu.
-     * First published in XenServer 4.0.
+     * Get the enabled field of the given Cluster_host.
+     * Experimental. First published in Unreleased.
      *
      * @return value of the field
      */
-    public Long getNumber(Connection c) throws
+    public Boolean getEnabled(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_number";
+        String method_call = "Cluster_host.get_enabled";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toLong(result);
+            return Types.toBoolean(result);
     }
 
     /**
-     * Get the vendor field of the given host_cpu.
-     * First published in XenServer 4.0.
+     * Get the allowed_operations field of the given Cluster_host.
      *
      * @return value of the field
      */
-    public String getVendor(Connection c) throws
+    public Set<Types.ClusterHostOperation> getAllowedOperations(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_vendor";
+        String method_call = "Cluster_host.get_allowed_operations";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toString(result);
+            return Types.toSetOfClusterHostOperation(result);
     }
 
     /**
-     * Get the speed field of the given host_cpu.
-     * First published in XenServer 4.0.
+     * Get the current_operations field of the given Cluster_host.
      *
      * @return value of the field
      */
-    public Long getSpeed(Connection c) throws
+    public Map<String, Types.ClusterHostOperation> getCurrentOperations(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_speed";
+        String method_call = "Cluster_host.get_current_operations";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toLong(result);
+            return Types.toMapOfStringClusterHostOperation(result);
     }
 
     /**
-     * Get the modelname field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public String getModelname(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_modelname";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toString(result);
-    }
-
-    /**
-     * Get the family field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public Long getFamily(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_family";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toLong(result);
-    }
-
-    /**
-     * Get the model field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public Long getModel(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_model";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toLong(result);
-    }
-
-    /**
-     * Get the stepping field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public String getStepping(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_stepping";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toString(result);
-    }
-
-    /**
-     * Get the flags field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public String getFlags(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_flags";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toString(result);
-    }
-
-    /**
-     * Get the features field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public String getFeatures(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_features";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toString(result);
-    }
-
-    /**
-     * Get the utilisation field of the given host_cpu.
-     * First published in XenServer 4.0.
-     *
-     * @return value of the field
-     */
-    public Double getUtilisation(Connection c) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "host_cpu.get_utilisation";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
-        Map response = c.dispatch(method_call, method_params);
-        Object result = response.get("Value");
-            return Types.toDouble(result);
-    }
-
-    /**
-     * Get the other_config field of the given host_cpu.
-     * First published in XenServer 5.0.
+     * Get the other_config field of the given Cluster_host.
+     * Experimental. First published in Unreleased.
      *
      * @return value of the field
      */
@@ -458,7 +313,7 @@ public class HostCpu extends XenAPIObject {
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_other_config";
+        String method_call = "Cluster_host.get_other_config";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
@@ -467,92 +322,215 @@ public class HostCpu extends XenAPIObject {
     }
 
     /**
-     * Set the other_config field of the given host_cpu.
-     * First published in XenServer 5.0.
+     * Add a new host to an existing cluster.
+     * Experimental. First published in Unreleased.
      *
-     * @param otherConfig New value to set
+     * @param cluster Cluster to join
+     * @param host new cluster member
+     * @return Task
      */
-    public void setOtherConfig(Connection c, Map<String, String> otherConfig) throws
+    public static Task createAsync(Connection c, Cluster cluster, Host host) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.set_other_config";
+        String method_call = "Async.Cluster_host.create";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(otherConfig)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(cluster), Marshalling.toXMLRPC(host)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Add a new host to an existing cluster.
+     * Experimental. First published in Unreleased.
+     *
+     * @param cluster Cluster to join
+     * @param host new cluster member
+     * @return the newly created cluster_host object
+     */
+    public static ClusterHost create(Connection c, Cluster cluster, Host host) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Cluster_host.create";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(cluster), Marshalling.toXMLRPC(host)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toClusterHost(result);
+    }
+
+    /**
+     * Remove a host from an existing cluster.
+     * Experimental. First published in Unreleased.
+     *
+     * @return Task
+     */
+    public Task destroyAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.Cluster_host.destroy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Remove a host from an existing cluster.
+     * Experimental. First published in Unreleased.
+     *
+     */
+    public void destroy(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Cluster_host.destroy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }
 
     /**
-     * Add the given key-value pair to the other_config field of the given host_cpu.
-     * First published in XenServer 5.0.
+     * Enable cluster membership for a disabled cluster host.
+     * Experimental. First published in Unreleased.
      *
-     * @param key Key to add
-     * @param value Value to add
+     * @return Task
      */
-    public void addToOtherConfig(Connection c, String key, String value) throws
+    public Task enableAsync(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.add_to_other_config";
+        String method_call = "Async.Cluster_host.enable";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(key), Marshalling.toXMLRPC(value)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Enable cluster membership for a disabled cluster host.
+     * Experimental. First published in Unreleased.
+     *
+     */
+    public void enable(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Cluster_host.enable";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }
 
     /**
-     * Remove the given key and its corresponding value from the other_config field of the given host_cpu.  If the key is not in that Map, then do nothing.
-     * First published in XenServer 5.0.
+     * Remove a host from an existing cluster forcefully.
+     * Experimental. First published in Unreleased.
      *
-     * @param key Key to remove
+     * @return Task
      */
-    public void removeFromOtherConfig(Connection c, String key) throws
+    public Task forceDestroyAsync(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.remove_from_other_config";
+        String method_call = "Async.Cluster_host.force_destroy";
         String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(key)};
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Remove a host from an existing cluster forcefully.
+     * Experimental. First published in Unreleased.
+     *
+     */
+    public void forceDestroy(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Cluster_host.force_destroy";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }
 
     /**
-     * Return a list of all the host_cpus known to the system.
-     * First published in XenServer 4.0.
-     * @deprecated
+     * Disable cluster membership for an enabled cluster host.
+     * Experimental. First published in Unreleased.
+     *
+     * @return Task
+     */
+    public Task disableAsync(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.Cluster_host.disable";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Disable cluster membership for an enabled cluster host.
+     * Experimental. First published in Unreleased.
+     *
+     */
+    public void disable(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Cluster_host.disable";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Return a list of all the Cluster_hosts known to the system.
+     * Experimental. First published in Unreleased.
      *
      * @return references to all objects
      */
-   @Deprecated public static Set<HostCpu> getAll(Connection c) throws
+    public static Set<ClusterHost> getAll(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_all";
+        String method_call = "Cluster_host.get_all";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toSetOfHostCpu(result);
+            return Types.toSetOfClusterHost(result);
     }
 
     /**
-     * Return a map of host_cpu references to host_cpu records for all host_cpus known to the system.
-     * First published in XenServer 4.0.
+     * Return a map of Cluster_host references to Cluster_host records for all Cluster_hosts known to the system.
+     * Experimental. First published in Unreleased.
      *
      * @return records of all objects
      */
-    public static Map<HostCpu, HostCpu.Record> getAllRecords(Connection c) throws
+    public static Map<ClusterHost, ClusterHost.Record> getAllRecords(Connection c) throws
        BadServerResponse,
        XenAPIException,
        XmlRpcException {
-        String method_call = "host_cpu.get_all_records";
+        String method_call = "Cluster_host.get_all_records";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session)};
         Map response = c.dispatch(method_call, method_params);
         Object result = response.get("Value");
-            return Types.toMapOfHostCpuHostCpuRecord(result);
+            return Types.toMapOfClusterHostClusterHostRecord(result);
     }
 
 }

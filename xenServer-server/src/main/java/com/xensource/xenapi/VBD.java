@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -789,23 +789,6 @@ public class VBD extends XenAPIObject {
     }
 
     /**
-     * Set the mode field of the given VBD.
-     * First published in XenServer 4.0.
-     *
-     * @param mode New value to set
-     */
-    public void setMode(Connection c, Types.VbdMode mode) throws
-       BadServerResponse,
-       XenAPIException,
-       XmlRpcException {
-        String method_call = "VBD.set_mode";
-        String session = c.getSessionReference();
-        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(mode)};
-        Map response = c.dispatch(method_call, method_params);
-        return;
-    }
-
-    /**
      * Set the type field of the given VBD.
      * First published in XenServer 4.0.
      *
@@ -1174,6 +1157,42 @@ public class VBD extends XenAPIObject {
         String method_call = "VBD.assert_attachable";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        return;
+    }
+
+    /**
+     * Sets the mode of the VBD. The power_state of the VM must be halted.
+     * First published in XenServer 4.0.
+     *
+     * @param value New value to set
+     * @return Task
+     */
+    public Task setModeAsync(Connection c, Types.VbdMode value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "Async.VBD.set_mode";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+        return Types.toTask(result);
+    }
+
+    /**
+     * Sets the mode of the VBD. The power_state of the VM must be halted.
+     * First published in XenServer 4.0.
+     *
+     * @param value New value to set
+     */
+    public void setMode(Connection c, Types.VbdMode value) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "VBD.set_mode";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref), Marshalling.toXMLRPC(value)};
         Map response = c.dispatch(method_call, method_params);
         return;
     }

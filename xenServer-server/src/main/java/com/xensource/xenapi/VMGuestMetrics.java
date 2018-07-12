@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -188,17 +188,17 @@ public class VMGuestMetrics extends XenAPIObject {
         public Boolean live;
         /**
          * The guest's statement of whether it supports VBD hotplug, i.e. whether it is capable of responding immediately to instantiation of a new VBD by bringing online a new PV block device. If the guest states that it is not capable, then the VBD plug and unplug operations will not be allowed while the guest is running.
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Types.TristateType canUseHotplugVbd;
         /**
          * The guest's statement of whether it supports VIF hotplug, i.e. whether it is capable of responding immediately to instantiation of a new VIF by bringing online a new PV network device. If the guest states that it is not capable, then the VIF plug and unplug operations will not be allowed while the guest is running.
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Types.TristateType canUseHotplugVif;
         /**
          * At least one of the guest's devices has successfully connected to the backend.
-         * First published in XenServer Dundee.
+         * First published in XenServer 7.0.
          */
         public Boolean PVDriversDetected;
     }
@@ -441,7 +441,7 @@ public class VMGuestMetrics extends XenAPIObject {
 
     /**
      * Get the can_use_hotplug_vbd field of the given VM_guest_metrics.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -459,7 +459,7 @@ public class VMGuestMetrics extends XenAPIObject {
 
     /**
      * Get the can_use_hotplug_vif field of the given VM_guest_metrics.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */
@@ -477,7 +477,7 @@ public class VMGuestMetrics extends XenAPIObject {
 
     /**
      * Get the PV_drivers_detected field of the given VM_guest_metrics.
-     * First published in XenServer Dundee.
+     * First published in XenServer 7.0.
      *
      * @return value of the field
      */

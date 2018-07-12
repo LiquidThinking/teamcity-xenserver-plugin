@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Citrix Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   1) Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   2) Redistributions in binary form must reproduce the above
  *      copyright notice, this list of conditions and the following
  *      disclaimer in the documentation and/or other materials
  *      provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -111,6 +111,7 @@ public class PCI extends XenAPIObject {
             print.printf("%1$20s: %2$s\n", "otherConfig", this.otherConfig);
             print.printf("%1$20s: %2$s\n", "subsystemVendorName", this.subsystemVendorName);
             print.printf("%1$20s: %2$s\n", "subsystemDeviceName", this.subsystemDeviceName);
+            print.printf("%1$20s: %2$s\n", "driverName", this.driverName);
             return writer.toString();
         }
 
@@ -129,6 +130,7 @@ public class PCI extends XenAPIObject {
             map.put("other_config", this.otherConfig == null ? new HashMap<String, String>() : this.otherConfig);
             map.put("subsystem_vendor_name", this.subsystemVendorName == null ? "" : this.subsystemVendorName);
             map.put("subsystem_device_name", this.subsystemDeviceName == null ? "" : this.subsystemDeviceName);
+            map.put("driver_name", this.driverName == null ? "" : this.driverName);
             return map;
         }
 
@@ -166,14 +168,19 @@ public class PCI extends XenAPIObject {
         public Map<String, String> otherConfig;
         /**
          * Subsystem vendor name
-         * First published in .
+         * First published in XenServer 6.2 SP1 Hotfix 11.
          */
         public String subsystemVendorName;
         /**
          * Subsystem device name
-         * First published in .
+         * First published in XenServer 6.2 SP1 Hotfix 11.
          */
         public String subsystemDeviceName;
+        /**
+         * Driver name
+         * First published in Unreleased.
+         */
+        public String driverName;
     }
 
     /**
@@ -359,7 +366,7 @@ public class PCI extends XenAPIObject {
 
     /**
      * Get the subsystem_vendor_name field of the given PCI.
-     * First published in .
+     * First published in XenServer 6.2 SP1 Hotfix 11.
      *
      * @return value of the field
      */
@@ -377,7 +384,7 @@ public class PCI extends XenAPIObject {
 
     /**
      * Get the subsystem_device_name field of the given PCI.
-     * First published in .
+     * First published in XenServer 6.2 SP1 Hotfix 11.
      *
      * @return value of the field
      */
@@ -386,6 +393,24 @@ public class PCI extends XenAPIObject {
        XenAPIException,
        XmlRpcException {
         String method_call = "PCI.get_subsystem_device_name";
+        String session = c.getSessionReference();
+        Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
+        Map response = c.dispatch(method_call, method_params);
+        Object result = response.get("Value");
+            return Types.toString(result);
+    }
+
+    /**
+     * Get the driver_name field of the given PCI.
+     * First published in Unreleased.
+     *
+     * @return value of the field
+     */
+    public String getDriverName(Connection c) throws
+       BadServerResponse,
+       XenAPIException,
+       XmlRpcException {
+        String method_call = "PCI.get_driver_name";
         String session = c.getSessionReference();
         Object[] method_params = {Marshalling.toXMLRPC(session), Marshalling.toXMLRPC(this.ref)};
         Map response = c.dispatch(method_call, method_params);
