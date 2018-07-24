@@ -11,3 +11,7 @@ To get started writing a plugin for TeamCity, set up the plugin development envi
 ### Building package
 
 Run `mvn package`
+
+## Recommendations
+
+This plugin causes excesive login in XenServer to disable this logging remove the XApi line from `/etc/rsyslog.conf` on you XenServer machine
